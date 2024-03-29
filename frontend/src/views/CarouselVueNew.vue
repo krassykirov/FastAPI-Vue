@@ -1,137 +1,151 @@
 <template>
-  <div
-    class="container"
-    style="margin-top: 0; padding: 0; margin-left: 11%; margin-bottom: 0"
-  >
-    <Carousel :items-to-show="6" :wrap-around="false">
-      <Slide v-for="(product, index) in items" :key="index">
-        <div class="carousel__item">
-          <div
-            class="card small"
-            :id="product.id"
-            :data-category="product.category_id"
-            style="margin: 0.15%; padding: 0.15%"
-          >
-            <div class="card-body" style="padding: 1%; max-width: 400px">
+  <Carousel :items-to-show="6" :wrap-around="false">
+    <Slide v-for="(product, index) in items" :key="index">
+      <div class="carousel__item">
+        <div
+          class="card small"
+          :id="product.id"
+          :data-category="product.category_id"
+          style="margin: 0.15%; padding: 0.15%"
+        >
+          <div class="card-body" style="padding: 1%; max-width: 400px">
+            <span
+              class="badge bg-danger position-absolute top-0 start-0"
+              v-if="product.discount >= 0.01"
+              style="font-size: 0.8rem; margin: 1%; top: 0"
+              >-{{ Math.floor(product.discount * 100) }}%
+            </span>
+            <span
+              :class="getHeartClasses(product)"
+              @click="addTofavorites(product)"
+              :id="'heart' + product.id"
+              style="
+                position: absolute;
+                top: 1%;
+                right: 1%;
+                font-weight: 900;
+                font-size: 1.2em;
+                cursor: pointer;
+              "
+            ></span>
+            <img
+              :src="
+                `${backendEndpoint}/static/img/` +
+                product.name +
+                '/' +
+                product.image
+              "
+              class="card-img-top"
+              @click="redirectToItemFromProduct(product.id)"
+              style="cursor: pointer; width: 95% !important"
+            />
+            <h6
+              @click="redirectToItemFromProduct(product.id)"
+              class="card-title"
+              style="
+                margin-bottom: 1%;
+                padding: 1%;
+                height: 3em;
+                font-size: 1rem;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                line-height: 1;
+                cursor: pointer;
+              "
+            >
+              {{ truncateName(product.name, 60) }}
+            </h6>
+            <p
+              style="cursor: pointer; margin-bottom: 1%; font-size: 0.9rem"
+              @click="redirectToItemFromProduct(product.id)"
+            >
               <span
-                class="badge bg-danger position-absolute top-0 start-0"
-                v-if="product.discount >= 0.01"
-                style="font-size: 0.8rem; margin: 1%; top: 0"
-                >-{{ Math.floor(product.discount * 100) }}%
-              </span>
-              <span
-                :class="getHeartClasses(product)"
-                @click="addTofavorites(product)"
-                :id="'heart' + product.id"
-                style="
-                  position: absolute;
-                  top: 1%;
-                  right: 1%;
-                  font-weight: 900;
-                  font-size: 1.2em;
-                  cursor: pointer;
-                "
+                v-for="i in 5"
+                :key="i"
+                :class="getStarClasses(i, product.rating_float)"
               ></span>
-              <img
-                :src="
-                  `${backendEndpoint}/static/img/` +
-                  product.name +
-                  '/' +
-                  product.image
-                "
-                class="card-img-top"
-                @click="redirectToItemFromProduct(product.id)"
-                style="cursor: pointer; width: 95% !important"
-              />
-              <h6
-                @click="redirectToItemFromProduct(product.id)"
-                class="card-title"
+              <span
+                :id="'overall-rating' + product.id + '-float'"
+                class="overall-rating"
+                >&nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}</span
+              >
+              <span :id="'overall-rating' + product.id" class="overall-rating2">
+                ({{ product.review_number }})
+              </span>
+            </p>
+            <input type="number" :data-price="product.price" hidden />
+            <div
+              style="
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+              "
+            >
+              <span
                 style="
+                  font-size: 0.95rem;
+                  color: #dc3545;
+                  font-weight: 800;
                   margin-bottom: 1%;
-                  padding: 1%;
-                  height: 3em;
-                  font-size: 1rem;
-                  overflow: hidden;
-                  display: -webkit-box;
-                  -webkit-line-clamp: 3;
-                  -webkit-box-orient: vertical;
-                  line-height: 1;
-                  cursor: pointer;
+                  margin-top: 1%;
+                  margin-left: -12px;
                 "
               >
-                {{ truncateName(product.name, 60) }}
-              </h6>
-              <p
-                style="cursor: pointer; margin-bottom: 1%; font-size: 0.9rem"
-                @click="redirectToItemFromProduct(product.id)"
-              >
-                <span
-                  v-for="i in 5"
-                  :key="i"
-                  :class="getStarClasses(i, product.rating_float)"
-                ></span>
-                <span
-                  :id="'overall-rating' + product.id + '-float'"
-                  class="overall-rating"
-                  >&nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}</span
-                >
-                <span
-                  :id="'overall-rating' + product.id"
-                  class="overall-rating2"
-                >
-                  ({{ product.review_number }})
-                </span>
-              </p>
-              <input type="number" :data-price="product.price" hidden />
-              <div
-                style="
-                  margin: 0;
-                  padding: 0;
-                  display: flex;
-                  flex-direction: column;
-                "
-              >
-                <span
-                  style="
-                    font-size: 0.95rem;
-                    color: #dc3545;
-                    font-weight: 800;
-                    margin-bottom: 1%;
-                    margin-top: 1%;
-                    margin-left: -12px;
-                  "
-                >
-                  <!-- prettier-ignore -->
-                  <div>
+                <!-- prettier-ignore -->
+                <div>
                 <!-- prettier-ignore -->
                 <span style="font-size: 1rem">$</span>
                 <span v-if="product.discount_price" style="font-size: 1rem">{{ formattedPrice(product.discount_price).integerPart }}</span>
                 <span v-if="product.discount_price" style="font-size: 0.7rem; position: relative; top: -0.4em">{{ formattedPrice(product.discount_price).decimalPart }}</span>
               </div>
-                </span>
-              </div>
+              </span>
             </div>
-            <span v-if="product.discount >= 0.01" class="old-price">
-              ${{ Math.floor(product.price) }}
-            </span>
-            <span v-else style="font-size: 1em; margin-top: 1%">&nbsp;</span>
-            <button
-              ref="addToCartButton"
-              @click="addToCart(product)"
-              class="btn btn-secondary btn-sm"
-              style="width: 100%; margin-top: 1%; margin-bottom: 0"
-            >
-              Add to Cart
-              <i class="bi bi-cart-fill" style="font-size: 0.9rem"> </i>
-            </button>
           </div>
+          <span v-if="product.discount >= 0.01" class="old-price">
+            ${{ Math.floor(product.price) }}
+          </span>
+          <span v-else style="font-size: 1em; margin-top: 1%">&nbsp;</span>
+          <button
+            ref="addToCartButton"
+            @click="addToCart(product)"
+            class="btn btn-secondary btn-sm"
+            style="width: 100%; margin-top: 1%; margin-bottom: 0"
+          >
+            Add to Cart
+            <i class="bi bi-cart-fill" style="font-size: 0.9rem"> </i>
+          </button>
         </div>
-      </Slide>
-      <template #addons>
-        <Navigation />
-        <!-- <Pagination /> -->
-      </template>
-    </Carousel>
+      </div>
+    </Slide>
+    <template #addons>
+      <Navigation />
+      <!-- <Pagination /> -->
+    </template>
+  </Carousel>
+  <div
+    class="toast"
+    id="cartToast"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    data-bs-autohide="false"
+    style="
+      position: fixed;
+      top: 12%;
+      right: 2%;
+      transform: translate(0, -50%);
+      width: 250px;
+      z-index: 1000;
+    "
+  >
+    <div
+      class="toast-body"
+      id="cartToastBody"
+      style="font-weight: 500; font: 1.1rem"
+    ></div>
   </div>
 </template>
 <script>
@@ -224,18 +238,25 @@ export default defineComponent({
 :root {
   --vc-clr-primary: #2e76db;
 }
+.carousel {
+  max-width: 1500px;
+  padding: 0;
+  margin: 0;
+}
 .carousel__item {
-  max-width: 260px;
+  max-width: 295px;
   font-size: 18px;
   display: flex;
-  padding: 1px;
+  padding: 1px !important;
   height: 21vw;
+  margin: 0 10px !important;
 }
 .carousel__viewport {
   perspective: 2000px;
 }
 .carousel__slide {
   padding: 5px;
+  margin: 0 !important;
 }
 .carousel__slide--sliding {
   transition: 0.3s;

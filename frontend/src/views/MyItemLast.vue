@@ -169,15 +169,18 @@
     </div>
     <div
       v-if="item && item.category_id === 1"
-      class="container"
-      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+      style="
+        margin-top: 2%;
+        padding: 0;
+        margin-left: 7% !important;
+        margin-bottom: 1%;
+      "
     >
       <Carousel :items="filteredLaptops" :backendEndpoint="backendEndpoint" />
     </div>
     <div
       v-if="item && item.category_id === 2"
-      class="container"
-      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
     >
       <Carousel
         :items="filteredSmartphones"
@@ -186,15 +189,13 @@
     </div>
     <div
       v-if="item && item.category_id === 3"
-      class="container"
-      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
     >
       <Carousel :items="filteredTablets" :backendEndpoint="backendEndpoint" />
     </div>
     <div
       v-if="item && item.category_id === 4"
-      class="container"
-      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
     >
       <Carousel
         :items="filteredSmartwatches"
@@ -203,15 +204,11 @@
     </div>
     <div
       v-if="item && item.category_id === 5"
-      class="container"
-      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
     >
       <Carousel :items="filteredTV" :backendEndpoint="backendEndpoint" />
     </div>
-    <div
-      class="container"
-      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
-    >
+    <div style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%">
       <!-- Horizontal Tabs -->
       <ul class="nav nav-tabs justify-content-center" style="margin-left: 20%">
         <li class="nav-item">

@@ -1,54 +1,9 @@
 <template>
-  <div
-    class="container-fluid"
-    style="
-      width: 100vw;
-      position: sticky;
-      margin: 0;
-      padding: 0;
-      align-items: center;
-      text-align: center;
-    "
-  >
-    <div
-      class="toast"
-      id="cartToast"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
-      data-bs-autohide="false"
-      style="
-        position: fixed;
-        top: 11%;
-        right: 0;
-        transform: translate(0, -50%);
-        width: 250px;
-        z-index: 1000;
-      "
-    >
-      <div
-        class="toast-body"
-        id="cartToastBody"
-        style="font-weight: 900; font: 1.1em"
-      ></div>
-    </div>
-    <div
-      class="container"
-      style="margin-top: 2%; padding: 0; margin-left: 5%; margin-bottom: 0"
-    >
-      <carousel :items="filteredLaptops" :backendEndpoint="backendEndpoint" />
-      <carousel
-        :items="filteredSmartphones"
-        :backendEndpoint="backendEndpoint"
-      />
-      <carousel :items="filteredTablets" :backendEndpoint="backendEndpoint" />
-      <carousel
-        :items="filteredSmartwatches"
-        :backendEndpoint="backendEndpoint"
-      />
-      <carousel :items="filteredTV" :backendEndpoint="backendEndpoint" />
-    </div>
-  </div>
+  <carousel :items="filteredLaptops" :backendEndpoint="backendEndpoint" />
+  <carousel :items="filteredSmartphones" :backendEndpoint="backendEndpoint" />
+  <carousel :items="filteredTablets" :backendEndpoint="backendEndpoint" />
+  <carousel :items="filteredSmartwatches" :backendEndpoint="backendEndpoint" />
+  <carousel :items="filteredTV" :backendEndpoint="backendEndpoint" />
 </template>
 
 <script>

@@ -37,6 +37,28 @@
       <Navigation />
     </template>
   </Carousel>
+  <div
+    class="toast"
+    id="cartToast"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    data-bs-autohide="false"
+    style="
+      position: fixed;
+      top: 12%;
+      right: 2%;
+      transform: translate(0, -50%);
+      width: 250px;
+      z-index: 1000;
+    "
+  >
+    <div
+      class="toast-body"
+      id="cartToastBody"
+      style="font-weight: 500; font: 1.1rem"
+    ></div>
+  </div>
 </template>
 
 <script>

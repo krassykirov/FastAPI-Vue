@@ -15,13 +15,12 @@
     </nav>
     <div
       class="container"
-      style="margin-top: 5%; margin-left: 8%; background-color: white"
+      style="margin-top: 5%; margin-left: 7%; background-color: white"
     >
       <CarouselMain carouselId="discount-products-carousel" />
     </div>
     <!-- prettier-ignore -->
     <h4 style="text-align: center; margin-top: 2%; margin-bottom: 2%">SHOP BY CATEGORY</h4>
-
     <section id="sm-banner" class="section-p1">
       <div class="banner-box">
         <h4>Laptops</h4>
@@ -96,7 +95,6 @@
         Browse All Products
       </button>
     </div>
-
     <section id="banner3" class="section-p1" style="margin-top: 15px">
       <div class="banner-box" @click="goToItem(24)" style="cursor: pointer">
         <!-- <h2>Today Offer</h2>
@@ -121,7 +119,12 @@
         <h3>-50% OFF</h3> -->
       </div>
     </section>
-    <MessageArea />
+    <div
+      class="container-fluid"
+      style="margin: 0 !important; margin-left: 7% !important"
+    >
+      <MessageArea />
+    </div>
     <section
       id="newsletter"
       class="section-p1"

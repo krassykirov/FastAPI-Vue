@@ -120,7 +120,9 @@
     <h3 class="text-center mb-4" style="margin-right: 7%">
       You may also like..
     </h3>
-    <MessageArea />
+    <div style="margin-left: 7%">
+      <MessageArea />
+    </div>
     <Footer />
     <div
       class="toast"
