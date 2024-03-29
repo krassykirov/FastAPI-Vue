@@ -683,7 +683,7 @@ export default createStore({
       if (itemInCart) {
         try {
           const response = await axios.put(
-            `${config.backendEndpoint}/api/items/update_item/${product_id}`,
+            `${config.backendEndpoint}/api/items/update_item_quantity/${product_id}`,
             { quantity: newQuantity }
           )
           if (response && response.status && response.status !== 200) {

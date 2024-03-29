@@ -157,6 +157,17 @@ async def update_item(request: Request, db: Session=Depends(get_session)):
     db.refresh(item)
     return item
 
+@items_router.put("/update_item_quantity/{item_id}", include_in_schema=True, response_model=schemas.ItemRead)
+async def update_item_quantity(request: Request, item_id: int, item_update: schemas.ItemUpdate, db: Session=Depends(get_session)) -> schemas.ItemRead:
+    data = await request.json()
+    item = ItemActions().get_item_by_id(db=db, id=item_id)
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    item.quantity = data.get('quantity')
+    db.commit()
+    db.refresh(item)
+    return item
+
 @items_router.delete("/delete/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_item_by_id(item_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
     item = ItemActions().get_item_by_id(db=db, id=item_id)

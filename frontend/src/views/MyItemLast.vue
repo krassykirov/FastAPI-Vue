@@ -28,17 +28,14 @@
         :profile="profile"
       />
     </nav>
-    <!-- <MessageArea /> -->
     <div class="container my-5">
       <div class="row">
         <div class="col-md-5" style="min-height: 550px; max-height: 500px">
-          <div class="main-img" v-if="item" :id="'main-image-' + item.id">
-            <span
-              class="badge bg-danger position-absolute top-5 start-5"
-              v-if="item.discount >= 0.01"
-              style="font-size: 0.9em; margin: 1%; top: 5"
-              >-{{ Math.floor(item.discount * 100) }}%
-            </span>
+          <div
+            class="main-img"
+            v-if="item && item.images.images"
+            :id="'main-image-' + item.id"
+          >
             <div v-if="item" class="row my-3 previews" style="margin-left: 4%">
               <div class="row my-9" style="margin-top: 0; padding-top: 0">
                 <div class="col-md-9">
@@ -50,6 +47,18 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            v-if="item && !item.images.images"
+            class="main-img"
+            style="margin-top: 10%"
+          >
+            <img
+              :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`"
+              alt="Image"
+              class="img-top"
+              style="cursor: pointer"
+            />
           </div>
         </div>
         <div class="col-md-7" style="margin-top: 5%">
@@ -151,13 +160,58 @@
         style="font-weight: 900; font: 1.1em"
       ></div>
     </div>
-    <div class="container" style="margin-top: 4%; font-size: 2em">
-      <!-- <p class="display-5" v-if="item && getSimilarProducts.length"> -->
+    <div
+      class="container"
+      style="margin-top: 6%; font-size: 2em"
+      v-if="item && item.category_id"
+    >
       You may also like
-      <!-- </p> -->
     </div>
-    <MessageArea />
-    <div class="container" style="padding-left: 10%; margin: 0; width: 100%">
+    <div
+      v-if="item && item.category_id === 1"
+      class="container"
+      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+    >
+      <Carousel :items="filteredLaptops" :backendEndpoint="backendEndpoint" />
+    </div>
+    <div
+      v-if="item && item.category_id === 2"
+      class="container"
+      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+    >
+      <Carousel
+        :items="filteredSmartphones"
+        :backendEndpoint="backendEndpoint"
+      />
+    </div>
+    <div
+      v-if="item && item.category_id === 3"
+      class="container"
+      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+    >
+      <Carousel :items="filteredTablets" :backendEndpoint="backendEndpoint" />
+    </div>
+    <div
+      v-if="item && item.category_id === 4"
+      class="container"
+      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+    >
+      <Carousel
+        :items="filteredSmartwatches"
+        :backendEndpoint="backendEndpoint"
+      />
+    </div>
+    <div
+      v-if="item && item.category_id === 5"
+      class="container"
+      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+    >
+      <Carousel :items="filteredTV" :backendEndpoint="backendEndpoint" />
+    </div>
+    <div
+      class="container"
+      style="margin-top: 2%; padding: 0; margin-left: 4%; margin-bottom: 1%"
+    >
       <!-- Horizontal Tabs -->
       <ul class="nav nav-tabs justify-content-center" style="margin-left: 20%">
         <li class="nav-item">
@@ -191,7 +245,10 @@
           id="reviews"
           style="justify-content: center; align-items: center"
         >
-          <nav aria-label="Page navigation example">
+          <nav
+            v-if="reviewsData.length > 0"
+            aria-label="Page navigation example"
+          >
             <ul class="pagination" style="margin-left: 20%">
               <li class="page-item" :class="{ disabled: currentPage === 1 }">
                 <button
@@ -405,8 +462,8 @@
 <script>
 /* global bootstrap */
 import $ from 'jquery'
-import MessageArea from '@/views/MessageAreaVue.vue'
 import MyCarousel from '@/views/CarouselMyItem.vue'
+import Carousel from '@/views/CarouselVueNew.vue'
 import Footer from '@/views/FooterVue.vue'
 import config from '@/config'
 import NavBar from '../components/MyNavbar.vue'
@@ -414,9 +471,9 @@ import NavBar from '../components/MyNavbar.vue'
 export default {
   components: {
     NavBar,
-    MessageArea,
     Footer,
-    MyCarousel
+    MyCarousel,
+    Carousel
   },
   props: ['cart', 'profile', 'favorites'],
   emits: ['addToCart', 'redirectToItem', 'prev-slide', 'next-slide'],
@@ -435,6 +492,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     this.getProduct(to.params.itemId)
     this.setReviewsRating(to.params.itemId)
+    this.item
     next()
   },
   created() {
@@ -445,29 +503,35 @@ export default {
     this.$store.dispatch('getProfiles')
     this.item
   },
-  mounted() {
-    const carousels = document.querySelectorAll('.carousel')
-    carousels.forEach(carouselElement => {
-      const carouselId = carouselElement.id
-      const carousel = new bootstrap.Carousel(carouselElement, {
-        interval: false
-      })
-      const carouselControlPrev = document.getElementById(
-        `${carouselId}-control-prev`
-      )
-      const carouselControlNext = document.getElementById(
-        `${carouselId}-control-next`
-      )
-      carouselControlPrev.addEventListener('click', function () {
-        carousel.next()
-      })
-
-      carouselControlNext.addEventListener('click', function () {
-        carousel.prev()
-      })
-    })
-  },
   computed: {
+    filteredLaptops() {
+      return this.products.filter(item => {
+        return item.category_id === 1
+      })
+    },
+    products() {
+      return this.$store.getters.products
+    },
+    filteredTablets() {
+      return this.products.filter(item => {
+        return item.category_id === 3
+      })
+    },
+    filteredSmartphones() {
+      return this.products.filter(item => {
+        return item.category_id === 2
+      })
+    },
+    filteredSmartwatches() {
+      return this.products.filter(item => {
+        return item.category_id === 4
+      })
+    },
+    filteredTV() {
+      return this.products.filter(item => {
+        return item.category_id === 5
+      })
+    },
     errorMessage() {
       return this.$store.state.errorMessage
     },
@@ -793,8 +857,8 @@ text-color {
   max-height: 550px !important;
 }
 .main-img img {
-  width: 70% !important;
-  max-height: 500px !important;
+  width: 80% !important;
+  max-height: 550px !important;
 }
 
 /* Preview images */

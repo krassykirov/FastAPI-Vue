@@ -32,78 +32,28 @@
         style="font-weight: 900; font: 1.1em"
       ></div>
     </div>
-    <div class="container" style="margin-top: 2%">
-      <!-- <CarouselMain
-        :products="discountedProducts"
-        carouselId="discount-products-carousel"
-      /> -->
-      <!-- <carousel
-        :products="groupedProducts"
-        carouselId="discount-products-carousel"
-      /> -->
-      <div
-        class="container"
-        style="font-size: 1em; text-align: left; margin-bottom: 1%"
-      >
-        <a class="link" @click="redirectToCategory('Laptops')"
-          ><b>Laptops</b></a
-        >
-      </div>
+    <div
+      class="container"
+      style="margin-top: 2%; padding: 0; margin-left: 5%; margin-bottom: 0"
+    >
+      <carousel :items="filteredLaptops" :backendEndpoint="backendEndpoint" />
       <carousel
-        :products="groupedlaptops"
-        carouselId="laptop-products-carousel"
+        :items="filteredSmartphones"
+        :backendEndpoint="backendEndpoint"
       />
-      <div
-        class="container"
-        style="font-size: 1em; text-align: left; margin-bottom: 1%"
-      >
-        <a class="link" @click="redirectToCategory('Tablets')"
-          ><b>Tablets</b></a
-        >
-      </div>
+      <carousel :items="filteredTablets" :backendEndpoint="backendEndpoint" />
       <carousel
-        :products="groupedTablets"
-        carouselId="tablets-products-carousel"
+        :items="filteredSmartwatches"
+        :backendEndpoint="backendEndpoint"
       />
-      <div
-        class="container"
-        style="font-size: 1em; text-align: left; margin-bottom: 1%"
-      >
-        <a class="link" @click="redirectToCategory('Smartphones')"
-          ><b>Smartphones</b></a
-        >
-      </div>
-      <carousel
-        :products="groupedSmartphones"
-        carouselId="smartphones-products-carousel"
-      />
-      <div
-        class="container"
-        style="font-size: 1em; text-align: left; margin-bottom: 1%"
-      >
-        <a class="link" @click="redirectToCategory('Smartwatches')"
-          ><b>Smartwatches</b></a
-        >
-      </div>
-      <carousel
-        :products="groupedSmartwatches"
-        carouselId="smartwatches-products-carousel"
-      />
-      <div
-        class="container"
-        style="font-size: 1em; text-align: left; margin-bottom: 1%"
-      >
-        <a class="link" @click="redirectToCategory('TV')"><b>TV's</b></a>
-      </div>
-      <carousel :products="groupedTV" carouselId="tv-products-carousel" />
+      <carousel :items="filteredTV" :backendEndpoint="backendEndpoint" />
     </div>
   </div>
 </template>
 
 <script>
-import Carousel from '@/views/CarouselVue.vue'
+import Carousel from '@/views/CarouselVueNew.vue'
 import config from '@/config'
-/* global bootstrap */
 
 export default {
   components: {
@@ -115,163 +65,12 @@ export default {
       backendEndpoint: `${config.backendEndpoint}`
     }
   },
-  mounted() {
-    const carousels = document.querySelectorAll('.carousel')
-    carousels.forEach(carouselElement => {
-      const carouselId = carouselElement.id
-      const carousel = new bootstrap.Carousel(carouselElement, {
-        interval: false
-      })
-      const carouselControlPrev = document.getElementById(
-        `${carouselId}-control-prev`
-      )
-      const carouselControlNext = document.getElementById(
-        `${carouselId}-control-next`
-      )
-      carouselControlPrev.addEventListener('click', function () {
-        carousel.next()
-      })
-
-      carouselControlNext.addEventListener('click', function () {
-        carousel.prev()
-      })
-    })
-  },
   created() {
     this.$store.dispatch('checkFavoritesOnLoad')
   },
   computed: {
-    groupedProducts() {
-      const itemsPerSlide = 6
-      const products = this.discountedProducts
-      const grouped = []
-      if (products.length <= itemsPerSlide) {
-        grouped.push(products)
-        return grouped
-      }
-      for (let i = 0; i < products.length; i += itemsPerSlide) {
-        const group = products.slice(i, i + itemsPerSlide)
-        if (
-          i + itemsPerSlide >= products.length &&
-          group.length < itemsPerSlide
-        ) {
-          const remainingItems = itemsPerSlide - group.length
-          const nextGroup = products.slice(0, remainingItems)
-          group.push(...nextGroup)
-        }
-        grouped.push(group)
-      }
-      return grouped
-    },
-    groupedlaptops() {
-      const itemsPerSlide = 6
-      const products = this.filteredLaptops
-      const grouped = []
-      if (products.length <= itemsPerSlide) {
-        grouped.push(products)
-        return grouped
-      }
-      for (let i = 0; i < products.length; i += itemsPerSlide) {
-        const group = products.slice(i, i + itemsPerSlide)
-        if (
-          i + itemsPerSlide >= products.length &&
-          group.length < itemsPerSlide
-        ) {
-          const remainingItems = itemsPerSlide - group.length
-          const nextGroup = products.slice(0, remainingItems)
-          group.push(...nextGroup)
-        }
-        grouped.push(group)
-      }
-      return grouped
-    },
-    groupedTablets() {
-      const itemsPerSlide = 6
-      const products = this.filteredTablets
-      const grouped = []
-      if (products.length <= itemsPerSlide) {
-        grouped.push(products)
-        return grouped
-      }
-      for (let i = 0; i < products.length; i += itemsPerSlide) {
-        const group = products.slice(i, i + itemsPerSlide)
-        if (
-          i + itemsPerSlide >= products.length &&
-          group.length < itemsPerSlide
-        ) {
-          const remainingItems = itemsPerSlide - group.length
-          const nextGroup = products.slice(0, remainingItems)
-          group.push(...nextGroup)
-        }
-        grouped.push(group)
-      }
-      return grouped
-    },
-    groupedSmartwatches() {
-      const itemsPerSlide = 6
-      const products = this.filteredSmartwatches
-      const grouped = []
-      if (products.length <= itemsPerSlide) {
-        grouped.push(products)
-        return grouped
-      }
-      for (let i = 0; i < products.length; i += itemsPerSlide) {
-        const group = products.slice(i, i + itemsPerSlide)
-        if (
-          i + itemsPerSlide >= products.length &&
-          group.length < itemsPerSlide
-        ) {
-          const remainingItems = itemsPerSlide - group.length
-          const nextGroup = products.slice(0, remainingItems)
-          group.push(...nextGroup)
-        }
-        grouped.push(group)
-      }
-      return grouped
-    },
-    groupedSmartphones() {
-      const itemsPerSlide = 6
-      const products = this.filteredSmartphones
-      const grouped = []
-      if (products.length <= itemsPerSlide) {
-        grouped.push(products)
-        return grouped
-      }
-      for (let i = 0; i < products.length; i += itemsPerSlide) {
-        const group = products.slice(i, i + itemsPerSlide)
-        if (
-          i + itemsPerSlide >= products.length &&
-          group.length < itemsPerSlide
-        ) {
-          const remainingItems = itemsPerSlide - group.length
-          const nextGroup = products.slice(0, remainingItems)
-          group.push(...nextGroup)
-        }
-        grouped.push(group)
-      }
-      return grouped
-    },
-    groupedTV() {
-      const itemsPerSlide = 6
-      const products = this.filteredTV
-      const grouped = []
-      if (products.length <= itemsPerSlide) {
-        grouped.push(products)
-        return grouped
-      }
-      for (let i = 0; i < products.length; i += itemsPerSlide) {
-        const group = products.slice(i, i + itemsPerSlide)
-        if (
-          i + itemsPerSlide >= products.length &&
-          group.length < itemsPerSlide
-        ) {
-          const remainingItems = itemsPerSlide - group.length
-          const nextGroup = products.slice(0, remainingItems)
-          group.push(...nextGroup)
-        }
-        grouped.push(group)
-      }
-      return grouped
+    filteredProducts() {
+      return this.$store.getters.filteredProducts
     },
     discountedProducts() {
       return this.$store.getters.filteredProducts.filter(

@@ -33,12 +33,15 @@
         />
       </div>
     </Slide>
+    <template #addons>
+      <Navigation />
+    </template>
   </Carousel>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import { Carousel, Slide } from 'vue3-carousel'
+import { Carousel, Navigation, Slide } from 'vue3-carousel'
 
 import 'vue3-carousel/dist/carousel.css'
 
@@ -56,7 +59,8 @@ export default defineComponent({
   },
   components: {
     Carousel,
-    Slide
+    Slide,
+    Navigation
   },
   data: () => ({
     currentSlide: 0
@@ -68,3 +72,23 @@ export default defineComponent({
   }
 })
 </script>
+<style>
+:root {
+  --vc-clr-primary: #2e76db;
+}
+.carousel__viewport {
+  perspective: 2000px;
+}
+
+.carousel__prev,
+.carousel__next {
+  border: 1px;
+  color: rgb(94, 152, 202);
+  border-radius: 50%;
+  margin-left: -40px !important;
+  margin-right: -40px !important;
+  width: 40px;
+  height: 40px;
+  display: flex;
+}
+</style>

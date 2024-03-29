@@ -121,6 +121,7 @@
         <h3>-50% OFF</h3> -->
       </div>
     </section>
+    <MessageArea />
     <section
       id="newsletter"
       class="section-p1"
@@ -145,7 +146,6 @@
         <button class="btn normal">Sign Up</button>
       </div>
     </section>
-
     <footer class="section-p1" style="margin-top: 25px">
       <div class="col">
         <a href="#">
@@ -220,12 +220,14 @@ import VueCookies from 'vue-cookies'
 import { jwtDecode } from 'jwt-decode'
 import MyNavbar from '@/components/MyNavbar.vue'
 import CarouselMain from '@/views/CarouselMainNew.vue'
+import MessageArea from '@/views/MessageAreaVue.vue'
 // /* global bootstrap */
 export default {
   name: 'NewHome',
   components: {
     MyNavbar,
-    CarouselMain
+    CarouselMain,
+    MessageArea
   },
   props: {
     isIdle: Boolean,

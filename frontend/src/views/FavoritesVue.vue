@@ -111,26 +111,15 @@
                     <i class="bi bi-cart-fill"></i>
                   </button>
                 </td>
-                <!-- <td style="padding: 0.15em; padding-top: 5%">
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btn-sm m-0"
-                    @click="removeFromFavorites(product.id)"
-                  >
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </td> -->
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-    <div class="container" style="margin-top: 3%; font-size: 2em">
-      <!-- <p class="display-5" v-if="item && getSimilarProducts.length"> -->
-      You may also like
-      <!-- </p> -->
-    </div>
+    <h3 class="text-center mb-4" style="margin-right: 7%">
+      You may also like..
+    </h3>
     <MessageArea />
     <Footer />
     <div
@@ -180,6 +169,37 @@ export default {
     this.$store.dispatch('fetchCategories')
   },
   computed: {
+    filteredLaptops() {
+      return this.products.filter(item => {
+        return item.category_id === 1
+      })
+    },
+    products() {
+      return this.$store.getters.products
+    },
+    filteredTablets() {
+      return this.products.filter(item => {
+        return item.category_id === 3
+      })
+    },
+    filteredSmartphones() {
+      return this.products.filter(item => {
+        return item.category_id === 2
+      })
+    },
+    filteredSmartwatches() {
+      return this.products.filter(item => {
+        return item.category_id === 4
+      })
+    },
+    filteredTV() {
+      return this.products.filter(item => {
+        return item.category_id === 5
+      })
+    },
+    filteredProducts() {
+      return this.$store.getters.filteredProducts
+    },
     formattedPrice() {
       return this.$store.getters.formattedPrice
     },
@@ -206,6 +226,10 @@ export default {
     }
   },
   methods: {
+    getHeartClasses(product) {
+      const isFavorite = this.isFavorite(product)
+      return isFavorite ? 'fa fa-heart red-color' : 'fa fa-heart-o'
+    },
     getStarClasses(index, rating) {
       const filledStars = Math.floor(rating)
       if (index <= filledStars) {
@@ -215,6 +239,10 @@ export default {
       } else {
         return 'fa fa-star-o checked'
       }
+    },
+    redirectToCategory(category) {
+      this.$router.push({ name: 'category', params: { category: category } })
+      document.body.scrollIntoView({ behavior: 'auto' })
     },
     itemAlreadyInCart(product) {
       return this.cart.some(item => item.id === product.id)
