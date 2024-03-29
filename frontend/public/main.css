@@ -66,7 +66,7 @@ padding-right: -17px;
   margin-left: 1px !important;
   margin-right: 1px !important;
   width: 17vw !important;
-  height: 22.6vw !important;
+  height: 22.5vw !important;
   justify-content: left !important;
   /* border: 2px solid #969696; */
   text-align: center !important;
@@ -92,6 +92,13 @@ padding-right: -17px;
 .old-price {
   font-size: 0.9rem;
   text-decoration: line-through;
+  color: #404447;
+  margin-top: 1%;
+  margin-bottom: 1.2%;
+  margin-left: -25px;
+}
+.old-price2 {
+  font-size: 0.9rem;
   color: #404447;
   margin-top: 1%;
   margin-bottom: 1.2%;

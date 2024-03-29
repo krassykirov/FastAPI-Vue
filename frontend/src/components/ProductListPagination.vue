@@ -99,7 +99,9 @@
               <span v-if="product.discount >= 0.01" class="old-price">
                 ${{ Math.floor(product.price) }}
               </span>
-              <span v-else style="font-size: 1em; margin-top: 1%">&nbsp;</span>
+              <span v-else class="old-price2" style="display: hidden"
+                >&nbsp;</span
+              >
               <button
                 ref="addToCartButton"
                 @click="addToCart(product)"
