@@ -223,44 +223,11 @@ display: block;
 
 /* Styles for the price input container */
 
-.price-input .price-field {
-    display: flex;
-    margin-bottom: 22px;
-}
-
-.price-field span {
-    margin-right: 10px;
-    margin-top: 10px;
-    font-size: 17px;
-    color: #404447;
-}
-
-.price-field input {
-    flex: 1;
-    height: 35px;
-    font-size: 15px;
-    font-family: "DM Sans", sans-serif;
-    border-radius: 9px;
-    text-align: center;
-    border: 0px;
-    background: #e4e4e4;
-}
-
-.price-input {
-    width: 100%;
-    font-size: 19px;
-    color: #555;
-}
-
-
 .slider-container {
-    width: 94% !important;
-    height: 6px !important;
-    margin-left: 0 !important;
-    position: relative !important;
-    background: #e4e4e4 !important;
-    border-radius: 5px;
-    overflow: hidden !important;
+  height: 6px;
+  position: relative;
+  background: #ffffff;
+  border-radius: 5px;
 }
 
 .slider-container .price-slider {
@@ -272,31 +239,29 @@ display: block;
     border-radius: 5px !important;
     background: #5e95e2 !important;
 }
-
 .range-input {
     position: relative !important;
+    font-size: 12px;
+    margin-top: 30px;
 }
-
 .range-input input {
     position: absolute !important;
-    width: 95% !important;
+    width: 100% !important;
     height: 5px !important;
-    background: none !important;
+    background: #5e95e2 !important;
     top: -5px !important;
     pointer-events: none !important;
     cursor: pointer !important;
-    -webkit-appearance: none !important;
 }
 
-/* Styles for the range thumb in WebKit browsers */
-input[type="range"]::-webkit-slider-thumb {
-    height: 14px !important;
-    width: 16px !important;
-    border-radius: 70% !important;
-    background: #1261b5 !important;
-    pointer-events: auto !important;
-    -webkit-appearance: none !important;
-}
+input[type="range"]::-webkit-slider-thumb { 
+  height: 18px; 
+  width: 18px; 
+  border-radius: 70%; 
+  background: #555; 
+  pointer-events: auto; 
+  -webkit-appearance: none; 
+} 
 
 @media screen and (max-width: 768px) {
     .price-input {

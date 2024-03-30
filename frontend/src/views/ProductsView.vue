@@ -98,92 +98,38 @@
         </div>
         <div class="filter-card">
           <div class="card-body">
-            <label
-              style="
-                font-size: 0.9rem;
-                display: block;
-                margin-bottom: 5px;
-                font-weight: 500;
-              "
+            <label style="font-size: 0.9rem; display: block; font-weight: 500"
               >Filter by Price</label
             >
-            <div class="price-input row">
-              <div class="form-group col-md-6">
-                <label
-                  for="minPrice"
-                  style="font-size: 0.8rem; margin-left: 23px"
-                  >Min Price</label
-                >
-                <input
-                  v-model.number="min"
-                  style="font-size: 0.8rem"
-                  type="text"
-                  class="min-input form-control"
-                  id="minPrice"
-                  :min="productMin"
-                  :max="productMax"
-                  pattern="[1-9][0-9]*"
-                  disabled
-                  required
-                />
-              </div>
-              <div class="form-group col-md-6">
-                <label
-                  for="maxPrice"
-                  style="font-size: 0.8rem; margin-left: 12px"
-                  >Max Price</label
-                >
-                <input
-                  v-model.number="max"
-                  style="font-size: 0.8rem"
-                  type="text"
-                  class="max-input form-control"
-                  id="maxPrice"
-                  pattern="[1-9][0-9]*"
-                  :min="productMin"
-                  :max="productMax"
-                  disabled
-                  required
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="slider-container">
-                  <div
-                    class="price-slider"
-                    :class="{ disabled: isPriceRangesSelected }"
-                    :style="{
-                      left: `${(min / productMax) * 100}%`,
-                      right: `${100 - (max / productMax) * 100}%`
-                    }"
-                  ></div>
-                </div>
-              </div>
-            </div>
           </div>
           <!-- Slider -->
           <div class="range-input" :class="{ disabled: isPriceRangesSelected }">
-            <input
-              type="range"
-              class="min-range"
-              :min="productMin"
-              :max="productMax"
-              :value="min"
-              step="1"
-              @input="updateInputs"
-              :disabled="isPriceRangesSelected"
-            />
-            <input
-              type="range"
-              class="max-range"
-              :min="productMin"
-              :max="productMax"
-              :value="max"
-              step="1"
-              @input="updateInputs"
-              :disabled="isPriceRangesSelected"
-            />
+            <div class="slider-container">
+              <input
+                type="range"
+                class="min-range"
+                :min="productMin"
+                :max="productMax"
+                :value="min"
+                step="1"
+                @input="updateInputs"
+                :disabled="isPriceRangesSelected"
+              />
+              <input
+                type="range"
+                class="max-range"
+                :min="productMin"
+                :max="productMax"
+                :value="max"
+                step="1"
+                @input="updateInputs"
+                :disabled="isPriceRangesSelected"
+              />
+            </div>
+            <!-- Range display -->
+            <div class="range-display" style="text-align: center">
+              <span>${{ min }}</span> - <span>${{ max }}</span>
+            </div>
           </div>
           <div style="padding-top: 11%; padding-bottom: 0"></div>
         </div>

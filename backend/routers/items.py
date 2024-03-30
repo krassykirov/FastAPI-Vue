@@ -137,6 +137,7 @@ async def update_item(request: Request, db: Session=Depends(get_session)):
         item.image  = filename
     files = [file.filename for file in files_initial]
     if (len(files) > 1):
+        files.insert(0, filename if filename else item.image)
         files_dict = {'images': files}
         for file in files_initial:
             content = await file.read()

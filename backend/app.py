@@ -65,7 +65,6 @@ def on_startup():
     app.mount("/static", StaticFiles(directory=Path(BASE_DIR, 'static'),html=True),name="static")
     # instrumentator.expose(app)
 
-
 @app.get("/static/img/{image_path:path}", include_in_schema=False)
 async def get_image(image_path: str):
     full_image_path = os.path.join(BASE_DIR, f'static/img/{image_path}')
