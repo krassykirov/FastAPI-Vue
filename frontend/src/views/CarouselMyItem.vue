@@ -113,4 +113,10 @@ export default defineComponent({
   height: 40px;
   display: flex;
 }
+.img-fluid {
+  max-height: 550px !important;
+}
+.img-thumbnail {
+  max-height: 100px !important;
+}
 </style>

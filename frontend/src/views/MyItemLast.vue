@@ -39,11 +39,7 @@
             <div v-if="item" class="row my-3 previews" style="margin-left: 4%">
               <div class="row my-9" style="margin-top: 0; padding-top: 0">
                 <div class="col-md-9">
-                  <MyCarousel
-                    :backendEndpoint="backendEndpoint"
-                    :item="item"
-                    @click="handleImageClick"
-                  />
+                  <MyCarousel :backendEndpoint="backendEndpoint" :item="item" />
                 </div>
               </div>
             </div>
@@ -165,10 +161,10 @@
       style="margin-top: 6%; font-size: 2em"
       v-if="item && item.category_id"
     >
-      You may also like
+      You may also like..
     </div>
     <div
-      v-if="item && item.category_id === 1"
+      v-if="item && item.category_id"
       style="
         margin-top: 2%;
         padding: 0;
@@ -176,41 +172,14 @@
         margin-bottom: 1%;
       "
     >
-      <Carousel :items="filteredLaptops" :backendEndpoint="backendEndpoint" />
-    </div>
-    <div
-      v-if="item && item.category_id === 2"
-      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
-    >
       <Carousel
-        :items="filteredSmartphones"
+        :items="getFilteredItems(item.category_id)"
         :backendEndpoint="backendEndpoint"
       />
     </div>
-    <div
-      v-if="item && item.category_id === 3"
-      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
-    >
-      <Carousel :items="filteredTablets" :backendEndpoint="backendEndpoint" />
-    </div>
-    <div
-      v-if="item && item.category_id === 4"
-      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
-    >
-      <Carousel
-        :items="filteredSmartwatches"
-        :backendEndpoint="backendEndpoint"
-      />
-    </div>
-    <div
-      v-if="item && item.category_id === 5"
-      style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%"
-    >
-      <Carousel :items="filteredTV" :backendEndpoint="backendEndpoint" />
-    </div>
-    <div style="margin-top: 2%; padding: 0; margin-left: 7%; margin-bottom: 1%">
+    <div style="margin-top: 2%; text-align: left; margin-bottom: 1%">
       <!-- Horizontal Tabs -->
-      <ul class="nav nav-tabs justify-content-center" style="margin-left: 20%">
+      <ul class="nav nav-tabs justify-content-center" style="margin-left: 0">
         <li class="nav-item">
           <a
             class="nav-link"
@@ -563,18 +532,19 @@ export default {
     }
   },
   methods: {
-    handleImageClick(index) {
-      console.log('index:', index)
-      console.log('item.images.images:', this.item.images.images)
-      const image = this.item.images.images[index]
-      console.log('image:', image)
-      this.$refs.mainImage.src = `${this.backendEndpoint}/static/img/${this.item.name}/${this.item.images.images[index]}`
-    },
-    prevSlide() {
-      this.$emit('prev-slide')
-    },
-    nextSlide() {
-      this.$emit('next-slide')
+    getFilteredItems(category_id) {
+      switch (category_id) {
+        case 1:
+          return this.filteredLaptops
+        case 2:
+          return this.filteredSmartphones
+        case 3:
+          return this.filteredTablets
+        case 4:
+          return this.filteredSmartwatches
+        case 5:
+          return this.filteredTV
+      }
     },
     truncateName(name, maxLength) {
       if (!name) return '' // Add this guard clause

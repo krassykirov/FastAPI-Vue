@@ -1,4 +1,4 @@
-from fastapi import Response
+from fastapi import Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pathlib import Path
@@ -34,21 +34,29 @@ app.include_router(oauth_router)
 app.include_router(profile_router)
 # app.include_router(cart_router)
 origins = [
+    "https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net",
     "https://agreeable-glacier-022fe8c03.4.azurestaticapps.net",
-    "https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net"
+    "http://localhost:8081",
+    "http://localhost:3000"
 ]
 
 # instrumentator = Instrumentator().instrument(app)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 logger = detailed_logger()
+
+@app.middleware("http")
+async def add_content_security_policy_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
+    return response
 
 @app.on_event("startup")
 def on_startup():

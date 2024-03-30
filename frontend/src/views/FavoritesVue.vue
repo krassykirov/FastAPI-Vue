@@ -228,10 +228,6 @@ export default {
     }
   },
   methods: {
-    getHeartClasses(product) {
-      const isFavorite = this.isFavorite(product)
-      return isFavorite ? 'fa fa-heart red-color' : 'fa fa-heart-o'
-    },
     getStarClasses(index, rating) {
       const filledStars = Math.floor(rating)
       if (index <= filledStars) {
@@ -242,22 +238,9 @@ export default {
         return 'fa fa-star-o checked'
       }
     },
-    redirectToCategory(category) {
-      this.$router.push({ name: 'category', params: { category: category } })
-      document.body.scrollIntoView({ behavior: 'auto' })
-    },
-    itemAlreadyInCart(product) {
-      return this.cart.some(item => item.id === product.id)
-    },
-    addToCart(product) {
-      this.$store.dispatch('addToCart', product)
-    },
-    removeFromFavorites(itemId) {
-      this.$store.dispatch('removeFromFavorites', itemId)
-    },
-    redirectToItemFromCart(itemId) {
-      this.$store.dispatch('redirectToItem', itemId)
-    },
+    // itemAlreadyInCart(product) {
+    //   return this.cart.some(item => item.id === product.id)
+    // },
     truncateName(description, maxLength) {
       if (!description) return ''
       if (description.length > maxLength) {

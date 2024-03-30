@@ -109,11 +109,11 @@ export default {
       backendEndpoint: `${config.backendEndpoint}`
     }
   },
-  beforeMount() {
+  created() {
     if (this.$store.state.accessToken) {
       const accessToken = VueCookies.get('access_token')
       if (accessToken) {
-        router.push({ name: 'NewHome' })
+        router.push({ name: 'home' })
       }
     }
   },
