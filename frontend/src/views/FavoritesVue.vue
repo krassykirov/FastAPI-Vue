@@ -120,7 +120,7 @@
     <h3 class="text-center mb-4" style="margin-right: 7%">
       You may also like..
     </h3>
-    <div style="margin-left: 7%">
+    <div style="margin-left: 9%">
       <MessageArea />
     </div>
     <Footer />
@@ -228,6 +228,9 @@ export default {
     }
   },
   methods: {
+    addToCart(product) {
+      this.$store.dispatch('addToCart', product)
+    },
     getStarClasses(index, rating) {
       const filledStars = Math.floor(rating)
       if (index <= filledStars) {
@@ -238,9 +241,9 @@ export default {
         return 'fa fa-star-o checked'
       }
     },
-    // itemAlreadyInCart(product) {
-    //   return this.cart.some(item => item.id === product.id)
-    // },
+    redirectToItemFromCart(itemId) {
+      this.$store.dispatch('redirectToItem', itemId)
+    },
     truncateName(description, maxLength) {
       if (!description) return ''
       if (description.length > maxLength) {

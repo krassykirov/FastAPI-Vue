@@ -50,7 +50,6 @@ def get_items(request: Request, db: Session = Depends(get_session), user: User =
         items_liked = jsonable_encoder([item for item in items_db if item.liked])
         items_in_cart = jsonable_encoder([item for item in items_db if item.in_cart])
         items = jsonable_encoder(items_db)
-
         items_in_cart = [item for item in items_in_cart
                                 for k, v in item.get('in_cart').items()
                                 if k == user.username and v.get('in_cart') == True]

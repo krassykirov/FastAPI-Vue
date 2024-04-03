@@ -239,17 +239,17 @@ export default defineComponent({
   --vc-clr-primary: #2e76db;
 }
 .carousel {
-  max-width: 1500px;
+  max-width: 1440px;
   padding: 0;
   margin: 0;
 }
 .carousel__item {
-  max-width: 295px;
+  max-width: 330px !important;
   font-size: 18px;
   display: flex;
   padding: 1px !important;
   height: 21vw;
-  margin: 0 10px !important;
+  margin: 5px !important;
 }
 .carousel__viewport {
   perspective: 2000px;
@@ -275,39 +275,5 @@ export default defineComponent({
   width: 40px;
   height: 40px;
   display: flex;
-}
-
-.carousel__pagination {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  line-height: 0;
-  margin: 10px 0 0;
-  padding: 0;
-}
-
-.carousel__pagination-button {
-  display: block;
-  border: 0;
-  margin: 0;
-  cursor: pointer;
-  padding: var(--vc-pgn-margin);
-  background: transparent;
-}
-
-.carousel__pagination-button::after {
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
-}
-
-.carousel__pagination-button--active::after {
-  background-color: var(--vc-pgn-active-color);
-}
-
-@media (hover: hover) {
-  .carousel__pagination-button:hover::after {
-    background-color: var(--vc-pgn-active-color);
-  }
 }
 </style>

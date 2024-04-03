@@ -1,139 +1,73 @@
 <template>
-  <section class="vh-100" style="background-color: #eee">
-    <div class="container h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-lg-12 col-xl-11">
-          <div class="card-group text-black" style="border-radius: 25px">
-            <div class="card-body p-md-5">
-              <div class="row justify-content-center">
-                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                  <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                    Login
-                  </p>
-                  <p ref="error" id="error" style="text-align: center">
-                    {{ errorMessage }}
-                  </p>
-                  <form class="mx-1 mx-md-4" @submit.prevent="getToken">
-                    <div class="d-flex flex-row align-items-center mb-4">
-                      <div class="form-outline flex-fill mb-0">
-                        <input
-                          v-model="username"
-                          type="email"
-                          id="username"
-                          name="username"
-                          class="form-control"
-                          required
-                        />
-                        <label class="form-label" for="username"
-                          >Your Name</label
-                        >
-                      </div>
-                    </div>
-                    <div class="d-flex flex-row align-items-center mb-4">
-                      <div class="form-outline flex-fill mb-0">
-                        <input
-                          v-model="password"
-                          type="password"
-                          id="password"
-                          name="password"
-                          class="form-control"
-                          required
-                        />
-                        <label class="form-label" for="password"
-                          >Password</label
-                        >
-                      </div>
-                    </div>
-                    <div>
-                      <label class="form-check-label" for="rememberMe">
-                        Remember Me
-                      </label>
-                      <input
-                        type="checkbox"
-                        id="rememberMe"
-                        v-model="rememberMe"
-                        style="margin-left: 5px; margin-bottom: 1px"
-                      />
-                    </div>
-                    <div
-                      class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"
-                    >
-                      <button
-                        class="btn btn-info"
-                        style="margin: 2px; margin-top: 15px"
-                      >
-                        Login
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-primary"
-                        style="margin: 2px; margin-top: 15px"
-                        @click="redirectToSignup"
-                      >
-                        Signup
-                      </button>
-                    </div>
-                  </form>
-                </div>
-                <div
-                  class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2"
-                >
-                  <img
-                    :src="require('@/assets/cloud-chessboard.jpg')"
-                    class="img-fluid"
-                    alt="Sample image"
-                    style="border-radius: 5em"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <v-sheet class="bg-deep-purple pa-12" rounded>
+    <v-card class="mx-auto px-6 py-8" max-width="344">
+      <form @submit.prevent="submit">
+        <v-text-field
+          v-model="email.value.value"
+          :error-messages="email.errorMessage.value || errorMessage"
+          label="E-mail"
+          class="mb-4"
+          type="email"
+        ></v-text-field>
+        <v-text-field
+          v-model="password.value.value"
+          type="password"
+          class="mb-4"
+          label="Password"
+          :error-messages="password.errorMessage.value || errorMessage"
+        ></v-text-field>
+        <v-checkbox
+          v-model="checkbox.value.value"
+          label="RememberMe"
+        ></v-checkbox>
+
+        <v-btn class="me-4" type="submit"> Login </v-btn>
+
+        <v-btn @click="redirectToSignup"> SignUp </v-btn>
+      </form>
+    </v-card>
+  </v-sheet>
 </template>
 
 <script>
+import { ref, computed, watch } from 'vue'
+import store from '@/store/index.js'
 import router from '@/router'
-import config from '@/config'
-import VueCookies from 'vue-cookies'
-// import { jwtDecode } from 'jwt-decode'
+import { useField, useForm } from 'vee-validate'
 
 export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-      rememberMe: '',
-      backendEndpoint: `${config.backendEndpoint}`
-    }
-  },
-  created() {
-    if (this.$store.state.accessToken) {
-      const accessToken = VueCookies.get('access_token')
-      if (accessToken) {
-        router.push({ name: 'home' })
+  setup() {
+    const { handleSubmit } = useForm({
+      validationSchema: {
+        email(value) {
+          const pattern =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Must be a valid e-mail.'
+        },
+        password(value) {
+          if (value?.length >= 1) return true
+          return 'Password length needs to be at least 6.'
+        }
       }
-    }
-  },
-  watch: {
-    errorMessage(newVal) {
-      this.errorMessage = newVal
-    }
-  },
-  computed: {
-    errorMessage() {
-      return this.$store.getters.errorMessage
-    }
-  },
-  methods: {
-    async getToken() {
+    })
+
+    const email = useField('email')
+    const password = useField('password')
+    const checkbox = useField('checkbox')
+    const errorMessage = ref('')
+
+    watch(
+      () => store.getters.errorMessage,
+      newVal => {
+        errorMessage.value = newVal
+      }
+    )
+    const submit = handleSubmit(values => {
       try {
-        await this.$store.dispatch('login', {
-          username: this.username,
-          password: this.password,
-          rememberMe: this.rememberMe
+        store.dispatch('login', {
+          username: values.email,
+          password: values.password,
+          rememberMe: values.checkbox
         })
       } catch (error) {
         if (
@@ -141,7 +75,7 @@ export default {
           error.response.data &&
           error.response.data.detail === 'Username or password are incorrect!'
         ) {
-          this.$store.dispatch(
+          store.dispatch(
             'setErrorMessage',
             'Username or password are incorrect!'
           )
@@ -149,18 +83,29 @@ export default {
           // console.error('Login Error:', error)
         }
       }
-    },
-    redirectToSignup() {
+    })
+
+    // Define computed errorMessage
+    const computedErrorMessage = computed(() => {
+      return errorMessage.value
+    })
+    const redirectToSignup = () => {
       router.push('/signup')
+    }
+
+    return {
+      email,
+      password,
+      checkbox,
+      errorMessage: computedErrorMessage,
+      submit,
+      redirectToSignup
     }
   }
 }
 </script>
-<style>
-input[type='checkbox'] {
-  background-color: #b6c0c2 !important;
-}
-input[type='checkbox']:checked {
-  background-color: #409fd6;
+<style scoped>
+::v-deep .v-label {
+  margin: 0 !important;
 }
 </style>

@@ -28,47 +28,97 @@
         :favorites="favorites"
       />
     </nav>
-    <!-- <MessageArea /> -->
     <div class="container" style="margin-top: 2%">
-      <div class="card" v-if="profile">
-        <img
-          :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
-          id="avatar-image"
-          style="width: 100%"
-          class="img-top"
-        />
-        <div class="card-body">
-          <h4 :id="user">{{ user }}</h4>
-          <p class="title">CEO & Founder, Birds</p>
-          <p id="card-email">Secondary Email: {{ profile.email }}</p>
-          <p id="card-phone">Phone: {{ profile.number }}</p>
-          <p id="card-address">Address: {{ profile.address }}</p>
-          <p>
-            <button
-              v-if="profile"
-              class="dropbtn"
-              data-toggle="modal"
-              data-target="#UpdateProfile"
-              style="padding: 15px"
-            >
-              Update Profile
-            </button>
-          </p>
-        </div>
-      </div>
       <h5 v-if="!profile" style="text-align: center">
         No Profile yet, create one?
       </h5>
-      <button
+      <v-btn
         v-if="!profile"
         class="dropbtn"
         data-toggle="modal"
         data-target="#addProfile"
         style="float: left"
       >
-        Add Profile
-      </button>
-
+        Create Profile
+      </v-btn>
+      <v-card class="mx-auto" max-width="500" v-if="profile">
+        <v-card-item class="bg-cyan-darken-1">
+          <v-card-title>
+            <span class="text-h5">{{ user }}</span>
+            <v-icon @click="editingProfile = !editingProfile"
+              >mdi-pencil</v-icon
+            >
+          </v-card-title>
+          <template v-slot:append>
+            <v-defaults-provider
+              :defaults="{
+                VBtn: {
+                  variant: 'text',
+                  density: 'comfortable'
+                }
+              }"
+            >
+            </v-defaults-provider>
+          </template>
+        </v-card-item>
+        <v-sheet class="mx-auto" width="480px">
+          <v-form ref="form" v-if="editingProfile">
+            <v-text-field
+              v-model="editedProfile.number"
+              label="Number"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="editedProfile.email"
+              label="Secondary Email"
+              required
+            ></v-text-field>
+            <v-text-field
+              v-model="editedProfile.address"
+              label="Address"
+              required
+            ></v-text-field>
+            <v-file-input
+              accept="image/*"
+              label="Avatar Photo"
+              @change="handleFileChange"
+              required
+            ></v-file-input>
+            <v-row justify="center" align="center">
+              <v-col cols="5">
+                <v-btn width="100%" @click="saveProfile">Save</v-btn>
+              </v-col>
+              <v-col cols="5">
+                <v-btn width="100%" @click="cancelProfile">Cancel</v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+          <v-list v-else style="width: 450px">
+            <v-list-item prepend-icon="mdi-phone" style="text-align: center">
+              {{ profile.number }}
+            </v-list-item>
+            <v-divider inset></v-divider>
+            <v-list-item prepend-icon="mdi-email" style="text-align: center">
+              {{ profile.email }}
+            </v-list-item>
+            <v-divider inset></v-divider>
+            <v-list-item
+              prepend-icon="mdi-map-marker"
+              style="text-align: center"
+            >
+              {{ profile.address }}
+            </v-list-item>
+            <v-list-item
+              prepend-icon="mdi-account-circle"
+              style="text-align: center"
+            >
+              <v-img
+                :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
+              ></v-img>
+            </v-list-item>
+          </v-list>
+        </v-sheet>
+      </v-card>
       <div
         class="modal fade"
         id="addProfile"
@@ -159,93 +209,6 @@
         </div>
       </div>
       <div
-        class="modal fade"
-        id="UpdateProfile"
-        role="dialog"
-        aria-labelledby="UpdateProfileLabel"
-        aria-hidden="true"
-        data-backdrop="false"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="UpdateProfileLabel">
-                Update Profile
-              </h5>
-            </div>
-            <div class="modal-body">
-              <form
-                id="update-profile"
-                enctype="multipart/form-data"
-                data-toggle="validator"
-              >
-                <div class="form-group">
-                  <label for="email" class="col-form-label">Email:&nbsp;</label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="Email"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="number" class="col-form-label"
-                    >Number:&nbsp;</label
-                  >
-                  <input
-                    type="tel"
-                    name="number"
-                    id="tel-number"
-                    placeholder="Telephone number"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="address" class="col-form-label"
-                    >Address:&nbsp;</label
-                  >
-                  <input
-                    type="address"
-                    name="address"
-                    id="address"
-                    placeholder="Address"
-                  />
-                </div>
-                <div class="form-group" form-group-file>
-                  <label for="file" class="col-form-label"
-                    >Upload Avatar Photo:&nbsp;</label
-                  >
-                  <input
-                    type="file"
-                    id="file"
-                    name="file"
-                    class="form-control"
-                    data-filesize="1000000"
-                    data-filesize-error="File must be smaller then 1MB"
-                    accept="image/*"
-                  />
-                </div>
-                <button
-                  id="submit-button"
-                  class="dropbtn"
-                  style="margin-bottom: 5px; margin-top: 15px"
-                  @click="updateProfile"
-                >
-                  Save
-                </button>
-                <button
-                  id="close-button"
-                  type="button"
-                  class="dropbtn"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
         class="toast"
         id="cartToast"
         role="alert"
@@ -268,14 +231,12 @@
         ></div>
       </div>
     </div>
-    <Footer />
   </div>
 </template>
 
 <script>
 import $ from 'jquery'
 import NavBar from '@/components/MyNavbar.vue'
-import Footer from '@/views/FooterVue.vue'
 import config from '@/config'
 import VueCookies from 'vue-cookies'
 import { jwtDecode } from 'jwt-decode'
@@ -283,14 +244,20 @@ import router from '@/router'
 
 export default {
   components: {
-    NavBar,
-    Footer
-    // MessageArea
+    NavBar
   },
   props: ['cart', 'total', 'avatar', 'favorites', 'profile'],
   emits: ['addToCart'],
   data() {
     return {
+      editingProfile: false,
+      editedProfile: {
+        email: '',
+        number: '',
+        address: ''
+      },
+      file: null,
+      profileImageUrl: '',
       item: this.item,
       itemId: this.itemId,
       backendEndpoint: `${config.backendEndpoint}`
@@ -310,7 +277,6 @@ export default {
   created() {
     const accessToken = VueCookies.get('access_token')
     if (accessToken) {
-      // Decode access token to extract user information
       const user = jwtDecode(accessToken).sub
       const user_id = jwtDecode(accessToken).user_id
       this.$store.commit('UPDATE_USER', user)
@@ -321,6 +287,47 @@ export default {
     this.$store.dispatch('getProfile')
   },
   methods: {
+    cancelProfile() {
+      this.editingProfile = false
+    },
+    handleFileChange(event) {
+      this.editedProfile.file = event.target.files[0]
+      const file = event.target.files[0]
+      this.profileImageUrl = URL.createObjectURL(file)
+    },
+    saveProfile() {
+      const formData = new FormData()
+      formData.append('email', this.editedProfile.email)
+      formData.append('number', this.editedProfile.number)
+      formData.append('address', this.editedProfile.address)
+      formData.append('file', this.editedProfile.file)
+      $.ajax({
+        url: `${config.backendEndpoint}/api/profile/update_profile`,
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        headers: {
+          Authorization: `Bearer ${this.$store.state.accessToken}`
+        },
+        data: formData,
+        success: data => {
+          var user = this.$store.getters.user
+          var img_path = `${config.backendEndpoint}/static/img/${user}/profile/${data.avatar}`
+          $('#card-email').text(`Email: ${data.email}`)
+          $('#card-address').text(`Address: ${data.address}`)
+          $('#card-phone').text(`Address: ${data.number}`)
+          $('#avatar-image').attr('src', img_path)
+          this.editingProfile = false
+        },
+        error: function (xhr) {
+          if (xhr.status === 404) {
+            $('#UpdateProfileLabel').text(
+              'Unable to process Profile update, please try again later!'
+            )
+          }
+        }
+      })
+    },
     addToCart(product) {
       this.$store.dispatch('addToCart', product)
     },
@@ -396,6 +403,9 @@ export default {
 }
 </script>
 <style scoped>
+.body {
+  overflow-x: visible !important;
+}
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) !important;
   margin-bottom: 10%;
@@ -422,6 +432,7 @@ button {
   cursor: pointer !important;
   width: 100% !important;
   font-size: 18px !important;
+  margin-bottom: 2%;
 }
 
 .navbar {

@@ -1,4 +1,12 @@
 import { createApp } from 'vue'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+// import * as icons from 'vuetify/iconsets'
+import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.css'
+// import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import axios from 'axios'
 import store from '@/store/index.js'
 import App from './App.vue'
@@ -52,7 +60,6 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-
 axios.interceptors.request.use(
   config => {
     if (store.state.accessToken !== null) {
@@ -68,6 +75,9 @@ axios.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-
+const vuetify = createVuetify({
+  components,
+  directives
+})
 const app = createApp(App)
-app.use(router).use(store).use(VueCookies).mount('#app')
+app.use(router).use(store).use(vuetify).use(VueCookies).mount('#app')

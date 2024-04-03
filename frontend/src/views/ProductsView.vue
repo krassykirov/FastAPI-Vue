@@ -17,15 +17,7 @@
       />
     </nav>
     <div class="submenu">
-      <nav
-        aria-label="breadcrumb"
-        style="
-          margin-top: 1%;
-          margin-left: 0;
-          font-size: 14px;
-          --bs-breadcrumb-divider: '|';
-        "
-      >
+      <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item" :class="{ active: isActiveLink('home') }">
             <a @click="goToAllProducts">All Products</a>
@@ -45,13 +37,7 @@
       <div class="filter-products-container row col-2">
         <div class="filter-card">
           <div class="filter-content collapse show" id="collapse_2">
-            <label
-              style="
-                font-size: 0.9rem;
-                display: block;
-                margin-bottom: 10px;
-                font-weight: 500;
-              "
+            <label style="display: block; margin-bottom: 10px"
               >Filter by Category
             </label>
             <div class="card-body">
@@ -62,7 +48,7 @@
                 :class="{ active: category[1] !== 0 }"
                 style="padding-left: 7px"
               >
-                <label style="font-size: 0.9rem">
+                <label>
                   <input
                     style="font-size: 0.8rem; margin-bottom: 2px"
                     type="checkbox"
@@ -72,13 +58,7 @@
                     :disabled="category[1] === 0"
                     @change="handleCategoryChange"
                   />
-                  <span
-                    style="
-                      padding-left: 5px;
-                      font-size: 0.85rem;
-                      font-weight: 400;
-                    "
-                  >
+                  <span style="padding-left: 5px">
                     {{ category[0] }}
                   </span>
                 </label>
@@ -98,12 +78,10 @@
         </div>
         <div class="filter-card">
           <div class="card-body">
-            <label style="font-size: 0.9rem; display: block; font-weight: 500"
-              >Filter by Price</label
-            >
+            <label style="margin-bottom: 20px">Filter by Price</label>
           </div>
           <!-- Slider -->
-          <div class="range-input" :class="{ disabled: isPriceRangesSelected }">
+          <div class="range-input">
             <div class="slider-container">
               <input
                 type="range"
@@ -126,22 +104,18 @@
                 :disabled="isPriceRangesSelected"
               />
             </div>
-            <!-- Range display -->
-            <div class="range-display" style="text-align: center">
-              <span>${{ min }}</span> - <span>${{ max }}</span>
+            <div class="range-display">
+              <span style="font-weight: 400">${{ min }}</span> -
+              <span style="font-weight: 400">${{ max }}</span>
             </div>
           </div>
-          <div style="padding-top: 11%; padding-bottom: 0"></div>
         </div>
         <div class="filter-card">
           <div class="card-body">
-            <label style="font-size: 0.9rem; display: block; font-weight: 500">
-              Price Range
-            </label>
-            <!-- Price range checkboxes -->
+            <label> Price Range </label>
             <div
               class="form-check"
-              style="padding-left: 5px"
+              style="padding-left: 5px; font-weight: 400"
               v-for="(range, index) in priceRanges"
               :key="index"
             >
@@ -151,7 +125,12 @@
                 :value="range.value"
                 :price-range="range.value"
                 :data-price-label="range.label"
-                style="font-size: 0.9rem; margin-bottom: 2px; margin-left: 0"
+                style="
+                  font-size: 14px;
+                  margin-bottom: 2px;
+                  margin-left: 0;
+                  font-weight: 400;
+                "
                 @change="handlePriceRangeChange"
               />
               <label :for="range.value" style="margin-left: 5px">{{
@@ -162,7 +141,7 @@
                 style="
                   font-size: 0.8rem;
                   font-family: sans-serif;
-                  font-weight: 500;
+                  font-weight: 400;
                 "
               >
                 ({{ getProductCount(range.value) }})
@@ -185,19 +164,9 @@
                 id="discountCheckbox"
                 v-model="isChecked"
                 @change="handleDiscountChange"
-                style="
-                  font-size: 0.9rem;
-                  margin-bottom: 12px;
-                  margin-left: -17px;
-                "
+                style="margin-bottom: 12px; margin-left: -17px"
               />
-              <label
-                style="
-                  font-size: 0.9rem;
-                  margin-top: 0;
-                  margin-bottom: 0;
-                  padding-left: 5px;
-                "
+              <label style="margin-top: 0; margin-bottom: 0; padding-left: 5px"
                 >Discounted Products</label
               >
             </div>
@@ -209,9 +178,7 @@
             id="collapse_4"
             v-if="ratings && ratings.length"
           >
-            <label style="font-size: 0.9rem; font-weight: 500">
-              Filter by Rating
-            </label>
+            <label> Filter by Rating </label>
             <div
               class="form-check form-check-inline"
               v-for="rating in ratings.slice().reverse()"
@@ -467,6 +434,8 @@ import ProductList from '@/components/ProductListPagination.vue'
 import MyNavbar from '@/components/MyNavbar.vue'
 import Footer from '@/views/FooterVue.vue'
 import config from '@/config'
+// import VBtn from 'vuetify/lib/components/VBtn'
+// import VCheckbox from 'vuetify/lib/components/VCheckbox'
 
 export default {
   name: 'HomeView',

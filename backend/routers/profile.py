@@ -26,7 +26,7 @@ profile_router = APIRouter(prefix='/api/profile', tags=["profile"], dependencies
 logger = detailed_logger()
 
 @profile_router.get("/", status_code=status.HTTP_200_OK, response_model=List[UserProfile], include_in_schema=True)
-def get_profiles(db: Session = Depends(get_session)) -> List[UserProfile]:
+def get_profiles(db: Session = Depends(get_session), user: User = Depends(get_current_user)) -> List[UserProfile]:
     profiles = ProfileActions().get_profiles(db=db)
     if profiles is None:
         logger.info(f"No profiles found")
@@ -84,11 +84,11 @@ async def create_profile(request: Request, db: Session = Depends(get_session), u
 @profile_router.post("/update_profile", status_code=status.HTTP_200_OK, include_in_schema=False)
 async def update_profile(request: Request, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
     form_data = await request.form()
+    filename = form_data.get('file')
     json_data = dict(form_data)
     for k, v in json_data.items():
         if v == '':
             json_data[k] = None
-    filename = form_data['file'].filename
     db_profile = ProfileActions().get_profile_by_user_id(db=db, user_id=user.id)
     if db_profile is None:
         raise HTTPException(status_code=404, detail=f"No profile with user_id: {user.id} found")
@@ -96,13 +96,13 @@ async def update_profile(request: Request, db: Session = Depends(get_session), u
     user_db = db.exec(query).first()
     if user_db:
         try:
-            if form_data['file'].filename:
+            if filename != 'undefined':
                 content = await form_data['file'].read()
                 with open(f"static/img/{user.username}/profile/{form_data['file'].filename}", 'wb') as f:
                     f.write(content)
         except Exception as e:
             logger.error(f"Something went wrong, error: {e}")
-        new_data = UserProfile(**dict(json_data), user=user, avatar=filename if filename else None).dict(exclude_unset=True,
+        new_data = UserProfile(**dict(json_data), user=user, avatar=form_data['file'].filename if filename != 'undefined' else None).dict(exclude_unset=True,
                                                                                                           exclude_none=True)
         for key, value in new_data.items():
             setattr(db_profile, key, value)

@@ -35,7 +35,7 @@ app.include_router(profile_router)
 # app.include_router(cart_router)
 origins = [
     "https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net",
-    "https://agreeable-glacier-022fe8c03.4.azurestaticapps.net",
+    "https://agreeable-glacier-022fe8c03.4.azurestaticapps.net"
     "http://localhost:8081",
     "http://localhost:3000"
 ]
@@ -44,7 +44,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,11 +52,11 @@ app.add_middleware(
 
 logger = detailed_logger()
 
-@app.middleware("http")
-async def add_content_security_policy_header(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
-    return response
+# @app.middleware("http")
+# async def add_content_security_policy_header(request: Request, call_next):
+#     response = await call_next(request)
+#     response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
+#     return response
 
 @app.on_event("startup")
 def on_startup():

@@ -318,7 +318,6 @@ export default createStore({
         commit('setRefreshToken', data.refresh_token)
         router.push({ name: 'NewHome' })
       } catch (error) {
-        // catch: Cannot read properties of undefined (reading 'data') if no response.data
         if (error.message.startsWith('Cannot read')) {
           return
         }

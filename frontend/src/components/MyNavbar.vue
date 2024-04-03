@@ -19,46 +19,26 @@
           class="navbar-nav mb-1 mb-lg-0 categories-menu"
           style="padding-left: 40%; margin-top: 8%"
         >
-          <li class="nav-item dropdown" @mouseleave="hideCategories">
-            <button
-              class="btn btn-light dropdown-toggle btn-sm"
-              id="categoriesDropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              @mouseenter="showCategories"
-              @click="toggleCategories"
-            >
-              <i class="fa fa-bars" style="font-size: 1rem"></i>
-              CATEGORIES
-            </button>
-            <div
-              class="dropdown-menu"
-              aria-labelledby="categoriesDropdown"
-              :style="{ display: displayCategories ? 'none' : 'block' }"
-              @mouseenter="showCategories"
-              @mouseleave="hideCategories"
-              style="margin-left: -15px"
-            >
-              <a
-                v-for="(category, index) in categories"
-                :key="index"
-                class="dropdown-item"
-                @click="selectCategory(category[0])"
-                style="font-size: 0.9em; cursor: pointer"
-              >
-                {{ category[0] }}
-              </a>
-              <li class="dropdown-divider"></li>
-              <a
-                class="dropdown-item"
-                type="button"
-                @click="goToAllProducts"
-                style="font-size: 0.9em; cursor: pointer"
-              >
-                All Products
-              </a>
-            </div>
-          </li>
+          <div class="text-center">
+            <v-menu open-on-hover>
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" width="150px" height="30px">
+                  CATEGORIES
+                </v-btn>
+              </template>
+              <v-list width="150px" style="margin-top: 3px">
+                <v-list-item
+                  v-for="(category, index) in categories"
+                  :key="index"
+                  @click="selectCategory(category[0])"
+                >
+                  <v-list-item-title class="category-item">{{
+                    category[0]
+                  }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </div>
         </ul>
       </ul>
       <form
@@ -275,63 +255,37 @@
           </button>
         </div>
       </ul>
-      <ul class="navbar-nav mb-1 mb-lg-0 profile-menu" style="padding-left: 4%">
-        <li class="nav-item dropdown" @mouseleave="hideDropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdownMenuLink"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            style="cursor: pointer"
-            @mouseenter="showDropdown"
-          >
-            <img
-              v-if="profile"
-              :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
-              width="50"
-              height="50"
-              class="rounded-circle"
-              @mouseenter="showDropdown"
-            />
-            <img
-              v-else
-              :src="require('@/assets/img_avatar.png')"
-              width="50"
-              height="50"
-              class="rounded-circle"
-              @mouseenter="showDropdown"
-            />
-          </a>
-          <div
-            v-show="isDropdownVisible"
-            class="dropdown-menu"
-            aria-labelledby="navbarDropdownMenuLink"
-            @mouseleave="hideDropdown"
-          >
-            <a
-              v-if="user"
-              class="dropdown-item"
-              style="color: grey; pointer-events: none"
-            >
-              {{ user }}
-            </a>
-            <a class="dropdown-item">
-              <router-link
-                style="
-                  text-decoration: none;
-                  color: inherit;
-                  font-family: inherit;
-                "
-                to="/Profile"
-                >Profile</router-link
-              >
-            </a>
-            <a class="dropdown-item" style="cursor: pointer" @click="logout">
-              Logout
-            </a>
+      <div class="text-center" style="margin-left: 5%">
+        <v-menu open-on-hover>
+          <template v-slot:activator="{ props }">
+            <v-avatar v-bind="props">
+              <v-img
+                v-if="profile"
+                :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
+                style="cursor: pointer"
+              ></v-img>
+              <v-img
+                v-else
+                :src="require('@/assets/img_avatar.png')"
+                style="cursor: pointer"
+              ></v-img>
+            </v-avatar>
+          </template>
+          <v-list density="compact" nav class="profile-list" width="180px">
+            <v-list-item
+              prepend-icon="mdi-account"
+              style="margin: 0; padding: 0"
+              title="My Account"
+              value="account"
+              :to="{ name: 'Profile' }"
+            ></v-list-item>
+            <v-list-item
+              prepend-icon="mdi-logout"
+              style="margin: 0; padding: 0"
+              title="Logout"
+              value="logout"
+              @click="logout"
+            ></v-list-item>
             <a
               class="dropdown-item"
               v-if="user === 'krassy@mail.bg'"
@@ -352,9 +306,9 @@
             >
               Update Product
             </a>
-          </div>
-        </li>
-      </ul>
+          </v-list>
+        </v-menu>
+      </div>
     </div>
     <div
       class="modal fade"
@@ -620,6 +574,7 @@ export default {
   emits: ['removeFromCart'],
   data() {
     return {
+      drawerVisible: false,
       displayCart: true,
       displayLiked: true,
       displayCategories: true,
@@ -653,6 +608,12 @@ export default {
     }
   },
   methods: {
+    showDrawer() {
+      this.drawerVisible = true
+    },
+    hideDrawer() {
+      this.drawerVisible = false
+    },
     goHome() {
       this.$router.push({ name: 'NewHome' })
     },
@@ -863,3 +824,16 @@ export default {
   }
 }
 </script>
+<style scoped>
+.category-item {
+  font-size: 14px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+}
+.profile-list {
+  font-size: 14px;
+  margin-left: -40px;
+  margin-top: 10px;
+}
+</style>

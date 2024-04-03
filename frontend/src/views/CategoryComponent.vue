@@ -17,15 +17,7 @@
       />
     </nav>
     <div class="submenu">
-      <nav
-        aria-label="breadcrumb"
-        style="
-          margin-top: 1%;
-          margin-left: 0;
-          font-size: 14px;
-          --bs-breadcrumb-divider: '|';
-        "
-      >
+      <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item" :class="{ active: isActiveLink('home') }">
             <a @click="goToAllProducts">All Products</a>
@@ -45,13 +37,7 @@
       <div class="filter-products-container row col-2">
         <div class="filter-card">
           <div class="filter-content collapse show" id="collapse_2">
-            <label
-              style="
-                font-size: 0.9rem;
-                display: block;
-                margin-bottom: 10px;
-                font-weight: 500;
-              "
+            <label style="display: block; margin-bottom: 10px"
               >Filter by Brand</label
             >
             <div class="card-body" style="height: 200px; overflow-y: auto">
@@ -62,7 +48,7 @@
                 :class="{ active: getBrandCount(brand) !== 0 }"
                 style="padding-left: 8px"
               >
-                <label style="font-size: 0.85rem">
+                <label>
                   <input
                     style="
                       font-size: 0.9rem;
@@ -87,12 +73,7 @@
                 </label>
                 <span
                   class="text-muted"
-                  style="
-                    font-size: 0.8rem;
-                    padding-left: 0;
-                    font-familly: sans-serif;
-                    font-weight: 500;
-                  "
+                  style="font-size: 0.8rem; padding-left: 0; font-weight: 400"
                 >
                   ({{ getBrandCount(brand) }})
                 </span>
@@ -102,110 +83,36 @@
         </div>
         <div class="filter-card">
           <div class="card-body">
-            <label
-              style="
-                font-size: 0.9rem;
-                display: block;
-                margin-bottom: 5px;
-                font-weight: 500;
-              "
-              >Filter by Price</label
-            >
-            <div class="price-input row">
-              <div class="form-group col-md-6">
-                <label
-                  for="minPrice"
-                  style="font-size: 0.8rem; margin-left: 23px; font-weight: 500"
-                  >Min Price</label
-                >
-                <input
-                  v-model.number="min"
-                  style="font-size: 0.8rem"
-                  type="text"
-                  class="min-input form-control"
-                  id="minPrice"
-                  :min="productMin"
-                  :max="productMax"
-                  pattern="[1-9][0-9]*"
-                  disabled
-                  required
-                />
-              </div>
-              <div class="form-group col-md-6">
-                <label
-                  for="maxPrice"
-                  style="font-size: 0.8rem; margin-left: 12px; font-weight: 500"
-                  >Max Price</label
-                >
-                <input
-                  v-model.number="max"
-                  style="font-size: 0.8rem"
-                  type="text"
-                  class="max-input form-control"
-                  id="maxPrice"
-                  pattern="[1-9][0-9]*"
-                  :min="productMin"
-                  :max="productMax"
-                  disabled
-                  required
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="slider-container">
-                  <div
-                    class="price-slider"
-                    :style="{
-                      '--min': min,
-                      '--max': max,
-                      '--productMax': productMax
-                    }"
-                  ></div>
-                </div>
-              </div>
-            </div>
+            <label style="margin-bottom: 20px">Filter by Price</label>
           </div>
           <!-- Slider -->
           <div class="range-input">
-            <input
-              type="range"
-              class="min-range"
-              :min="productMin"
-              :max="productMax"
-              :value="min"
-              step="1"
-              @input="updateInputs"
-            />
-            <input
-              type="range"
-              class="max-range"
-              :min="productMin"
-              :max="productMax"
-              :value="max"
-              step="1"
-              @input="updateInputs"
-            />
-          </div>
-          <div style="padding-top: 11%; padding-bottom: 1%">
-            <button
-              type="button"
-              class="custom-button"
-              @click="toggleSortOrder"
-              style="align-items: center; font-size: 0.8rem"
-            >
-              Sort Price
-              <span
-                v-if="sortOrder === 'asc'"
-                class="bi bi-sort-up-alt"
-                style="font-size: 0.8rem"
-              ></span>
-              <span
-                v-else
-                class="bi bi-sort-down"
-                style="font-size: 0.8rem"
-              ></span>
-            </button>
+            <div class="slider-container">
+              <input
+                type="range"
+                class="min-range"
+                :min="productMin"
+                :max="productMax"
+                :value="min"
+                step="1"
+                @input="updateInputs"
+                :disabled="isPriceRangesSelected"
+              />
+              <input
+                type="range"
+                class="max-range"
+                :min="productMin"
+                :max="productMax"
+                :value="max"
+                step="1"
+                @input="updateInputs"
+                :disabled="isPriceRangesSelected"
+              />
+            </div>
+            <div class="range-display">
+              <span style="font-weight: 400">${{ min }}</span> -
+              <span style="font-weight: 400">${{ max }}</span>
+            </div>
           </div>
         </div>
         <div
@@ -229,13 +136,7 @@
                   margin-left: -17px;
                 "
               />
-              <label
-                style="
-                  font-size: 0.85rem;
-                  margin-top: 0;
-                  margin-bottom: 0;
-                  padding-left: 5px;
-                "
+              <label style="margin-top: 0; margin-bottom: 0; padding-left: 5px"
                 >Discounted Products</label
               >
             </div>
@@ -247,9 +148,7 @@
             id="collapse_4"
             v-if="ratings && ratings.length"
           >
-            <label style="font-size: 0.9rem; font-weight: 500">
-              Filter by Rating
-            </label>
+            <label> Filter by Rating </label>
             <div
               class="form-check form-check-inline"
               v-for="rating in ratings.slice().reverse()"
@@ -423,6 +322,9 @@ export default {
     }
   },
   computed: {
+    isPriceRangesSelected() {
+      return this.$store.state.selectedPriceRanges.length > 0
+    },
     selectedProducts() {
       if (!this.category) return []
       const category = this.$store.getters.categories.find(

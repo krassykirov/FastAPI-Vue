@@ -63,8 +63,6 @@
         </div>
       </div>
       <div class="banner-box4 banner-box" style="margin-left: 5px">
-        <!-- <h2>Up to 50% Discount</h2> -->
-        <!-- <span>The best classic dress is on sales at cara</span> -->
         <div style="margin-top: 66%">
           <button class="btn white" @click="goToAllProducts()">SHOP NOW</button>
         </div>
@@ -121,24 +119,30 @@
     </section>
     <div
       class="container-fluid"
-      style="margin: 0 !important; margin-left: 7% !important"
+      style="margin: 0 !important; margin-left: 10% !important"
     >
       <MessageArea />
     </div>
-    <section
-      id="newsletter"
-      class="section-p1"
-      style="
-        margin-top: 0;
-        margin-bottom: 10px;
-        height: 50px;
-        color: white;
-        cursor: pointer;
-      "
+    <v-btn
       @click="goToTop"
+      prepend-icon="mdi-arrow-up-bold-outline"
+      variant="elevated"
+      color="outlined"
+      width="100%"
+      style="
+        margin-top: 2%;
+        margin-bottom: 1%;
+        color: white !important;
+        background-color: #6c757d !important;
+        text-align: center !important;
+        cursor: pointer !important;
+        margin-top: 2%;
+        width: 100%;
+        height: 40px;
+        margin-left: 0;
+      "
+      >Back to Top</v-btn
     >
-      <div style="cursor: pointer; padding-left: 45%">Back to Top</div>
-    </section>
     <section id="newsletter" class="section-p1">
       <div class="newstext">
         <h4 style="margin-top: 15px">Sign Up for Newsletters</h4>
@@ -784,23 +788,6 @@ footer .copyright {
 @media (max-width: 477px) {
   .section-p1 {
     padding: 20px;
-  }
-
-  #header {
-    padding: 10px 30px;
-  }
-
-  h2 {
-    font-size: 30px;
-  }
-
-  h1 {
-    font-size: 28px;
-  }
-
-  p {
-    line-height: 24px;
-    font-size: 10px;
   }
 
   #banner {
