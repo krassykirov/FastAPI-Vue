@@ -75,8 +75,24 @@ import { ref, computed, watch } from 'vue'
 import store from '@/store/index.js'
 import router from '@/router'
 import { useField, useForm } from 'vee-validate'
+import VueCookies from 'vue-cookies'
+import { jwtDecode } from 'jwt-decode'
 
 export default {
+  created() {
+    if (!store.state.accessToken) {
+      const accessToken = VueCookies.get('access_token')
+      if (accessToken) {
+        const user = jwtDecode(accessToken).sub
+        const user_id = jwtDecode(accessToken).user_id
+        store.commit('UPDATE_USER', user)
+        store.commit('UPDATE_USER_ID', user_id)
+      } else {
+        store.state.errorMessage = 'Session Expired. Please log in again'
+        router.push('/login')
+      }
+    }
+  },
   setup() {
     const { handleSubmit } = useForm({
       validationSchema: {

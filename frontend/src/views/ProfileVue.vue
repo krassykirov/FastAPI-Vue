@@ -53,24 +53,27 @@
           </template>
           <!-- Update Profile -->
         </v-card-item>
-        <v-sheet class="mx-auto" width="480px">
+        <v-sheet class="mx-auto" width="500px">
           <v-form ref="form" v-if="editingProfile">
             <v-text-field
               v-model="editedProfile.number"
               label="Telephone number"
               type="tel"
               required
+              prepend-inner-icon="mdi-phone"
             ></v-text-field>
             <v-text-field
               v-model="editedProfile.email"
               label="Secondary Email"
               type="email"
+              prepend-inner-icon="mdi-email"
               required
             ></v-text-field>
             <v-text-field
               v-model="editedProfile.address"
               label="Address"
               type="address"
+              prepend-inner-icon="mdi-map-marker"
               required
             ></v-text-field>
             <v-file-input
@@ -116,77 +119,43 @@
         </v-sheet>
       </v-card>
       <!-- Create Profile -->
-      <div class="container" style="margin-top: 2%">
-        <div v-if="!profile">
-          <div class="form-group">
-            <label for="email" class="col-form-label">Secondary Email:</label>
-            <input
-              type="email"
+      <div class="container" style="margin-top: 2%; width: 500px">
+        <v-card v-if="!profile">
+          <v-card-text>
+            <v-text-field
               v-model="newProfile.email"
-              class="form-control"
-              placeholder="Email"
+              prepend-inner-icon="mdi-email"
+              label="Secondary Email"
+              type="email"
               required
-            />
-          </div>
-          <div class="form-group">
-            <label for="number" class="col-form-label">Number:</label>
-            <input
-              type="tel"
+            ></v-text-field>
+            <v-text-field
               v-model="newProfile.number"
-              class="form-control"
-              placeholder="Telephone number"
+              label="Number"
+              type="number"
+              prepend-inner-icon="mdi-phone"
               required
-            />
-          </div>
-          <div class="form-group">
-            <label for="address" class="col-form-label">Address:</label>
-            <input
-              type="text"
+            ></v-text-field>
+            <v-text-field
               v-model="newProfile.address"
-              class="form-control"
-              placeholder="Address"
-            />
-          </div>
-          <div class="form-group">
-            <label for="avatar" class="col-form-label">Avatar Photo:</label>
-            <input
-              type="file"
+              label="Address"
+              type="address"
+              prepend-inner-icon="mdi-map-marker"
+            ></v-text-field>
+            <v-file-input
               @change="handleFileCreateProfile"
-              class="form-control"
               accept="image/*"
+              label="Avatar Photo"
+              type="file"
               required
-            />
-          </div>
-          <div class="form-group">
-            <button @click="createProfile" class="btn btn-primary">Save</button>
-            <button @click="cancelCreateProfile" class="btn btn-secondary">
-              Cancel
-            </button>
-          </div>
-        </div>
+            ></v-file-input>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn @click="createProfile" color="primary">Save</v-btn>
+            <v-btn @click="cancelCreateProfile" color="secondary">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
       </div>
-      <!-- <div
-        class="toast"
-        id="cartToast"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-        data-bs-autohide="false"
-        style="
-          position: fixed;
-          top: 10%;
-          right: 5%;
-          transform: translate(0, -50%);
-          width: 250px;
-          z-index: 1000;
-        "
-      >
-        <div
-          class="toast-body"
-          id="cartToastBody"
-          style="font-weight: 900; font: 1.1em"
-        ></div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -263,40 +232,6 @@ export default {
       const file = event.target.files[0]
       this.newProfile.avatar = file
     },
-    updateProfile() {
-      const formData = new FormData()
-      formData.append('email', this.editedProfile.email)
-      formData.append('number', this.editedProfile.number)
-      formData.append('address', this.editedProfile.address)
-      formData.append('file', this.editedProfile.file)
-      $.ajax({
-        url: `${config.backendEndpoint}/api/profile/update_profile`,
-        type: 'POST',
-        processData: false,
-        contentType: false,
-        headers: {
-          Authorization: `Bearer ${this.$store.state.accessToken}`
-        },
-        data: formData,
-        success: data => {
-          var user = this.$store.getters.user
-          var img_path = `${config.backendEndpoint}/static/img/${user}/profile/${data.avatar}`
-          $('#card-email').text(`Email: ${data.email}`)
-          $('#card-address').text(`Address: ${data.address}`)
-          $('#card-phone').text(`Address: ${data.number}`)
-          $('#avatar-image').attr('src', img_path)
-          this.$store.dispatch('getProfile')
-          this.editingProfile = false
-        },
-        error: function (xhr) {
-          if (xhr.status === 404) {
-            $('#UpdateProfileLabel').text(
-              'Unable to process Profile update, please try again later!'
-            )
-          }
-        }
-      })
-    },
     addToCart(product) {
       this.$store.dispatch('addToCart', product)
     },
@@ -307,6 +242,41 @@ export default {
       $(document).ready(function () {
         $('#global-modal').modal('show')
       })
+    },
+    async updateProfile() {
+      const formData = new FormData()
+      formData.append('email', this.editedProfile.email)
+      formData.append('number', this.editedProfile.number)
+      formData.append('address', this.editedProfile.address)
+      formData.append('file', this.editedProfile.file)
+
+      try {
+        const response = await axios.post(
+          `${config.backendEndpoint}/api/profile/update_profile`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${this.$store.state.accessToken}`
+            }
+          }
+        )
+        const data = response.data
+        const user = this.$store.getters.user
+        const img_path = `${config.backendEndpoint}/static/img/${user}/profile/${data.avatar}`
+        $('#card-email').text(`Email: ${data.email}`)
+        $('#card-address').text(`Address: ${data.address}`)
+        $('#card-phone').text(`Address: ${data.number}`)
+        $('#avatar-image').attr('src', img_path)
+        this.$store.dispatch('getProfile')
+        this.editingProfile = false
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          $('#UpdateProfileLabel').text(
+            'Unable to process Profile update, please try again later!'
+          )
+        }
+      }
     },
     createProfile() {
       const formData = new FormData()
