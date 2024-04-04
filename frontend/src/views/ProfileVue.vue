@@ -32,15 +32,6 @@
       <h5 v-if="!profile" style="text-align: center">
         No Profile yet, create one?
       </h5>
-      <v-btn
-        v-if="!profile"
-        class="dropbtn"
-        data-toggle="modal"
-        data-target="#addProfile"
-        style="float: left"
-      >
-        Create Profile
-      </v-btn>
       <v-card class="mx-auto" max-width="500" v-if="profile">
         <v-card-item class="bg-cyan-darken-1">
           <v-card-title>
@@ -60,33 +51,38 @@
             >
             </v-defaults-provider>
           </template>
+          <!-- Update Profile -->
         </v-card-item>
         <v-sheet class="mx-auto" width="480px">
           <v-form ref="form" v-if="editingProfile">
             <v-text-field
               v-model="editedProfile.number"
-              label="Number"
+              label="Telephone number"
+              type="tel"
               required
             ></v-text-field>
             <v-text-field
               v-model="editedProfile.email"
               label="Secondary Email"
+              type="email"
               required
             ></v-text-field>
             <v-text-field
               v-model="editedProfile.address"
               label="Address"
+              type="address"
               required
             ></v-text-field>
             <v-file-input
               accept="image/*"
               label="Avatar Photo"
+              type="file"
               @change="handleFileChange"
               required
             ></v-file-input>
             <v-row justify="center" align="center">
               <v-col cols="5">
-                <v-btn width="100%" @click="saveProfile">Save</v-btn>
+                <v-btn width="100%" @click="updateProfile">Save</v-btn>
               </v-col>
               <v-col cols="5">
                 <v-btn width="100%" @click="cancelProfile">Cancel</v-btn>
@@ -119,96 +115,57 @@
           </v-list>
         </v-sheet>
       </v-card>
-      <div
-        class="modal fade"
-        id="addProfile"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="addProfileLabel"
-        aria-hidden="true"
-        data-backdrop="false"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addProfileLabel">Create Profile</h5>
-            </div>
-            <div class="modal-body">
-              <form
-                id="create-profile"
-                enctype="multipart/form-data"
-                data-toggle="validator"
-              >
-                <div class="form-group">
-                  <label for="email" class="col-form-label"
-                    >Secondary Email:</label
-                  >
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="Email"
-                    required
-                  />
-                  <!-- <input type="text" name="name" id="item-name" pattern="^[a-zA-Z]*" oninvalid="setCustomValidity('Please use only letters')" placeholder="Item Name"  required> -->
-                </div>
-                <div class="form-group">
-                  <label for="number" class="col-form-label">Number:</label>
-                  <input
-                    type="tel"
-                    name="number"
-                    id="tel-number"
-                    placeholder="Telephone number"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label for="address" class="col-form-label">Number:</label>
-                  <input
-                    type="text"
-                    name="address"
-                    id="address"
-                    placeholder="Address"
-                  />
-                </div>
-                <div class="form-group" form-group-file>
-                  <label for="file" class="col-form-label"
-                    >Upload Avatar Photo:</label
-                  >
-                  <input
-                    type="file"
-                    id="file"
-                    name="file"
-                    class="form-control"
-                    data-filesize="1000000"
-                    data-filesize-error="File must be smaller then 1MB"
-                    accept="image/*"
-                    required
-                  />
-                </div>
-                <button
-                  id="submit-button"
-                  @click="createProfile"
-                  class="dropbtn"
-                >
-                  Submit
-                </button>
-                <button
-                  id="Close-Profile"
-                  type="button"
-                  class="dropbtn"
-                  data-dismiss="modal"
-                  style="margin-bottom: 5px; margin-top: 5px"
-                >
-                  Close
-                </button>
-              </form>
-            </div>
+      <!-- Create Profile -->
+      <div class="container" style="margin-top: 2%">
+        <div v-if="!profile">
+          <div class="form-group">
+            <label for="email" class="col-form-label">Secondary Email:</label>
+            <input
+              type="email"
+              v-model="newProfile.email"
+              class="form-control"
+              placeholder="Email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="number" class="col-form-label">Number:</label>
+            <input
+              type="tel"
+              v-model="newProfile.number"
+              class="form-control"
+              placeholder="Telephone number"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="address" class="col-form-label">Address:</label>
+            <input
+              type="text"
+              v-model="newProfile.address"
+              class="form-control"
+              placeholder="Address"
+            />
+          </div>
+          <div class="form-group">
+            <label for="avatar" class="col-form-label">Avatar Photo:</label>
+            <input
+              type="file"
+              @change="handleFileCreateProfile"
+              class="form-control"
+              accept="image/*"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <button @click="createProfile" class="btn btn-primary">Save</button>
+            <button @click="cancelCreateProfile" class="btn btn-secondary">
+              Cancel
+            </button>
           </div>
         </div>
       </div>
-      <div
+      <!-- <div
         class="toast"
         id="cartToast"
         role="alert"
@@ -229,7 +186,7 @@
           id="cartToastBody"
           style="font-weight: 900; font: 1.1em"
         ></div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -241,6 +198,7 @@ import config from '@/config'
 import VueCookies from 'vue-cookies'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
+import axios from 'axios'
 
 export default {
   components: {
@@ -255,6 +213,12 @@ export default {
         email: '',
         number: '',
         address: ''
+      },
+      newProfile: {
+        email: '',
+        number: '',
+        address: '',
+        avatar: null
       },
       file: null,
       profileImageUrl: '',
@@ -295,7 +259,11 @@ export default {
       const file = event.target.files[0]
       this.profileImageUrl = URL.createObjectURL(file)
     },
-    saveProfile() {
+    handleFileCreateProfile(event) {
+      const file = event.target.files[0]
+      this.newProfile.avatar = file
+    },
+    updateProfile() {
       const formData = new FormData()
       formData.append('email', this.editedProfile.email)
       formData.append('number', this.editedProfile.number)
@@ -317,6 +285,7 @@ export default {
           $('#card-address').text(`Address: ${data.address}`)
           $('#card-phone').text(`Address: ${data.number}`)
           $('#avatar-image').attr('src', img_path)
+          this.$store.dispatch('getProfile')
           this.editingProfile = false
         },
         error: function (xhr) {
@@ -339,73 +308,40 @@ export default {
         $('#global-modal').modal('show')
       })
     },
-    updateProfile() {
-      $('#update-profile').submit(e => {
-        e.preventDefault()
-        const formData = new FormData(e.target)
-        $.ajax({
-          url: `${config.backendEndpoint}/api/profile/update_profile`,
-          type: 'POST',
-          processData: false,
-          contentType: false,
-          headers: {
-            Authorization: `Bearer ${this.$store.state.accessToken}`
-          },
-          data: formData,
-          success: data => {
-            // Use an arrow function here
-            $('#UpdateProfile').modal('hide')
-            $('#close-button').click()
-            var user = this.$store.getters.user
-            var img_path = `${config.backendEndpoint}/static/img/${user}/profile/${data.avatar}`
-            $('#card-email').text(`Email: ${data.email}`)
-            $('#card-address').text(`Address: ${data.address}`)
-            $('#card-phone').text(`Address: ${data.number}`)
-            $('#avatar-image').attr('src', img_path)
-          },
-          error: function (xhr) {
-            if (xhr.status === 404) {
-              $('#UpdateProfileLabel').text(
-                'Unable to process Profile update, please try again later!'
-              )
-            }
-          }
-        })
-      })
-    },
     createProfile() {
-      $('#create-profile').submit(e => {
-        e.preventDefault()
-        const formData = new FormData(e.target)
-        $.ajax({
-          url: `${config.backendEndpoint}/api/profile/create_profile`,
-          type: 'POST',
-          processData: false,
-          contentType: false,
-          headers: {
-            Authorization: `Bearer ${this.$store.state.accessToken}`
-          },
-          data: formData,
-          success: () => {
-            $('#create-profile').modal('hide')
-            $('#Close-Profile').click()
-            this.$store.dispatch('getProfile')
-          },
-          error: function (xhr) {
-            if (xhr.status === 403) {
-              $('#error').text('Item with that name already exists!')
-            }
+      const formData = new FormData()
+      formData.append('email', this.newProfile.email)
+      formData.append('number', this.newProfile.number)
+      formData.append('address', this.newProfile.address)
+      formData.append('file', this.newProfile.avatar)
+
+      // Perform an AJAX request using axios
+      axios
+        .post(`${config.backendEndpoint}/api/profile/create_profile`, formData)
+        .then(response => {
+          console.log('response Profile', response)
+          this.newProfile = {
+            email: '',
+            number: '',
+            address: '',
+            avatar: null
+          }
+          this.$store.dispatch('getProfile')
+        })
+        .catch(error => {
+          if (error.response && error.response.status === 403) {
+            // Handle specific error status (e.g., item with the same name already exists)
+            // You can show an error message or perform other actions here
+          } else {
+            // Handle other types of errors
           }
         })
-      })
     }
   }
 }
 </script>
+
 <style scoped>
-.body {
-  overflow-x: visible !important;
-}
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) !important;
   margin-bottom: 10%;
@@ -415,10 +351,6 @@ export default {
   font-family: arial !important;
   width: 20rem !important;
   height: auto !important;
-}
-.title {
-  color: grey !important;
-  font-size: 18px !important;
 }
 
 button {
@@ -437,25 +369,5 @@ button {
 
 .navbar {
   padding-left: 0 !important;
-}
-
-.user-row {
-  margin-bottom: 14px;
-}
-
-.table-user-information > tbody > tr {
-  border-top: 1px solid #ccc;
-}
-
-.table-user-information > tbody > tr:first-child {
-  border-top: 0;
-}
-
-.table-user-information > tbody > tr > td {
-  border-top: 0;
-}
-
-.panel {
-  margin-top: 20px;
 }
 </style>

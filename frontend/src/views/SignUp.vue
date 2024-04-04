@@ -21,24 +21,29 @@
               type="email"
               :rules="emailRules"
               color="green"
-            ></v-text-field>
+            >
+              <template v-slot:append-inner>
+                <v-icon v-if="isEmailValid" color="green">mdi-check</v-icon>
+              </template>
+            </v-text-field>
             <v-text-field
               v-model="password.value"
               @input="clearErrorMessage"
               prepend-inner-icon="mdi-lock-outline"
-              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :append-inner-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
               variant="outlined"
               :type="show1 ? 'email' : 'password'"
               class="mb-2"
               label="Password"
               :rules="passwordRules"
               @click:append="show1 = !show1"
-            ></v-text-field>
+            >
+            </v-text-field>
             <v-text-field
               v-model="password2.value"
               @input="clearErrorMessage"
               prepend-inner-icon="mdi-lock-outline"
-              :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+              :append-inner-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
               variant="outlined"
               :type="show2 ? 'email' : 'password'"
               class="mb-2"
@@ -90,6 +95,9 @@ export default {
     errorMessage() {
       return this.$store.state.errorMessage
     },
+    isEmailValid() {
+      return this.emailRules.every(rule => rule(this.email.value) === true)
+    },
     emailRules() {
       return [
         v => !!v || 'Email is required',
@@ -121,7 +129,6 @@ export default {
   methods: {
     async submitForm() {
       const isFormValid = await this.$refs.formSignup.validate()
-      console.log('isFormValid', isFormValid)
       if (isFormValid.valid === false) {
         return
       }
@@ -145,7 +152,7 @@ export default {
               'setErrorMessage',
               'This Email is taken. Try another.'
             )
-            // this.email.value = ''
+            this.email.value = ''
             this.password.value = ''
             this.password2.value = ''
             return
@@ -174,10 +181,9 @@ export default {
 <style scoped>
 .success-text {
   color: green;
-  font-size: 18px;
+  font-size: 20px;
 }
 .login-link:hover {
   cursor: pointer;
-  text-decoration: underline;
 }
 </style>

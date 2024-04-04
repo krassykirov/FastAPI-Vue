@@ -20,7 +20,11 @@
               class="mb-2"
               variant="outlined"
               type="email"
-            ></v-text-field>
+            >
+              <template v-slot:append-inner>
+                <v-icon v-if="isEmailValid" color="green">mdi-check</v-icon>
+              </template>
+            </v-text-field>
             <div class="text-subtitle-1 text-medium-emphasis">Password</div>
             <a
               class="text-caption text-decoration-none text-blue"
@@ -121,17 +125,18 @@ export default {
         ) {
           store.dispatch(
             'setErrorMessage',
-            'Username or password are incorrect!'
+            'The Username or Password is Incorrect. Try again.'
           )
         } else {
           // console.error('Login Error:', error)
         }
       }
     })
-
-    // Define computed errorMessage
     const computedErrorMessage = computed(() => {
       return errorMessage.value
+    })
+    const isEmailValid = computed(() => {
+      return email.meta.valid
     })
     const redirectToSignup = () => {
       store.state.errorMessage = ''
@@ -149,7 +154,8 @@ export default {
       visible,
       submit,
       redirectToSignup,
-      clearErrorMessage
+      clearErrorMessage,
+      isEmailValid
     }
   }
 }
