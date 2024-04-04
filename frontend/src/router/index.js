@@ -7,9 +7,6 @@ import CartVueNew from '@/views/CartVueNew.vue'
 import FavoritesVue from '@/views/FavoritesVue.vue'
 import store from '@/store/index.js'
 import NotFound from '@/views/NotFound.vue'
-import VueCookies from 'vue-cookies'
-// import VueCookies from 'vue-cookies'
-// import { jwtDecode } from 'jwt-decode'
 
 const routes = [
   {
@@ -21,7 +18,7 @@ const routes = [
       lastActiveDate: route.params.lastActiveDate,
       inactiveTime: route.params.inactiveTime
     }),
-    beforeEnter: async next => {
+    beforeEnter: async (to, from, next) => {
       try {
         await store.dispatch('getProducts')
         next()
@@ -39,16 +36,16 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/LoginVue.vue'),
-    beforeEnter: async next => {
-      if (store.state.accessToken) {
-        const accessToken = VueCookies.get('access_token')
-        if (accessToken) {
-          router.push({ name: 'NewHome' })
-        }
-        next()
-      }
-    }
+    component: () => import('../views/LoginVue.vue')
+    // beforeEnter: async (to, from, next) => {
+    //   if (store.state.accessToken) {
+    //     const accessToken = VueCookies.get('access_token')
+    //     if (accessToken) {
+    //       router.push({ name: 'NewHome' })
+    //     }
+    //     next()
+    //   }
+    // }
   },
   {
     path: '/category/:category',

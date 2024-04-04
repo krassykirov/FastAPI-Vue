@@ -156,7 +156,7 @@ async def signup(request: Request, db: Session = Depends(get_session)):
         user = db.exec(query).first()
         if user:
             logger.error(f"User with that name already exists!")
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"User with that email address already exists!")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail=f"This Email is taken. Try another")
         user = models.User(username=username)
         user.set_password(passwd)
         db.add(user)

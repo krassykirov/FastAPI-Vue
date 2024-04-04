@@ -1,32 +1,69 @@
 <template>
-  <v-sheet class="bg-deep-purple pa-12" rounded>
-    <v-card class="mx-auto px-6 py-8" max-width="344">
-      <form @submit.prevent="submit">
-        <v-text-field
-          v-model="email.value.value"
-          :error-messages="email.errorMessage.value || errorMessage"
-          label="E-mail"
-          class="mb-4"
-          type="email"
-        ></v-text-field>
-        <v-text-field
-          v-model="password.value.value"
-          type="password"
-          class="mb-4"
-          label="Password"
-          :error-messages="password.errorMessage.value || errorMessage"
-        ></v-text-field>
-        <v-checkbox
-          v-model="checkbox.value.value"
-          label="RememberMe"
-        ></v-checkbox>
-
-        <v-btn class="me-4" type="submit"> Login </v-btn>
-
-        <v-btn @click="redirectToSignup"> SignUp </v-btn>
-      </form>
-    </v-card>
-  </v-sheet>
+  <v-container fluid style="margin-top: 5%">
+    <v-row justify="center">
+      <v-col cols="10" md="6" lg="4">
+        <v-card
+          class="mx-auto pa-6 pb-8"
+          elevation="8"
+          rounded="lg"
+          max-width="448"
+        >
+          <div class="text-subtitle-1 text-medium-emphasis">Account</div>
+          <v-form ref="formRef" @submit.prevent="submit">
+            <v-text-field
+              v-model="email.value.value"
+              @input="clearErrorMessage"
+              :error-messages="email.errorMessage.value || errorMessage"
+              prepend-inner-icon="mdi-email-outline"
+              color="green"
+              placeholder="Email address"
+              class="mb-2"
+              variant="outlined"
+              type="email"
+            ></v-text-field>
+            <div class="text-subtitle-1 text-medium-emphasis">Password</div>
+            <a
+              class="text-caption text-decoration-none text-blue"
+              href="#"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Forgot login password?
+            </a>
+            <v-text-field
+              v-model="password.value.value"
+              @input="clearErrorMessage"
+              :error-messages="password.errorMessage.value || errorMessage"
+              prepend-inner-icon="mdi-lock-outline"
+              :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="visible ? 'email' : 'password'"
+              placeholder="Enter your password"
+              class="mb-2"
+              variant="outlined"
+              @click:append-inner="visible = !visible"
+            ></v-text-field>
+            <v-checkbox
+              style="margin: 0; padding: 0"
+              v-model="checkbox.value.value"
+              label="Keep me signed in"
+              type="checkbox"
+            ></v-checkbox>
+            <v-btn color="primary" dark block type="submit">Login</v-btn>
+            <v-card-text class="text-center mt-2">
+              <a
+                class="text-blue text-decoration-none login-link"
+                @click="redirectToSignup"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
+              </a>
+            </v-card-text>
+          </v-form>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -42,20 +79,21 @@ export default {
         email(value) {
           const pattern =
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          return pattern.test(value) || 'Must be a valid e-mail.'
+          return pattern.test(value) || 'Must be a valid e-mail'
         },
         password(value) {
           if (value?.length >= 1) return true
-          return 'Password length needs to be at least 6.'
+          return 'Password required'
         }
       }
     })
 
+    const visible = ref(false)
+    const formRef = ref(null)
     const email = useField('email')
     const password = useField('password')
     const checkbox = useField('checkbox')
     const errorMessage = ref('')
-
     watch(
       () => store.getters.errorMessage,
       newVal => {
@@ -63,6 +101,12 @@ export default {
       }
     )
     const submit = handleSubmit(values => {
+      if (formRef.value) {
+        const isFormValid = formRef.value.validate()
+        if (isFormValid.valid === false) {
+          return
+        }
+      }
       try {
         store.dispatch('login', {
           username: values.email,
@@ -90,7 +134,11 @@ export default {
       return errorMessage.value
     })
     const redirectToSignup = () => {
+      store.state.errorMessage = ''
       router.push('/signup')
+    }
+    const clearErrorMessage = () => {
+      store.dispatch('setErrorMessage', '')
     }
 
     return {
@@ -98,8 +146,10 @@ export default {
       password,
       checkbox,
       errorMessage: computedErrorMessage,
+      visible,
       submit,
-      redirectToSignup
+      redirectToSignup,
+      clearErrorMessage
     }
   }
 }
@@ -107,5 +157,9 @@ export default {
 <style scoped>
 ::v-deep .v-label {
   margin: 0 !important;
+}
+.login-link:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

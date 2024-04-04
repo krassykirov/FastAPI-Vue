@@ -1,46 +1,68 @@
 <template>
-  <v-container fluid>
+  <v-container fluid style="margin-top: 5%">
     <v-row justify="center">
-      <v-col cols="12" md="8" lg="6">
-        <v-card class="elevation-12">
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Sign Up</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn text @click="redirectToLogin">Login</v-btn>
-          </v-toolbar>
-          <v-card-text>
-            <v-form @submit.prevent="submitForm">
-              <v-text-field
-                v-model="email.value"
-                label="E-mail"
-                class="mb-4"
-                type="email"
-                :rules="emailRules"
-              ></v-text-field>
-              <v-text-field
-                v-model="password.value"
-                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                :error-messages="errorMessage"
-                :type="show1 ? 'text' : 'password'"
-                class="mb-4"
-                label="Password"
-                :rules="passwordRules"
-                @click:append="show1 = !show1"
-              ></v-text-field>
-              <v-text-field
-                v-model="password2.value"
-                :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-                :error-messages="errorMessage"
-                :type="show2 ? 'text' : 'password'"
-                class="mb-4"
-                label="Repeat Password"
-                :rules="confirmPasswordRules"
-                @click:append="show2 = !show2"
-              ></v-text-field>
-              <v-btn color="primary" dark type="submit">Sign Up</v-btn>
-              <v-btn color="primary" @click="redirectToLogin">Login</v-btn>
-            </v-form>
-          </v-card-text>
+      <v-col cols="10" md="6" lg="4">
+        <v-card
+          class="mx-auto pa-6 pb-8"
+          elevation="8"
+          rounded="lg"
+          max-width="448"
+        >
+          <div class="text-subtitle-1 text-medium-emphasis">Account</div>
+          <v-form ref="formSignup" @submit.prevent="submitForm">
+            <v-text-field
+              v-model="email.value"
+              @input="clearErrorMessage"
+              :error-messages="errorMessage"
+              prepend-inner-icon="mdi-email-outline"
+              placeholder="Email address"
+              class="mb-2"
+              variant="outlined"
+              type="email"
+              :rules="emailRules"
+              color="green"
+            ></v-text-field>
+            <v-text-field
+              v-model="password.value"
+              @input="clearErrorMessage"
+              prepend-inner-icon="mdi-lock-outline"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              variant="outlined"
+              :type="show1 ? 'email' : 'password'"
+              class="mb-2"
+              label="Password"
+              :rules="passwordRules"
+              @click:append="show1 = !show1"
+            ></v-text-field>
+            <v-text-field
+              v-model="password2.value"
+              @input="clearErrorMessage"
+              prepend-inner-icon="mdi-lock-outline"
+              :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+              variant="outlined"
+              :type="show2 ? 'email' : 'password'"
+              class="mb-2"
+              label="Repeat Password"
+              :rules="confirmPasswordRules"
+              @click:append="show2 = !show2"
+            ></v-text-field>
+            <!-- prettier-ignore -->
+            <v-btn color="primary" dark block type="submit">Create Account</v-btn>
+            <!-- prettier-ignore -->
+            <v-card-text color="green" class="text-center mt-2 success-text" v-if="successMessage">
+              {{ successMessage }}
+            </v-card-text>
+            <v-card-text class="text-center mt-2">
+              <a
+                class="text-blue text-decoration-none login-link"
+                @click="redirectToLogin"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Login <v-icon icon="mdi-chevron-right"></v-icon>
+              </a>
+            </v-card-text>
+          </v-form>
         </v-card>
       </v-col>
     </v-row>
@@ -48,7 +70,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import router from '@/router'
 import store from '@/store/index.js'
 import config from '@/config'
@@ -58,6 +79,7 @@ export default {
     return {
       show1: false,
       show2: false,
+      successMessage: '',
       email: { value: '' },
       password: { value: '' },
       password2: { value: '' },
@@ -79,8 +101,14 @@ export default {
     },
     passwordRules() {
       return [
-        v => v?.length >= 1 || 'Password must be at least 6 characters',
-        v => !!v || 'Password is required'
+        v => v?.length >= 1 || 'Password is required',
+        v => !!v || 'Password is required',
+        v => {
+          if (this.password2.value) {
+            return v === this.password2.value || 'Passwords do not match'
+          }
+          return true
+        }
       ]
     },
     confirmPasswordRules() {
@@ -92,6 +120,11 @@ export default {
   },
   methods: {
     async submitForm() {
+      const isFormValid = await this.$refs.formSignup.validate()
+      console.log('isFormValid', isFormValid)
+      if (isFormValid.valid === false) {
+        return
+      }
       const formData = new URLSearchParams()
       formData.append('username', this.email.value)
       formData.append('password', this.password.value)
@@ -100,22 +133,35 @@ export default {
         store.dispatch('setErrorMessage', 'Passwords do not match')
         return
       }
-      try {
-        const response = await axios.post(
-          `${config.backendEndpoint}/signup`,
-          formData
-        )
-        if (response.status === 200) {
-          router.push('/login')
-        } else {
-          throw new Error(response.data.detail || 'An error occurred.')
-        }
-      } catch (error) {
-        this.errorMessage = error.message || 'An error occurred.'
-      }
+      fetch(`${config.backendEndpoint}/signup`, {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => {
+          if (response.ok) {
+            this.successMessage = 'Sign-up successful!'
+          } else if (response.status === 403) {
+            store.dispatch(
+              'setErrorMessage',
+              'This Email is taken. Try another.'
+            )
+            // this.email.value = ''
+            this.password.value = ''
+            this.password2.value = ''
+            return
+          } else {
+            throw new Error(`HTTP error! Status: ${response.status}`)
+          }
+        })
+        .catch(error => {
+          throw error
+        })
     },
     redirectToLogin() {
       router.push('/login')
+    },
+    clearErrorMessage() {
+      store.dispatch('setErrorMessage', '')
     }
   },
   watch: {
@@ -125,3 +171,13 @@ export default {
   }
 }
 </script>
+<style scoped>
+.success-text {
+  color: green;
+  font-size: 18px;
+}
+.login-link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+</style>
