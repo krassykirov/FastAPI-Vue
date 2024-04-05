@@ -12,7 +12,8 @@
             aria-expanded="false"
             @click="goHome"
           >
-            <i class="fa-solid fa-shop" style="font-size: 0.9rem">&nbsp;HOME</i>
+            <v-icon left style="font-size: 1.5rem">mdi-home-outline</v-icon>
+            <!-- <i class="fa fa-shop" style="font-size: 0.9rem">&nbsp;HOME</i> -->
           </button>
         </li>
         <ul
@@ -22,15 +23,17 @@
           <div class="text-center">
             <v-menu open-on-hover>
               <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" width="150px" height="30px">
+                <v-btn v-bind="props" width="200px" height="30px">
+                  <v-icon start>mdi-menu</v-icon>
                   CATEGORIES
                 </v-btn>
               </template>
-              <v-list width="150px" style="margin-top: 3px">
+              <v-list width="200px" style="margin-top: 3px">
                 <v-list-item
                   v-for="(category, index) in categories"
                   :key="index"
                   @click="selectCategory(category[0])"
+                  :prepend-icon="getCategoryIcon(category[0])"
                 >
                   <v-list-item-title class="category-item">{{
                     category[0]
@@ -608,11 +611,22 @@ export default {
     }
   },
   methods: {
-    showDrawer() {
-      this.drawerVisible = true
-    },
-    hideDrawer() {
-      this.drawerVisible = false
+    getCategoryIcon(categoryName) {
+      // Map category names to icons here
+      switch (categoryName.toLowerCase()) {
+        case 'laptops':
+          return 'mdi-laptop'
+        case 'smartphones':
+          return 'mdi-cellphone'
+        case 'tablets':
+          return 'mdi-tablet'
+        case 'smartwatches':
+          return 'mdi-watch'
+        case 'tv':
+          return 'mdi-television'
+        default:
+          return ''
+      }
     },
     goHome() {
       this.$router.push({ name: 'NewHome' })

@@ -247,7 +247,7 @@
                 style="width: 650px; margin-bottom: 2px; margin-left: 10%"
                 v-if="!userHasWrittenReview()"
               >
-                <div class="row">
+                <div class="row" style="margin-left: 2%; margin-top: 1.5%">
                   <div class="col-12">
                     <div class="rating" style="padding: 10px">
                       <input
@@ -296,7 +296,7 @@
                             @click="addReview"
                             style="
                               width: 350px;
-                              margin-left: 17%;
+                              margin-left: 18%;
                               background-color: #efe8e8;
                             "
                             >Submit</v-btn

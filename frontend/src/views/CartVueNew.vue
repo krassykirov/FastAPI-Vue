@@ -29,132 +29,100 @@
       />
     </nav>
     <!-- <MessageArea /> -->
-    <div class="container-fluid mt-5" style="margin-left: 15%">
-      <div
-        class="row"
-        style="
-          display: -ms-flexbox;
-          display: flex;
-          -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-          margin: 0 -16px;
-        "
-      >
-        <div class="col-md-8" style="max-width: 1200px">
-          <h3 class="text-center mb-4" style="margin-right: 3%">
-            <i class="bi bi-cart-fill" style="font-size: 1.6rem"> </i>
-            Shopping Cart
-          </h3>
-
-          <table class="table table-hover">
-            <thead>
-              <tr style="height: auto">
-                <th scope="col"></th>
-                <th scope="col" style="padding-left: 25%">Product</th>
-                <th scope="col">Price</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="product in cart" :key="product.id">
-                <td>
-                  <img
-                    :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
-                    class="img-fluid"
-                    alt="Product Image"
-                    style="max-width: 50px; max-height: 50px"
-                  />
-                </td>
-                <td
+    <v-container fluid>
+      <v-row justify="center">
+        <v-col cols="12" md="8">
+          <v-card class="px-6 py-8" elevation="2" outlined>
+            <h3 class="text-center mb-4">
+              <v-icon size="24" class="mr-2">mdi-cart-outline</v-icon>
+              Shopping Cart
+            </h3>
+            <v-row v-for="product in cart" :key="product.id" align="center">
+              <v-col cols="2">
+                <v-img
+                  :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
+                  max-width="96"
+                  max-height="96"
+                  contain
+                ></v-img>
+              </v-col>
+              <v-col cols="4">
+                <div
+                  class="text-overline"
                   @click="redirectToItemFromCart(product.id)"
                   style="cursor: pointer"
                 >
                   {{ product.name }}
-                </td>
+                </div>
+              </v-col>
+              <v-col cols="2">
                 <!-- prettier-ignore -->
-                <td style="width: 100px">
-                  <span style="font-size: 1rem;">$</span>
-                  <span v-if="product.discount_price" style="font-size: 1rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
-                  <span v-if="product.discount_price" style="font-size: 0.7rem; position: relative; top: -0.4em;"> {{ formattedPrice(product.discount_price).decimalPart }}</span>
-                </td>
-                <td class="align-left text-left">
-                  <div
-                    class="input-group"
-                    style="max-width: 100px; margin-left: 55px; padding: 0"
+                <div>
+                  <span style="font-size: 0.9rem;">$</span>
+                  <span v-if="product.discount_price" style="font-size: 0.9rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
+                  <span v-if="product.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
+                </div>
+              </v-col>
+              <v-col cols="2">
+                <v-row justify="center" align="center">
+                  <v-btn
+                    style="width: 25px; height: 25px; margin-right: 7px"
+                    @click="updateQuantity(product.id, product.quantity - 1)"
+                    icon
+                    ><v-icon style="font-size: 0.8rem">mdi-minus</v-icon></v-btn
                   >
-                    <button
-                      class="btn btn-outline-secondary btn-sm"
-                      style="font-size: 12px; width: 25px; height: 31px"
-                      type="button"
-                      @click="updateQuantity(product.id, product.quantity - 1)"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      class="form-control text-center align-middle"
-                      min="1"
-                      max="3"
-                      :value="product.quantity"
-                      disabled
-                      style="
-                        text-align: center;
-                        font-size: 14px;
-                        max-width: 30px;
-                        max-height: 31px;
-                        padding-left: 8px;
-                      "
-                    />
-                    <button
-                      class="btn btn-outline-secondary btn-sm"
-                      style="font-size: 12px; width: 25px; height: 31px"
-                      type="button"
-                      @click="updateQuantity(product.id, product.quantity + 1)"
-                    >
-                      +
-                    </button>
-                  </div>
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btn-sm"
-                    @click="removeFromCart(product.id)"
+                  <div>{{ product.quantity }}</div>
+                  <v-btn
+                    style="width: 25px; height: 25px; margin-left: 7px"
+                    @click="updateQuantity(product.id, product.quantity + 1)"
+                    icon
+                    ><v-icon style="font-size: 0.8rem">mdi-plus</v-icon></v-btn
                   >
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div>
-            <!-- prettier-ignore -->
-            <h4>
-              <span style="font-size: 1.3rem;">$</span>
-              <span style="font-size: 1.3rem;">{{ formatTotal(total).integerPart }}</span>
-              <span style="font-size: 0.8rem; position: relative; top: -0.6em;">.{{ formatTotal(total).decimalPart }}</span>
-            </h4>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-toggle="modal"
-              data-target="#exampleModal"
-            >
-              Proceed to Payment
-            </button>
-          </div>
-          <div class="delivery my-4">
-            <p class="font-weight-bold mb-0">
-              <span><i class="fa-solid fa-truck"></i></span>
-              <b> Delivery done in 3 days from date of purchase</b>
-            </p>
-            <p class="text-secondary">Order now to get this product delivery</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
+                </v-row>
+              </v-col>
+              <v-col cols="2">
+                <!-- prettier-ignore -->
+                <v-btn @click="removeFromCart(product.id)" icon color="error"
+                style="width: 30px; height: 30px"
+                  ><v-icon style="font-size: 0.9rem">mdi-trash-can-outline</v-icon></v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-divider class="my-4"></v-divider>
+            <v-row align="center">
+              <v-col cols="6">
+                <!-- prettier-ignore -->
+                <div class="text-h6">
+                  Total:
+                  <span style="font-size: 1.3rem;">$</span>
+                  <span style="font-size: 1.3rem;">{{ formatTotal(total).integerPart }}</span>
+                  <span style="font-size: 0.8rem; position: relative; top: -0.6em;">.{{ formatTotal(total).decimalPart }}</span>
+                </div>
+              </v-col>
+              <v-col cols="6">
+                <!-- prettier-ignore -->
+                <v-btn @click="proceedToPayment" color="primary" dark
+                  type="button"
+                  class="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#exampleModal"
+                  >Proceed to Payment</v-btn
+                >
+              </v-col>
+            </v-row>
+            <div class="delivery my-4">
+              <p class="font-weight-bold">
+                <v-icon size="18" class="mr-1">mdi-truck-delivery</v-icon>
+                Delivery done in 3 days from date of purchase
+              </p>
+              <p class="text-caption">
+                Order now to get this product delivered
+              </p>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
     <!-- Modal -->
     <div
       class="modal fade"
