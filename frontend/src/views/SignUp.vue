@@ -62,7 +62,7 @@
             <!-- prettier-ignore -->
             <v-btn color="primary" dark block type="submit">Create Account</v-btn>
             <!-- prettier-ignore -->
-            <v-card-text color="green" class="text-center mt-2 success-text" v-if="successMessage">
+            <v-card-text v-if="successMessage" color="green" class="text-center mt-2 success-text" style="font-size:14px">
               {{ successMessage }}
             </v-card-text>
             <!-- prettier-ignore -->

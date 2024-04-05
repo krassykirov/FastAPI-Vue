@@ -130,6 +130,9 @@
       <!-- Create Profile -->
       <div class="container" style="margin-top: 2%; width: 480px">
         <v-card v-if="!profile">
+          <v-card-title class="bg-cyan-darken-1">
+            <span class="text-h5">{{ user }}</span>
+          </v-card-title>
           <v-card-text>
             <v-text-field
               v-model="newProfile.email"
