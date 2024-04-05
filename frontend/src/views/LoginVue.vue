@@ -8,7 +8,12 @@
           rounded="lg"
           max-width="448"
         >
-          <div class="text-subtitle-1 text-medium-emphasis">Account</div>
+          <!-- prettier-ignore -->
+          <div class="d-flex justify-center">
+            <v-icon class="display-3">mdi-account-circle</v-icon>
+          </div>
+          <!-- <div class="text-subtitle-1 text-medium-emphasis" style="text-align: center; margin-bottom: 3%">Login</div> -->
+          <div class="text-subtitle-1 text-medium-emphasis">Email</div>
           <v-form ref="formRef" @submit.prevent="submit">
             <v-text-field
               v-model="email.value.value"
@@ -54,13 +59,14 @@
             ></v-checkbox>
             <v-btn color="primary" dark block type="submit">Login</v-btn>
             <v-card-text class="text-center mt-2">
+              Don't have an account?
               <a
                 class="text-blue text-decoration-none login-link"
                 @click="redirectToSignup"
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
+                Sign up here <v-icon icon="mdi-login-variant"></v-icon>
               </a>
             </v-card-text>
           </v-form>
@@ -87,9 +93,6 @@ export default {
         const user_id = jwtDecode(accessToken).user_id
         store.commit('UPDATE_USER', user)
         store.commit('UPDATE_USER_ID', user_id)
-      } else {
-        store.state.errorMessage = 'Session Expired. Please log in again'
-        router.push('/login')
       }
     }
   },

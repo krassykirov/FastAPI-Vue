@@ -53,41 +53,48 @@
           </template>
           <!-- Update Profile -->
         </v-card-item>
-        <v-sheet class="mx-auto" width="500px">
+        <v-sheet class="mx-auto" width="480px">
           <v-form ref="form" v-if="editingProfile">
             <v-text-field
               v-model="editedProfile.number"
               label="Telephone number"
+              :rules="phoneRules"
               type="tel"
-              required
               prepend-inner-icon="mdi-phone"
+              :placeholder="profile.number"
             ></v-text-field>
             <v-text-field
               v-model="editedProfile.email"
+              :rules="emailRules"
               label="Secondary Email"
               type="email"
               prepend-inner-icon="mdi-email"
-              required
+              :placeholder="profile.email"
             ></v-text-field>
             <v-text-field
               v-model="editedProfile.address"
               label="Address"
               type="address"
               prepend-inner-icon="mdi-map-marker"
-              required
+              :placeholder="profile.address"
             ></v-text-field>
             <v-file-input
               accept="image/*"
               label="Avatar Photo"
+              prepend-icon="mdi-folder-open"
               type="file"
               @change="handleFileChange"
-              required
             ></v-file-input>
-            <v-row justify="center" align="center">
-              <v-col cols="5">
+            <v-img
+              :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
+              class="imng-fluid"
+              style="width: 90%; max-height: 200px"
+            ></v-img>
+            <v-row justify="center" align="center" style="margin-top: 5px">
+              <v-col cols="6">
                 <v-btn width="100%" @click="updateProfile">Save</v-btn>
               </v-col>
-              <v-col cols="5">
+              <v-col cols="6">
                 <v-btn width="100%" @click="cancelProfile">Cancel</v-btn>
               </v-col>
             </v-row>
@@ -113,24 +120,28 @@
             >
               <v-img
                 :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
+                class="imng-fluid"
+                style="width: 90%; max-height: 200px"
               ></v-img>
             </v-list-item>
           </v-list>
         </v-sheet>
       </v-card>
       <!-- Create Profile -->
-      <div class="container" style="margin-top: 2%; width: 500px">
+      <div class="container" style="margin-top: 2%; width: 480px">
         <v-card v-if="!profile">
           <v-card-text>
             <v-text-field
               v-model="newProfile.email"
               prepend-inner-icon="mdi-email"
+              :rules="emailRules"
               label="Secondary Email"
               type="email"
               required
             ></v-text-field>
             <v-text-field
               v-model="newProfile.number"
+              :rules="phoneRules"
               label="Number"
               type="number"
               prepend-inner-icon="mdi-phone"
@@ -197,6 +208,35 @@ export default {
     }
   },
   computed: {
+    // isEmailValid() {
+    //   return this.emailRules.every(rule => rule(this.email.value) === true)
+    // },
+    // isPhoneValid() {
+    //   return this.phoneRules.every(rule => rule(this.number.value) === true)
+    // },
+    emailRules() {
+      return [
+        v => {
+          if (!v) return true
+          return (
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+              v
+            ) || 'Must be a valid e-mail.'
+          )
+        }
+      ]
+    },
+    phoneRules() {
+      return [
+        v => {
+          if (!v) return true
+          return (
+            /^[\d-]{1,15}$/.test(v) ||
+            'Must be a valid phone number (up to 15 digits, e.g 123-456-789, 12345678).'
+          )
+        }
+      ]
+    },
     user() {
       return this.$store.state.user
     },
@@ -220,6 +260,9 @@ export default {
     this.$store.dispatch('getProfile')
   },
   methods: {
+    clearErrorMessage() {
+      this.$store.dispatch('setErrorMessage', '')
+    },
     cancelProfile() {
       this.editingProfile = false
     },
@@ -244,22 +287,24 @@ export default {
       })
     },
     async updateProfile() {
+      if (
+        !this.editedProfile.email &&
+        !this.editedProfile.number &&
+        !this.editedProfile.address &&
+        !this.editedProfile.file
+      ) {
+        console.log('this.file', this.file)
+        return
+      }
       const formData = new FormData()
       formData.append('email', this.editedProfile.email)
       formData.append('number', this.editedProfile.number)
       formData.append('address', this.editedProfile.address)
       formData.append('file', this.editedProfile.file)
-
       try {
         const response = await axios.post(
           `${config.backendEndpoint}/api/profile/update_profile`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${this.$store.state.accessToken}`
-            }
-          }
+          formData
         )
         const data = response.data
         const user = this.$store.getters.user
@@ -279,17 +324,22 @@ export default {
       }
     },
     createProfile() {
+      if (
+        !this.newProfile.email ||
+        !this.newProfile.number ||
+        !this.newProfile.address ||
+        !this.newProfile.avatar
+      ) {
+        return
+      }
       const formData = new FormData()
       formData.append('email', this.newProfile.email)
       formData.append('number', this.newProfile.number)
       formData.append('address', this.newProfile.address)
       formData.append('file', this.newProfile.avatar)
-
-      // Perform an AJAX request using axios
       axios
         .post(`${config.backendEndpoint}/api/profile/create_profile`, formData)
-        .then(response => {
-          console.log('response Profile', response)
+        .then(() => {
           this.newProfile = {
             email: '',
             number: '',
@@ -300,8 +350,7 @@ export default {
         })
         .catch(error => {
           if (error.response && error.response.status === 403) {
-            // Handle specific error status (e.g., item with the same name already exists)
-            // You can show an error message or perform other actions here
+            // Handle specific error status
           } else {
             // Handle other types of errors
           }

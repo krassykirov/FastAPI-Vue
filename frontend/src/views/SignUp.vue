@@ -8,7 +8,15 @@
           rounded="lg"
           max-width="448"
         >
-          <div class="text-subtitle-1 text-medium-emphasis">Account</div>
+          <div class="d-flex justify-center">
+            <v-icon class="display-3">mdi-account-circle</v-icon>
+          </div>
+          <div
+            class="text-subtitle-1 text-medium-emphasis"
+            style="text-align: center; margin-bottom: 3%"
+          >
+            Create your Account
+          </div>
           <v-form ref="formSignup" @submit.prevent="submitForm">
             <v-text-field
               v-model="email.value"
@@ -36,7 +44,7 @@
               class="mb-2"
               label="Password"
               :rules="passwordRules"
-              @click:append="show1 = !show1"
+              @click:append-inner="show1 = !show1"
             >
             </v-text-field>
             <v-text-field
@@ -49,7 +57,7 @@
               class="mb-2"
               label="Repeat Password"
               :rules="confirmPasswordRules"
-              @click:append="show2 = !show2"
+              @click:append-inner="show2 = !show2"
             ></v-text-field>
             <!-- prettier-ignore -->
             <v-btn color="primary" dark block type="submit">Create Account</v-btn>
@@ -57,14 +65,16 @@
             <v-card-text color="green" class="text-center mt-2 success-text" v-if="successMessage">
               {{ successMessage }}
             </v-card-text>
+            <!-- prettier-ignore -->
             <v-card-text class="text-center mt-2">
+              Already have an account?
               <a
                 class="text-blue text-decoration-none login-link"
                 @click="redirectToLogin"
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Login <v-icon icon="mdi-chevron-right"></v-icon>
+                Login here <v-icon icon="mdi-login-variant"></v-icon>
               </a>
             </v-card-text>
           </v-form>
@@ -146,7 +156,7 @@ export default {
       })
         .then(response => {
           if (response.ok) {
-            this.successMessage = 'Sign-up successful!'
+            this.successMessage = 'Sign-up successful! You can now login'
           } else if (response.status === 403) {
             store.dispatch(
               'setErrorMessage',

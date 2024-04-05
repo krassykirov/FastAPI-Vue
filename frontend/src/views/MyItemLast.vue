@@ -292,7 +292,15 @@
                           <div class="col-6">
                             <div class="pull-left"></div>
                           </div>
-                          <v-btn @click="addReview">Submit</v-btn>
+                          <v-btn
+                            @click="addReview"
+                            style="
+                              width: 350px;
+                              margin-left: 17%;
+                              background-color: #efe8e8;
+                            "
+                            >Submit</v-btn
+                          >
                         </div>
                       </div>
                     </div>
@@ -366,8 +374,8 @@
       data-bs-autohide="false"
       style="
         position: fixed;
-        top: 70%;
-        left: 30%;
+        top: 50%;
+        left: 50%;
         transform: translate(0, -50%);
         width: 250px;
         z-index: 1000;
@@ -377,7 +385,7 @@
         <div
           class="toast-body bg-light"
           id="cartToastBody2"
-          style="font-weight: 900; font: 1.1em"
+          style="font-weight: 900; color: grey"
         ></div>
       </div>
     </div>
@@ -649,7 +657,7 @@ export default {
       const review = this.$refs.commentArea.value
       const rating = document.querySelector('input[name="rating"]:checked')
       if (!review || !rating) {
-        const toastContent = 'Please Write a review and select a rating'
+        const toastContent = 'Review and rating required'
         const toastElement = new bootstrap.Toast(
           document.getElementById('cartToast2'),
           {
@@ -891,7 +899,7 @@ text-color {
 
 .pagination .page-item.active a {
   background-color: #007bff;
-  color: #fff;
+  color: #efe8e8;
 }
 .overall-rating {
   font-size: 1em !important;
