@@ -262,7 +262,7 @@
         <v-menu open-on-hover>
           <template v-slot:activator="{ props }">
             <!-- prettier-ignore -->
-            <v-avatar v-bind="props">
+            <v-avatar v-bind="props" size="large">
               <v-img
                 v-if="profile"
                 :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"

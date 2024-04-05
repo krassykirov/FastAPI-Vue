@@ -82,17 +82,14 @@ import store from '@/store/index.js'
 import router from '@/router'
 import { useField, useForm } from 'vee-validate'
 import VueCookies from 'vue-cookies'
-import { jwtDecode } from 'jwt-decode'
+// import { jwtDecode } from 'jwt-decode'
 
 export default {
-  created() {
-    if (!store.state.accessToken) {
+  beforeMount() {
+    if (this.$store.state.accessToken) {
       const accessToken = VueCookies.get('access_token')
       if (accessToken) {
-        const user = jwtDecode(accessToken).sub
-        const user_id = jwtDecode(accessToken).user_id
-        store.commit('UPDATE_USER', user)
-        store.commit('UPDATE_USER_ID', user_id)
+        router.push({ name: 'NewHome' })
       }
     }
   },
@@ -152,7 +149,7 @@ export default {
       }
     })
     const computedErrorMessage = computed(() => {
-      return errorMessage.value
+      return store.getters.errorMessage
     })
     const isEmailValid = computed(() => {
       return email.meta.valid

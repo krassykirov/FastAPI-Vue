@@ -290,8 +290,15 @@ export default {
   },
   mounted() {
     this.isLoading = true
-    if (this.filteredProducts.length > 0 || this.filteredProducts.length > 0) {
+    if (this.selectedProducts.length > 0) {
       this.isLoading = false
+    }
+  },
+  watch: {
+    selectedProducts() {
+      if (this.selectedProducts && this.selectedProducts.length > 0) {
+        this.isLoading = false
+      }
     }
   },
   created() {
