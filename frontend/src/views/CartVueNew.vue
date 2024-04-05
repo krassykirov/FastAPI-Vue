@@ -84,7 +84,7 @@
                 <!-- prettier-ignore -->
                 <v-btn @click="removeFromCart(product.id)" icon color="error"
                 style="width: 30px; height: 30px"
-                  ><v-icon style="font-size: 0.9rem">mdi-trash-can-outline</v-icon></v-btn
+                  ><v-icon style="font-size: 0.85rem">mdi-trash-can-outline</v-icon></v-btn
                 >
               </v-col>
             </v-row>

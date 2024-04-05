@@ -23,7 +23,7 @@
           <div class="text-center">
             <v-menu open-on-hover>
               <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" width="200px" height="30px">
+                <v-btn elevation="0" v-bind="props" width="200px" height="30px">
                   <v-icon start>mdi-menu</v-icon>
                   CATEGORIES
                 </v-btn>
@@ -261,6 +261,7 @@
       <div class="text-center" style="margin-left: 5%">
         <v-menu open-on-hover>
           <template v-slot:activator="{ props }">
+            <!-- prettier-ignore -->
             <v-avatar v-bind="props">
               <v-img
                 v-if="profile"
@@ -637,7 +638,6 @@ export default {
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: 'auto' })
       })
-      this.hideCategories()
     },
     goToAllOffers() {
       this.$router.push({ name: 'hometest' })
@@ -645,7 +645,6 @@ export default {
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: 'auto' })
       })
-      this.hideCategories()
     },
     formatTotal(price) {
       const [integerPart, decimalPart] = price.toString().split('.')
@@ -672,7 +671,6 @@ export default {
         .catch(error => {
           throw error
         })
-      this.hideCategories()
     },
     async search() {
       if (this.searchQuery.trim() === '' || !this.searchQuery) {
@@ -736,12 +734,6 @@ export default {
       this.$store.dispatch('setErrorMessage', 'You have been logged out')
       router.push('/login')
     },
-    showDropdown() {
-      this.isDropdownVisible = true
-    },
-    hideDropdown() {
-      this.isDropdownVisible = false
-    },
     handleMouseLeave() {
       this.hideCart()
     },
@@ -757,7 +749,7 @@ export default {
       setTimeout(() => {
         this.displayCart = false
         this.displayLiked = true
-      }, 100)
+      }, 300)
     },
     hideFavorites() {
       setTimeout(() => {
@@ -768,23 +760,7 @@ export default {
       setTimeout(() => {
         this.displayLiked = false
         this.displayCart = true
-      }, 100)
-    },
-    showCategories() {
-      setTimeout(() => {
-        this.displayCategories = false
-      }, 100)
-    },
-    hideCategories() {
-      setTimeout(() => {
-        this.displayCategories = true
-      }, 100)
-    },
-    handleMouseCatLeave() {
-      this.hideCategories()
-    },
-    toggleCategories() {
-      this.displayCategories = !this.displayCategories
+      }, 300)
     },
     createItem() {
       const formData = new FormData(document.getElementById('createItem'))
