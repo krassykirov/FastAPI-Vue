@@ -208,7 +208,8 @@
         </div>
       </template>
       <template v-if="selectedProducts && selectedProducts.length > 0">
-        <div class="product-list-category" id="mycard" style="margin-top: 0">
+        <!-- prettier-ignore -->
+        <v-container fluid class="product-list-category" id="mycard">
           <transition-group name="product-fade">
             <ProductList
               v-for="product in selectedProducts"
@@ -228,7 +229,7 @@
               style="justify-content: left"
             ></ProductList>
           </transition-group>
-        </div>
+        </v-container>
       </template>
       <template
         v-if="!isLoading && selectedProducts && selectedProducts.length === 0"
@@ -598,3 +599,13 @@ export default {
   }
 }
 </script>
+<style scoped>
+.product-list-category {
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-right: 8.5% !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  text-align: left;
+}
+</style>

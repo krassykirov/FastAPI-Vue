@@ -5,7 +5,7 @@ html {
   width: 100vw;
 }
 body {
-  /* overflow-x: hidden; */
+  /* overflow-x: hidden !important; */
   scrollbar-gutter: stable both-edges;
   background-color: #f2f6f6;
 }
@@ -52,12 +52,11 @@ padding-right: -17px;
 
 .card-img, .card-img-top, .card-img-bottom {
   width: 100% !important;
-  height: 13vw !important;
+  height: 12vw !important;
   object-fit: cover !important;
-  padding-left: 8px !important;
-  padding-right: 8px !important;
-  padding-bottom: 5px !important;
-  margin-top: 10px !important;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+  margin-top: 2px !important;
 }
 
 .card {
@@ -75,27 +74,20 @@ padding-right: -17px;
 }
 
 .price {
-  font-size: 1em;
-  color: #dc3545;
-  font-weight: 900;
-  margin-bottom: 1%;
-  margin-top: 1.5%;
+  font-size: 0.95rem !important;
+  color: #dc3545 !important;
+  font-weight: 900 !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
 }
 
 .decimal-part {
   font-size: 0.7em;
   vertical-align: top;
-  color: #dc3545;
+  color: #dc3545 !important;
 }
 
-.old-price {
-  font-size: 0.9rem;
-  text-decoration: line-through;
-  color: #404447;
-  margin-top: 1%;
-  margin-bottom: 1.2%;
-  margin-left: -25px;
-}
 .old-price2 {
   font-size: 0.9rem;
   color: #404447;
@@ -199,11 +191,6 @@ display: block;
   .rating:hover>input:checked~label:before {
   opacity: 0.4
   }
-  .price {
-  color: grey;
-  font-size: 22px;
-  }
-
   .card button:hover {
   opacity: 0.7;
   }
@@ -332,31 +319,29 @@ INPUT[type="checkbox"]:disabled {
 .filter-products-container {
   display: flex !important;
   flex-direction: column !important;
-  margin-left: 4.5% !important;
+  margin-left: 3.5% !important;
   margin-top: 0 !important;
   max-width: 250px !important;
 }
 
 .product-list {
-  padding-right: 0 !important;;
-  padding-left: 0 !important;;
-  width: 100% !important;
-  margin-left: 0 !important;;
-  margin-top: 0 !important;;
-  display: grid !important;;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-right: 8.5% !important;
+  display: grid !important;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   text-align: left;
 }
 
-.product-list-category {
-  padding-right: 0 !important;;
-  padding-left: 0 !important;;
-  margin-left: 0 !important;;
-  margin-top: 0 !important;;
-  display: grid !important;;
+/* .product-list-category {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+  display: grid !important;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   text-align: left;
-}
+} */
 
 .main-filter-container {
   width: 100% !important;

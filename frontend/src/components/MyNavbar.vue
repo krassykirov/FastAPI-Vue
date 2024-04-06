@@ -39,6 +39,12 @@
                     category[0]
                   }}</v-list-item-title>
                 </v-list-item>
+                <!-- prettier-ignore -->
+                <v-list-item prepend-icon="mdi mdi-devices" style="cursor: pointer" @click="goToAllProducts">
+                  <v-list-item-title class="category-item">
+                    All Products
+                  </v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
           </div>

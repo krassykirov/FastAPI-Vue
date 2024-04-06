@@ -28,95 +28,64 @@
         :favorites="favorites"
       />
     </nav>
-    <div class="container-fluid mt-5" style="margin-left: 10%">
-      <div
-        class="row"
-        style="
-          display: -ms-flexbox;
-          display: flex;
-          -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-          margin: 0 -16px;
-        "
-      >
-        <div class="col-md-8" style="max-width: 1200px; margin-left: 3%">
-          <h3 class="text-center mb-4" style="margin-left: 2%">
-            <i class="fa fa-heart red-color" style="font-size: 1.6rem"> </i>
-            Favorite Products
-          </h3>
-          <table class="table table-hover">
-            <tbody>
-              <tr v-for="product in favorites" :key="product.id">
-                <td style="padding-top: 1%">
-                  <img
-                    :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
-                    class="img-fluid"
-                    alt="Product Image"
-                    style="max-width: 270px; height: 150px; object-fit: cover"
-                  />
-                </td>
-                <td
-                  v-if="product"
-                  style="cursor: pointer; padding-top: 1%"
+    <v-container fluid>
+      <v-row justify="center" style="margin-top: 1%">
+        <v-col cols="12" md="6">
+          <v-card class="px-6 py-8" elevation="2" outlined>
+            <h3 class="text-center mb-4" style="margin-right: 15%">
+              <v-icon size="32" class="mr-2" color="red"
+                >mdi-heart-outline</v-icon
+              >
+              Favorite Products
+            </h3>
+            <v-row
+              v-for="product in favorites"
+              :key="product.id"
+              align="center"
+            >
+              <v-col cols="2">
+                <v-img
+                  :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
+                  max-width="96"
+                  max-height="96"
+                  contain
+                ></v-img>
+              </v-col>
+              <v-col cols="6">
+                <div
+                  class="text-overline"
                   @click="redirectToItemFromCart(product.id)"
+                  style="cursor: pointer"
                 >
-                  <h6>{{ truncateName(product.name, 45) }}</h6>
-                  <p
-                    style="
-                      font-size: 0.95em;
-                      padding-top: 3%;
-                      padding-right: 10%;
-                      padding-left: 10%;
-                      padding-bottom: 0;
-                    "
-                  >
-                    {{ truncateName(product.description, 200) }}
-                  </p>
-                  <p style="cursor: pointer">
-                    <span
-                      v-for="i in 5"
-                      :key="i"
-                      :class="getStarClasses(i, product.rating_float)"
-                    ></span>
-                    <span
-                      :id="'overall-rating' + product.id + '-float'"
-                      class="overall-rating"
-                      style="font-size: 0.9rem"
-                      >&nbsp;{{
-                        parseFloat(product.rating_float).toFixed(2)
-                      }}</span
-                    >
-                    <span
-                      :id="'overall-rating' + product.id"
-                      class="overall-rating2"
-                      style="font-size: 0.9rem"
-                    >
-                      ({{ product.review_number }})
-                    </span>
-                  </p>
-                </td>
+                  {{ product.name }}
+                </div>
+                <v-rating
+                  :model-value="product.rating_float"
+                  color="orange-darken-2"
+                  density="compact"
+                  size="small"
+                  half-increments
+                  readonly
+                ></v-rating>
+              </v-col>
+              <v-col cols="2">
                 <!-- prettier-ignore -->
-                <td style="padding-top: 5.3%; padding-right: 10px">
-                  <span style="font-size: 1.1rem;">$</span>
-                  <span v-if="product.discount_price" style="font-size: 1.1rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
-                  <span v-if="product.discount_price" style="font-size: 0.7rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
-                </td>
-                <td style="padding: 15px; padding-top: 5%">
-                  <button
-                    type="button"
-                    ref="addToCartButton"
-                    @click="addToCart(product)"
-                    class="btn btn-outline-primary btn-sm m-0"
-                  >
-                    <i class="bi bi-cart-fill"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+                <div>
+                      <span style="font-size: 0.9rem;">$</span>
+                      <span v-if="product.discount_price" style="font-size: 0.9rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
+                      <span v-if="product.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
+                    </div>
+              </v-col>
+              <v-col cols="1">
+                <!-- prettier-ignore -->
+                <v-btn @click="addToCart(product)" size="small" icon="mdi-cart-outline"></v-btn>
+              </v-col>
+            </v-row>
+            <v-divider class="my-4"></v-divider>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
     <h3 class="text-center mb-4" style="margin-right: 7%">
       You may also like..
     </h3>

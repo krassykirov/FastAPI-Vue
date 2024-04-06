@@ -30,10 +30,10 @@
     </nav>
     <!-- <MessageArea /> -->
     <v-container fluid>
-      <v-row justify="center">
-        <v-col cols="12" md="8">
+      <v-row justify="center" style="margin-top: 1%">
+        <v-col cols="12" md="6">
           <v-card class="px-6 py-8" elevation="2" outlined>
-            <h3 class="text-center mb-4">
+            <h3 class="text-center mb-4" style="margin-right: 15%">
               <v-icon size="24" class="mr-2">mdi-cart-outline</v-icon>
               Shopping Cart
             </h3>
@@ -46,7 +46,7 @@
                   contain
                 ></v-img>
               </v-col>
-              <v-col cols="4">
+              <v-col cols="5">
                 <div
                   class="text-overline"
                   @click="redirectToItemFromCart(product.id)"
@@ -54,6 +54,13 @@
                 >
                   {{ product.name }}
                 </div>
+                <v-rating
+                  :model-value="product.rating_float"
+                  color="orange-darken-2"
+                  density="compact"
+                  size="small"
+                  readonly
+                ></v-rating>
               </v-col>
               <v-col cols="2">
                 <!-- prettier-ignore -->
@@ -63,7 +70,7 @@
                   <span v-if="product.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
                 </div>
               </v-col>
-              <v-col cols="2">
+              <v-col cols="1">
                 <v-row justify="center" align="center">
                   <v-btn
                     style="width: 25px; height: 25px; margin-right: 7px"
@@ -80,12 +87,9 @@
                   >
                 </v-row>
               </v-col>
-              <v-col cols="2">
+              <v-col cols="1">
                 <!-- prettier-ignore -->
-                <v-btn @click="removeFromCart(product.id)" icon color="error"
-                style="width: 30px; height: 30px"
-                  ><v-icon style="font-size: 0.85rem">mdi-trash-can-outline</v-icon></v-btn
-                >
+                <v-btn @click="removeFromCart(product.id)" size="x-small" icon="mdi-trash-can-outline"></v-btn>
               </v-col>
             </v-row>
             <v-divider class="my-4"></v-divider>
