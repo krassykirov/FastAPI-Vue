@@ -58,7 +58,7 @@
     </div>
   </form>
   <div class="text-center" style="margin-left: 2%">
-    <v-menu open-on-hover>
+    <v-menu open-on-hover v-model="favoritesVisible" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
         <v-btn
           v-if="cart && accessToken"
@@ -70,10 +70,10 @@
           <span class="badge text-bg-danger rounded-pill">{{ favorites.length }}</span>
         </v-btn>
       </template>
-      <div class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px">
-        <v-list width="280px" style="padding: 0; margin: 0">
+      <div class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px" @mouseleave="handleFavoritestMenuLeave">
+        <v-list width="280px" style="padding: 0; margin: 0; max-height: 350px; overflow-y: auto">
           <v-card v-for="(item, index) in favorites" :key="index" width="x-small" class="mx-2 my-2">
-            <v-row no-gutters align="center">
+            <v-row no-gutters align="center" style="height: 70px">
               <v-col cols="3">
                 <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
               </v-col>
@@ -96,7 +96,7 @@
     </v-menu>
   </div>
   <div class="text-center" style="margin-left: 3%">
-    <v-menu open-on-hover>
+    <v-menu open-on-hover v-model="cartVisible" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
         <v-btn
           v-if="cart && accessToken"
@@ -108,10 +108,10 @@
           <span class="badge text-bg-primary rounded-pill">{{ cart.length }}</span>
         </v-btn>
       </template>
-      <div class="d-flex justify-center" style="margin-left: -70px; margin-top: 10px">
-        <v-list width="280px" style="padding: 0; margin: 0">
+      <div class="d-flex justify-center" style="margin-left: -70px; margin-top: 10px" @mouseleave="handleCartMenuLeave">
+        <v-list width="280px" style="padding: 0; margin: 0; max-height: 350px; overflow-y: auto">
           <v-card v-for="(item, index) in cart" :key="index" width="x-small" class="mx-2 my-2">
-            <v-row no-gutters align="center">
+            <v-row no-gutters align="center" style="height: 70px">
               <v-col cols="3">
                 <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
               </v-col>
@@ -449,7 +449,9 @@ export default {
       isDropdownVisible: false,
       backendEndpoint: `${config.backendEndpoint}`,
       searchQuery: '',
-      categoryName: null
+      categoryName: null,
+      favoritesVisible: false,
+      cartVisible: false
     }
   },
   computed: {
@@ -573,14 +575,22 @@ export default {
     redirectToFavorites() {
       this.$router.push({ name: 'ItemsInFavorites' })
     },
+    handleCartMenuLeave() {
+      this.cartVisible = false
+    },
+    handleFavoritestMenuLeave() {
+      this.favoritesVisible = false
+    },
     removeFromCart(itemId) {
       this.$store.dispatch('removeFromCart', itemId)
+      this.cartVisible = true
     },
     addTofavorites(product) {
       this.$store.dispatch('addTofavorites', product)
     },
     removeFromFavorites(itemId) {
       this.$store.dispatch('removeFromFavorites', itemId)
+      this.favoritesVisible = true
     },
     logout() {
       this.$store.state.accessToken = null
