@@ -3,20 +3,18 @@
     class="container-fluid"
     style="width: 100vw; position: sticky; margin: 0; padding: 0"
   >
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" style="height: 4em">
-      <MyNavbar
-        :cart="cart"
-        :favorites="favorites"
-        :total="total"
-        :user="user"
-        :user_id="user_id"
-        :profile="profile"
-        @addToCart="addToCart"
-        @removeFromCart="removeFromCart"
-        @redirectToItemFromNavbar="redirectToItemFromNavbar"
-      />
-    </nav>
-    <div class="submenu">
+    <MyNavbar
+      :cart="cart"
+      :favorites="favorites"
+      :total="total"
+      :user="user"
+      :user_id="user_id"
+      :profile="profile"
+      @addToCart="addToCart"
+      @removeFromCart="removeFromCart"
+      @redirectToItemFromNavbar="redirectToItemFromNavbar"
+    />
+    <div class="submenu2">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item" :class="{ active: isActiveLink('home') }">
@@ -590,12 +588,9 @@ export default {
           discountCondition
         )
       })
-
-      // Calculate the total number of pages based on the filtered and paginated products
       const totalPages = Math.ceil(
         filteredAndPaginatedProducts.length / itemsPerPage
       )
-
       return totalPages
     },
     visiblePages() {

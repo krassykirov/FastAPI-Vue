@@ -3,19 +3,17 @@
     class="container-fluid"
     style="width: 100vw; position: sticky; margin: 0; padding: 0"
   >
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" style="height: 4em">
-      <MyNavbar
-        :cart="cart"
-        :favorites="favorites"
-        :total="total"
-        :user="user"
-        :user_id="user_id"
-        :profile="profile"
-      />
-    </nav>
+    <MyNavbar
+      :cart="cart"
+      :favorites="favorites"
+      :total="total"
+      :user="user"
+      :user_id="user_id"
+      :profile="profile"
+    />
     <div
       class="container"
-      style="margin-top: 5%; margin-left: 7%; background-color: white"
+      style="margin-top: 0.7%; margin-left: 7%; background-color: white"
     >
       <CarouselMain carouselId="discount-products-carousel" />
     </div>

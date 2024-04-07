@@ -10,24 +10,13 @@
       text-align: center;
     "
   >
-    <nav
-      class="navbar navbar-expand-lg bg-white sticky-top navbar-light shadow-lg"
-      style="
-        height: 4em;
-        margin-left: 0;
-        margin-right: 0;
-        align-items: center;
-        text-align: center;
-      "
-    >
-      <NavBar
-        :cart="cart"
-        :user="user"
-        :total="total"
-        :favorites="favorites"
-        :profile="profile"
-      />
-    </nav>
+    <NavBar
+      :cart="cart"
+      :user="user"
+      :total="total"
+      :favorites="favorites"
+      :profile="profile"
+    />
     <div class="container my-5">
       <div class="row">
         <div class="col-md-5" style="min-height: 550px; max-height: 500px">
@@ -160,28 +149,7 @@
         style="font-weight: 900; font: 1.1em"
       ></div>
     </div>
-    <div
-      class="container"
-      style="margin-top: 6%; font-size: 2em"
-      v-if="item && item.category_id"
-    >
-      You may also like..
-    </div>
-    <div
-      v-if="item && item.category_id"
-      style="
-        margin-top: 2%;
-        padding: 0;
-        margin-left: 7% !important;
-        margin-bottom: 1%;
-      "
-    >
-      <Carousel
-        :items="getFilteredItems(item.category_id)"
-        :backendEndpoint="backendEndpoint"
-      />
-    </div>
-    <v-card>
+    <v-card style="margin-top: 10%">
       <v-tabs v-model="tab" bg-color="primary" align-tabs="center" fixed-tabs>
         <v-tab value="one">Reviews ({{ reviewsData.length }})</v-tab>
         <v-tab value="two">Specification</v-tab>
@@ -364,6 +332,27 @@
         </v-window>
       </v-card-text>
     </v-card>
+    <div
+      class="container"
+      style="margin-top: 2%; font-size: 2em"
+      v-if="item && item.category_id"
+    >
+      You may also like..
+    </div>
+    <div
+      v-if="item && item.category_id"
+      style="
+        margin-top: 2%;
+        padding: 0;
+        margin-left: 7% !important;
+        margin-bottom: 1%;
+      "
+    >
+      <Carousel
+        :items="getFilteredItems(item.category_id)"
+        :backendEndpoint="backendEndpoint"
+      />
+    </div>
     <Footer />
     <div
       class="toast bg-info"
@@ -784,7 +773,9 @@ text-color {
   max-height: 550px !important;
 }
 .main-img img {
-  width: 80% !important;
+  max-width: 90% !important;
+  width: auto !important;
+  height: auto !important;
   max-height: 550px !important;
 }
 

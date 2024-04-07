@@ -85,7 +85,7 @@
             >
             <span
               v-if="product.discount_price"
-              style="font-size: 0.7rem; color: red; position: relative; top: -0.4em"
+              style="font-size: 0.7rem; color: #dc3545; position: relative; top: -0.4em"
               >{{ formattedPrice(product.discount_price).decimalPart }}</span
             >
           </v-card-actions>

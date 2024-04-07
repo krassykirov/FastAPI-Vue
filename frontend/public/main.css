@@ -500,6 +500,19 @@ INPUT[type="checkbox"]:disabled {
     padding: 0 !important;
     margin-bottom: 0 !important;
   }
+  .submenu2 {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-left: 5.5%;
+    margin-top: 0.6%;
+    margin-bottom: 0;
+    height: 50px !important;
+    width: 100%;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+  }
   .breadcrumb {
     margin-top: 2%;
     margin-left: 0;

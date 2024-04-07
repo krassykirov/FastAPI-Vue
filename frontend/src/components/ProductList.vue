@@ -22,7 +22,7 @@
     </v-card-text>
     <!-- prettier-ignore -->
     <v-card-text class="text-center" style="padding-left: 10px; font-size: 12px; margin-top: 10px; max-height: 1.5em">
-      {{ truncateName(product.description, 75) }}
+      {{ truncateName(product.description, 70) }}
     </v-card-text>
     <v-card-actions class="pa-3" style="margin-top: 15px !important">
       <!-- prettier-ignore -->
@@ -79,7 +79,7 @@
         >
         <span
           v-if="product.discount_price"
-          style="font-size: 0.7rem; color: red; position: relative; top: -0.4em"
+          style="font-size: 0.7rem; color: #dc3545; position: relative; top: -0.4em"
           >{{ formattedPrice(product.discount_price).decimalPart }}</span
         >
       </v-card-actions>

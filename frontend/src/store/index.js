@@ -220,8 +220,7 @@ export default createStore({
       commit('removeAccessToken')
     },
     inactiveLogout({ state, dispatch }) {
-      dispatch('setErrorMessage', "You've been logged out due to inactivity")
-      // console.log('Youve been logged out due to inactivity')
+      dispatch('setErrorMessage', 'You have been logged out due to inactivity')
       this.lastActiveDate = new Date()
       this.inactiveTime = 0
       VueCookies.remove('access_token')
