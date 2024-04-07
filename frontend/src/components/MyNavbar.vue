@@ -1,59 +1,42 @@
 <template>
-  <div
-    class="container"
-    style="align-items: center; text-align: center; margin-left: 0"
-  >
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav">
-        <li class="nav-item" style="padding-left: 50px; margin-top: 8%">
-          <button
-            class="btn btn-light btn-sm"
-            aria-haspopup="true"
-            aria-expanded="false"
-            @click="goHome"
-          >
-            <v-icon left style="font-size: 1.5rem">mdi-home-outline</v-icon>
-            <!-- <i class="fa fa-shop" style="font-size: 0.9rem">&nbsp;HOME</i> -->
-          </button>
-        </li>
-        <ul
-          class="navbar-nav mb-1 mb-lg-0 categories-menu"
-          style="padding-left: 40%; margin-top: 8%"
-        >
-          <div class="text-center">
-            <v-menu open-on-hover>
-              <template v-slot:activator="{ props }">
-                <v-btn elevation="0" v-bind="props" width="200px" height="30px">
-                  <v-icon start>mdi-menu</v-icon>
-                  CATEGORIES
-                </v-btn>
-              </template>
-              <v-list width="200px" style="margin-top: 3px">
-                <v-list-item
-                  v-for="(category, index) in categories"
-                  :key="index"
-                  @click="selectCategory(category[0])"
-                  :prepend-icon="getCategoryIcon(category[0])"
-                >
-                  <v-list-item-title class="category-item">{{
-                    category[0]
-                  }}</v-list-item-title>
-                </v-list-item>
-                <!-- prettier-ignore -->
-                <v-list-item prepend-icon="mdi mdi-devices" style="cursor: pointer" @click="goToAllProducts">
+  <div style="margin-top: 0; width: 100%">
+    <!-- prettier-ignore -->
+    <v-toolbar>
+      <v-btn @click="goHome" style="font-size: 1.2rem; margin-top: 5px">
+        <v-icon left>mdi-home-outline</v-icon>
+      </v-btn>
+      <div class="text-center" style="padding-left: 5%">
+        <v-menu open-on-hover>
+          <template v-slot:activator="{ props }">
+            <v-btn elevation="0" v-bind="props" width="200px" height="30px">
+              <v-icon start>mdi-menu</v-icon>
+              CATEGORIES
+            </v-btn>
+          </template>
+          <v-list width="200px" style="margin-top: 3px">
+            <v-list-item
+              v-for="(category, index) in categories"
+              :key="index"
+              @click="selectCategory(category[0])"
+              :prepend-icon="getCategoryIcon(category[0])"
+            >
+              <v-list-item-title class="category-item">{{
+                category[0]
+              }}</v-list-item-title>
+            </v-list-item>
+            <!-- prettier-ignore -->
+            <v-list-item prepend-icon="mdi mdi-devices" style="cursor: pointer" @click="goToAllProducts">
                   <v-list-item-title class="category-item">
                     All Products
                   </v-list-item-title>
                 </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
-        </ul>
-      </ul>
+          </v-list>
+        </v-menu>
+      </div>
       <form
         class="form-inline"
         @submit.prevent="search"
-        style="padding-left: 17%"
+        style="padding-left: 10%"
       >
         <div class="input-group" style="width: 700px; margin-top: 20px">
           <input
@@ -75,200 +58,87 @@
           </div>
         </div>
       </form>
-      <ul
-        v-if="favorites && accessToken"
-        class="navbar-nav mb-1 mb-lg-0 profile-menu"
-        d-flex
-        bd-highlight
-        mb-1
-        style="margin-top: 18px; padding-left: 3%; position: relative"
-        @mouseleave="handleMouseLFavLeave"
-      >
-        <button
-          @mouseenter="showFavorites"
-          @click="displayLiked = !displayLiked"
-          @dblclick="handleDoubleClickFavorites"
-          class="btn btn-light dropdown-toggle btn-sm"
-          id="likedDropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          <i class="fa fa-heart-o red-color" style="font-size: 1rem"></i>
-          FAVORITES
-          <span class="badge badge-pill badge-danger">{{
-            favorites.length
-          }}</span>
-        </button>
-        <div
-          v-if="!displayLiked && favorites.length > 0"
-          class="list-group position-absolute"
-          style="
-            top: 100%;
-            left: -35px;
-            z-index: 1000;
-            min-width: 200px;
-            max-height: 400px;
-            overflow-y: auto;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-          "
-          @mouseleave="handleMouseLFavLeave"
-        >
-          <div
-            v-for="(item, index) in favorites"
-            :key="index"
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <div class="d-flex align-items-center">
-              <img
-                :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`"
-                class="mr-2"
-                style="
-                  width: 45px;
-                  height: 45px;
-                  object-fit: cover;
-                  border-radius: 5px;
-                  font-family: Georgia, 'Times New Roman', Times, serif;
-                "
-              />
-              <div
-                style="cursor: pointer"
-                @click="redirectToItemFromNavbar(item.id)"
-              >
-                <!-- prettier-ignore -->
-                <div style="font-size: 0.8rem; width: 150px; margin-left: 0">
-                  {{ truncateDescription(item.name, 35) }}
-                  <span style="font-size: 0.8rem;">$</span>
-                  <span v-if="item.discount_price" style="font-size: 0.8rem;">{{ formattedPrice(item.discount_price).integerPart }}</span>
-                  <span v-if="item.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">.{{ formattedPrice(item.discount_price).decimalPart }}</span>
-                </div>
-              </div>
-            </div>
-            <button
-              @click="removeFromFavorites(item.id)"
-              class="btn btn-light btn-sm ml-2"
-              data-bs-placement="top"
-              style="margin-top: 18px"
-            >
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-          <button
-            v-if="favorites.length > 0"
-            @click="redirectToFavorites"
-            class="btn btn-sm btn-primary"
-            style="margin-bottom: 0; margin-right: 0"
-          >
-            Go to Favorites
-          </button>
-        </div>
-      </ul>
-      <ul
-        class="navbar-nav mb-1 mb-lg-0 profile-menu"
-        v-if="cart && accessToken"
-        d-flex
-        bd-highlight
-        mb-1
-        style="padding-left: 3%; margin-top: 0; position: relative"
-        @mouseleave="handleMouseLeave"
-      >
-        <button
-          @mouseenter="showCart"
-          @click="displayCart = !displayCart"
-          @dblclick="handleDoubleClick"
-          class="btn btn-light dropdown-toggle btn-sm"
-          id="cartDropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          <i class="bi bi-cart" style="font-size: 1rem"></i> CART
-          <span class="badge badge-pill badge-primary"> {{ cart.length }}</span>
-        </button>
-        <div
-          v-if="!displayCart && cart.length > 0"
-          class="list-group position-absolute"
-          style="
-            top: 100%;
-            left: -55px;
-            z-index: 1000;
-            min-width: 200px;
-            max-height: 400px;
-            overflow-y: auto;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-          "
-          @mouseleave="handleMouseLeave"
-        >
-          <div
-            v-for="(item, index) in cart"
-            :key="index"
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <div class="d-flex align-items-center">
-              <img
-                :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`"
-                class="mr-2"
-                style="
-                  width: 45px;
-                  height: 45px;
-                  object-fit: cover;
-                  border-radius: 5px;
-                  font-family: Georgia, 'Times New Roman', Times, serif;
-                "
-              />
-              <div
-                style="cursor: pointer"
-                @click="redirectToItemFromNavbar(item.id)"
-              >
-                <!-- prettier-ignore -->
-                <div style="font-size: 0.8rem; width: 150px; margin-left: 0">
-                  x{{ item.quantity }}
-                  {{ truncateDescription(item.name, 35) }}
-                  <span style="font-size: 0.8rem;">$</span>
-                  <span v-if="item.discount_price" style="font-size: 0.8rem;">{{ formattedPrice(item.price).integerPart }}</span>
-                  <span v-if="item.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">.{{ formattedPrice(item.price).decimalPart}}</span>
-                </div>
-              </div>
-            </div>
-            <button
-              @click="removeFromCart(item.id)"
-              class="btn btn-light btn-sm ml-2"
-              data-bs-placement="top"
-              style="margin-top: 16px"
-            >
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-          <!-- prettier-ignore -->
-          <button
-            id="total"
-            class="btn btn-sm btn-light"
-            style="pointer-events: none; opacity: 1; margin-bottom: 1px"
-          >
-            Total: {{ cart.length }} products -
-            <span style="font-size: 0.9rem;">$</span>
-            <span style="font-size: 0.9rem;">{{ formatTotal(total).integerPart }}</span>
-            <span style="font-size: 0.6rem; position: relative; top: -0.6em;">.{{ formatTotal(total).decimalPart }}</span>
-          </button>
-          <button
-            v-if="cart.length > 0"
-            @click="redirectToCart"
-            class="btn btn-sm btn-primary"
-            style="margin-bottom: 0; margin-right: 0"
-          >
-            Go to Cart
-          </button>
-        </div>
-      </ul>
-      <div class="text-center" style="margin-left: 5%">
+      <div class="text-center" style="margin-left: 2%">
         <v-menu open-on-hover>
           <template v-slot:activator="{ props }">
-            <!-- prettier-ignore -->
-            <v-avatar v-bind="props" size="large">
+            <v-btn
+              v-if="cart && accessToken"
+              v-bind="props"
+              @dblclick="redirectToFavorites"
+            >
+              <i class="fa fa-heart-o" style="font-size: 1rem"></i>
+              FAVORITES
+              <span class="badge text-bg-danger rounded-pill">{{ favorites.length }}</span>
+            </v-btn>
+          </template>
+          <div class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px">
+            <v-list width="280px" style="padding: 0; margin: 0">
+              <v-card v-for="(item, index) in favorites" :key="index" width="x-small" class="mx-2 my-2">
+                <v-row no-gutters align="center">
+                  <v-col cols="3">
+                    <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
+                  </v-col>
+                  <v-col cols="7">
+                    <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
+                    <div style="font-size: 0.7rem; margin-top: 4px;">$ {{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}<span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
+                  </v-col>
+                  <v-col cols="2" class="text-right">
+                    <v-btn @click="removeFromFavorites(item.id)" icon size="x-small">
+                      <v-icon size="x-small">mdi-trash-can-outline</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card>
+              <v-btn @click="redirectToFavorites" size="small" width="100%" color="#029cf5">
+                Go to Favorites
+              </v-btn>
+            </v-list>
+          </div>
+        </v-menu>
+      </div>
+      <div class="text-center" style="margin-left: 3%">
+        <v-menu open-on-hover>
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-if="cart && accessToken"
+              v-bind="props"
+              @dblclick="redirectToCart"
+            >
+              <v-icon right>mdi-cart-outline</v-icon>
+              CART
+              <span class="badge text-bg-primary rounded-pill">{{ cart.length }}</span>
+            </v-btn>
+          </template>
+          <div class="d-flex justify-center" style="margin-left: -70px; margin-top: 10px">
+            <v-list width="280px" style="padding: 0; margin: 0">
+              <v-card v-for="(item, index) in cart" :key="index" width="x-small" class="mx-2 my-2">
+                <v-row no-gutters align="center">
+                  <v-col cols="3">
+                    <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
+                  </v-col>
+                  <v-col cols="7">
+                    <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
+                    <div style="font-size: 0.7rem; margin-top: 4px;">$ {{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}<span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
+                  </v-col>
+                  <v-col cols="2" class="text-right">
+                    <v-btn @click="removeFromCart(item.id)" icon size="x-small">
+                      <v-icon size="x-small">mdi-trash-can-outline</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card>
+              <v-btn @click="redirectToCart" size="small" width="100%" color="#029cf5">
+                Go to Cart
+              </v-btn>
+            </v-list>
+          </div>
+        </v-menu>
+      </div>
+      <div class="text-center" style="margin-left: 3%">
+        <v-menu open-on-hover>
+          <template v-slot:activator="{ props }">
+            <v-list-item>
+            <v-avatar v-bind="props">
               <v-img
                 v-if="profile"
                 :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
@@ -280,8 +150,11 @@
                 style="cursor: pointer"
               ></v-img>
             </v-avatar>
+            <v-icon class="dropdown-icon" v-bind="props">mdi-menu-down</v-icon>
+          </v-list-item>
           </template>
-          <v-list density="compact" nav class="profile-list" width="180px">
+          <div class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px">
+          <v-list density="compact" nav class="profile-list" width="160px">
             <v-list-item
               prepend-icon="mdi-account"
               style="margin: 0; padding: 0"
@@ -317,258 +190,10 @@
               Update Product
             </a>
           </v-list>
+        </div>
         </v-menu>
       </div>
-    </div>
-    <div
-      class="modal fade"
-      id="addItem"
-      role="dialog"
-      aria-labelledby="addItemlLabel"
-      aria-hidden="true"
-      data-backdrop="false"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addItemLabel">Add Product</h5>
-          </div>
-          <div class="modal-body">
-            <form
-              enctype="multipart/form-data"
-              data-toggle="validator"
-              id="createItem"
-              @submit.prevent="createItem"
-            >
-              <p id="error" style="text-align: left"></p>
-              <div class="form-group">
-                <label for="name" class="col-form-label">Name:</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="item-name"
-                  placeholder="Item Name"
-                  maxlength="55"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="price" class="col-form-label">Price: </label>
-                <input
-                  type="number"
-                  step="any"
-                  name="price"
-                  id="item-price"
-                  placeholder="99.99"
-                  max="10000"
-                  min="1"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="discount" class="col-form-label">Discount: </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="discount"
-                  id="discount-price"
-                  placeholder="0.8"
-                  max="0.95"
-                  min="0.01"
-                />
-              </div>
-              <div class="form-group">
-                <label for="brand" class="col-form-label">Brand: </label>
-                <input type="text" name="brand" id="brand" placeholder="ASUS" />
-              </div>
-              <div class="form-group" form-group-file>
-                <label for="file" class="col-form-label">Upload Photo:</label>
-                <input
-                  type="file"
-                  id="file"
-                  name="file"
-                  class="form-control"
-                  data-filesize="1000000"
-                  data-filesize-error="File must be smaller then 1MB"
-                  accept="image/*"
-                  required
-                />
-              </div>
-              <div class="form-group" form-group-file>
-                <label for="files" class="col-form-label">Upload Photos:</label>
-                <input
-                  type="file"
-                  id="files"
-                  name="files"
-                  class="form-control"
-                  data-filesize="1000000"
-                  data-filesize-error="File must be smaller than 1MB"
-                  accept="image/*"
-                  required
-                  multiple
-                />
-              </div>
-              <div class="form-group">
-                <label for="Category" class="col-form-label">Category:</label>
-                <select name="Category">
-                  <option value="Laptops">Laptops</option>
-                  <option value="Smartphones">Smartphones</option>
-                  <option value="Tablets">Tablets</option>
-                  <option value="Smartwatches">Smart Watches</option>
-                  <option value="TV">TV</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="description" class="col-form-label"
-                  >Description:</label
-                >
-                <textarea
-                  name="description"
-                  id="add-description"
-                  rows="4"
-                  cols="50"
-                  maxlength="250"
-                ></textarea>
-              </div>
-              <button
-                id="submit-button"
-                class="btn btn-primary"
-                @click="hideModal"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-                id="close-modal"
-              >
-                Close
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="modal fade"
-      id="patchItem"
-      role="dialog"
-      aria-labelledby="updateItemLabel"
-      aria-hidden="true"
-      data-backdrop="false"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="updateItemLabel">Update Product</h5>
-          </div>
-          <div class="modal-body">
-            <form
-              enctype="multipart/form-data"
-              data-toggle="validator"
-              id="updateItem"
-              @submit.prevent="updateItem"
-            >
-              <div class="form-group">
-                <label for="itemID" class="col-form-label">Item ID: </label>
-                <input
-                  type="number"
-                  name="itemID"
-                  id="itemID"
-                  placeholder="itemID"
-                  required
-                />
-              </div>
-              <div class="form-group" form-group-file>
-                <label for="file" class="col-form-label">Upload Photo:</label>
-                <input
-                  type="file"
-                  id="file"
-                  name="file"
-                  class="form-control"
-                  data-filesize="1000000"
-                  data-filesize-error="File must be smaller then 1MB"
-                  accept="image/*"
-                />
-              </div>
-              <div class="form-group" form-group-file>
-                <label for="files" class="col-form-label">Upload Photos:</label>
-                <input
-                  type="file"
-                  id="files"
-                  name="files"
-                  class="form-control"
-                  data-filesize="1000000"
-                  data-filesize-error="File must be smaller than 1MB"
-                  accept="image/*"
-                  multiple
-                />
-              </div>
-              <div class="form-group">
-                <label for="price" class="col-form-label">Price: </label>
-                <input
-                  type="number"
-                  step="any"
-                  name="price"
-                  id="item-price"
-                  placeholder="99.99"
-                  max="10000"
-                  min="1"
-                />
-              </div>
-              <div class="form-group">
-                <label for="description" class="col-form-label"
-                  >Description:</label
-                >
-                <textarea
-                  name="description"
-                  id="add-description"
-                  rows="4"
-                  cols="50"
-                  maxlength="250"
-                ></textarea>
-              </div>
-              <div class="form-group">
-                <label for="Category" class="col-form-label">Category:</label>
-                <select name="Category">
-                  <option value="Laptops">Laptops</option>
-                  <option value="Smartphones">Smartphones</option>
-                  <option value="Tablets">Tablets</option>
-                  <option value="Smartwatches">Smart Watches</option>
-                  <option value="TV">TV</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="discount" class="col-form-label">Discount: </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="discount"
-                  id="discount-price"
-                  placeholder="0.8"
-                  max="0.95"
-                  min="0.01"
-                />
-              </div>
-              <div class="form-group">
-                <label for="brand" class="col-form-label">Brand: </label>
-                <input type="text" name="brand" id="brand" placeholder="ASUS" />
-              </div>
-              <button id="update-button" class="btn btn-primary">Save</button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-                id="close-modal"
-              >
-                Close
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    </v-toolbar>
   </div>
 </template>
 
@@ -640,14 +265,6 @@ export default {
     },
     goToAllProducts() {
       this.$router.push({ name: 'home' })
-      // window.location.assign('/products')
-      this.$nextTick(() => {
-        window.scrollTo({ top: 0, behavior: 'auto' })
-      })
-    },
-    goToAllOffers() {
-      this.$router.push({ name: 'hometest' })
-      // window.location.assign('/products')
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: 'auto' })
       })
@@ -810,12 +427,6 @@ export default {
         return description.substring(0, maxLength) + '..'
       }
       return description
-    },
-    handleDoubleClick() {
-      this.$router.push('/cart')
-    },
-    handleDoubleClickFavorites() {
-      this.$router.push('/favorites')
     }
   }
 }

@@ -19,16 +19,14 @@
       "
       >Back to Top</v-btn
     >
-    <section id="newsletter" class="section-p1" style="margin-top: 1%">
-      <div class="newstext">
-        <h4 style="margin-top: 15px">Sign Up for Newsletters</h4>
-        <p>Get Email updates about our latest shop and special offers.</p>
-      </div>
-      <div class="form" style="margin-top: 15px">
-        <input type="text" placeholder="Your email address" />
-        <button class="btn normal">Sign Up</button>
-      </div>
-    </section>
+    <div style="margin-top: 10px">
+      <v-toolbar
+        image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
+        dark
+        prominent
+      >
+      </v-toolbar>
+    </div>
 
     <footer class="section-p1">
       <div class="col">

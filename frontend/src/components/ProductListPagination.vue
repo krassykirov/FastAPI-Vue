@@ -21,13 +21,13 @@
           <!-- prettier-ignore -->
           <v-card-text
           @click="redirectToItemFromProduct(product.id)"
-          class="card-text"
+          class="text-center"
           style="cursor: pointer; font-size: 14px; text-align: center; margin-bottom: 0; max-height: 3em"
         >
           <b>{{ truncateName(product.name, 60) }}</b>
         </v-card-text>
           <!-- prettier-ignore -->
-          <v-card-text style="padding-left: 10px; font-size: 12px; margin-top: 10px; max-height: 1.5em">
+          <v-card-text class="text-center" style="padding-left: 10px; font-size: 12px; margin-top: 10px; max-height: 1.5em">
           {{ truncateName(product.description, 75) }}
         </v-card-text>
           <v-card-actions class="pa-3" style="margin-top: 15px !important">
@@ -41,7 +41,7 @@
                 density="compact"
                 half-increments
                 size="x-small"
-                style="margin-left: 80px; padding: 0"
+                style="margin-left: 75px; padding: 0; margin-top: 3px"
               ></v-rating>
             </v-col>
             <span
@@ -208,5 +208,8 @@ export default {
   margin-top: -30px !important;
   margin-bottom: 10px !important;
   padding: 0 !important;
+}
+.v-btn:hover {
+  background-color: #67c0ff;
 }
 </style>
