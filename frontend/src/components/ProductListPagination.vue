@@ -28,7 +28,7 @@
         </v-card-text>
           <!-- prettier-ignore -->
           <v-card-text class="text-center" style="padding-left: 10px; font-size: 12px; margin-top: 10px; max-height: 1.5em">
-          {{ truncateName(product.description, 75) }}
+          {{ truncateName(product.description, 70) }}
         </v-card-text>
           <v-card-actions class="pa-3" style="margin-top: 15px !important">
             <!-- prettier-ignore -->

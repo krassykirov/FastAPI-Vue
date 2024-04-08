@@ -77,12 +77,13 @@ def get_items(request: Request, db: Session = Depends(get_session), user: User =
 async def create_item(request: Request, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
         """ Create an Item """
         form_data = await request.form()
+        print('form_data', form_data)
         item = dict(form_data)
-        file = form_data['file']
-        filename = form_data['filename']
+        file = form_data.get('file')
+        filename = form_data.get('file').filename
         files_initial: List[UploadFile] = form_data.getlist('files')
-        item_name = form_data['name']
-        category_select = form_data['Category']
+        item_name = form_data.get('name')
+        category_select = form_data.get('Category')
         category = CategoryActions().get_category_by_name(db=db, name=category_select)
         item_db = db.query(Item).where(Item.name == item_name).first()
         if item_db:

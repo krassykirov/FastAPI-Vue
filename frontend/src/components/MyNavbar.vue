@@ -386,6 +386,20 @@
                 required
               />
             </div>
+            <div class="form-group" form-group-file>
+              <label for="files" class="col-form-label">Upload Photos:</label>
+              <input
+                type="file"
+                id="files"
+                name="files"
+                class="form-control"
+                data-filesize="1000000"
+                data-filesize-error="File must be smaller than 1MB"
+                accept="image/*"
+                required
+                multiple
+              />
+            </div>
             <div class="form-group">
               <label for="Category" class="col-form-label">Category:</label>
               <select name="Category">

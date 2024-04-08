@@ -18,7 +18,7 @@
       :profile="profile"
     />
     <div class="container my-5">
-      <div class="row">
+      <div class="row" style="margin-left: 5%">
         <div class="col-md-5" style="min-height: 550px; max-height: 500px">
           <div
             class="main-img"
@@ -104,18 +104,17 @@
               </div>
             </div>
           </div>
+          <!-- prettier-ignore -->
           <div class="product-details my-2" v-if="item">
             <p class="details-title text-color mb-1">Product Details</p>
-            <p class="description" style="margin-left: 20%; margin-right: 20%">
-              {{ item.description }}
-            </p>
-          </div>
-          <div class="row questions bg-light p-3">
-            <div class="col-md-11 text">
-              Have a question about our products at E-Store? Feel free to
-              contact our representatives via live chat or email.
+            <!-- prettier-ignore -->
+            <div style="max-height: 350px; width: 400px; text-align:left; margin-left: 30%">
+              <ul style="width: 400px; list-style-position: outside;">
+                <li v-for="(point, index) in item.description.split(',')" :key="index">
+                  {{ point.trim() }}
+                </li>
+              </ul>
             </div>
-            <i class="fa-brands fa-rocketchat questions-icon"></i>
           </div>
           <div class="delivery my-4">
             <p class="font-weight-bold mb-0">
@@ -320,12 +319,14 @@
           >
           <v-window-item value="two">
             <div>
-              <p
-                v-if="item"
-                style="margin-left: 30%; margin-right: 30%; margin-top: 1%"
-              >
-                {{ item.description }}
-              </p>
+              <!-- prettier-ignore -->
+              <div v-if="item" style="max-height: 350px; width: 400px; text-align:left; margin-left: 40%">
+                <ul style="width: 400px; list-style-position: outside">
+                  <li v-for="(point, index) in item.description.split(',')" :key="index">
+                    {{ point.trim() }}
+                  </li>
+                </ul>
+              </div>
               <p v-else>No specification available.</p>
             </div>
           </v-window-item>
@@ -344,7 +345,7 @@
       style="
         margin-top: 2%;
         padding: 0;
-        margin-left: 7% !important;
+        margin-left: 10% !important;
         margin-bottom: 1%;
       "
     >
