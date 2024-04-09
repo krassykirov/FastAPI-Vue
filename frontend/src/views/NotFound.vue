@@ -33,15 +33,7 @@ export default {
   components: {
     NavBar
   },
-  props: [
-    'cart',
-    'total',
-    'avatar',
-    'favorites',
-    'catchAll',
-    'user',
-    'profile'
-  ],
+  props: ['cart', 'avatar', 'favorites', 'catchAll', 'profile'],
   name: 'NotFound',
   created() {
     this.$store.dispatch('fetchCategories')

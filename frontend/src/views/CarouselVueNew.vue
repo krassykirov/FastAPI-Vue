@@ -132,14 +132,7 @@
     aria-live="assertive"
     aria-atomic="true"
     data-bs-autohide="false"
-    style="
-      position: fixed;
-      top: 12%;
-      right: 2%;
-      transform: translate(0, -50%);
-      width: 250px;
-      z-index: 1000;
-    "
+    style="position: fixed; top: 8%; right: 1%; width: 250px; z-index: 1000"
   >
     <div
       class="toast-body"
@@ -221,12 +214,6 @@ export default defineComponent({
     },
     removeFromCart(itemId) {
       this.$store.dispatch('removeFromCart', itemId)
-    },
-    redirectToItemFromCart(itemId) {
-      this.$store.dispatch('redirectToItem', itemId)
-    },
-    redirectToItemFromNavbar(itemId) {
-      this.$router.push({ name: 'Item', params: { itemId } })
     },
     redirectToItemFromProduct(itemId) {
       this.$store.dispatch('redirectToItem', itemId)

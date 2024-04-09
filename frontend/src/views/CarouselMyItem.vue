@@ -44,14 +44,7 @@
     aria-live="assertive"
     aria-atomic="true"
     data-bs-autohide="false"
-    style="
-      position: fixed;
-      top: 12%;
-      right: 2%;
-      transform: translate(0, -50%);
-      width: 250px;
-      z-index: 1000;
-    "
+    style="position: fixed; top: 8%; right: 1%; width: 250px; z-index: 1000"
   >
     <div
       class="toast-body"
@@ -114,7 +107,10 @@ export default defineComponent({
   display: flex;
 }
 .img-fluid {
+  height: 100% !important;
+  width: 100% !important;
   max-height: 550px !important;
+  max-width: 650px !important;
 }
 .img-thumbnail {
   max-height: 100px !important;

@@ -81,38 +81,27 @@
             </div>
           </div>
         </div>
+        <!-- prettier-ignore -->
         <div class="filter-card">
           <div class="card-body">
             <label style="margin-bottom: 20px">Filter by Price</label>
           </div>
           <!-- Slider -->
-          <div class="range-input">
-            <div class="slider-container">
-              <input
-                type="range"
-                class="min-range"
-                :min="productMin"
-                :max="productMax"
-                :value="min"
-                step="1"
-                @input="updateInputs"
-                :disabled="isPriceRangesSelected"
-              />
-              <input
-                type="range"
-                class="max-range"
-                :min="productMin"
-                :max="productMax"
-                :value="max"
-                step="1"
-                @input="updateInputs"
-                :disabled="isPriceRangesSelected"
-              />
-            </div>
-            <div class="range-display">
-              <span style="font-weight: 400">${{ min }}</span> -
-              <span style="font-weight: 400">${{ max }}</span>
-            </div>
+          <div>
+            <v-range-slider
+              v-model="range"
+              strict
+              color="#5e95e2"
+              :max="productMax"
+              :min="productMin"
+              :step="1"
+              class="align-center"
+              @update:modelValue="updateSliderRange"
+              hide-details
+              thumb-size="14"
+              track-size="2"
+              thumb-label="always"
+            ></v-range-slider>
           </div>
         </div>
         <div
@@ -247,19 +236,12 @@
       aria-live="assertive"
       aria-atomic="true"
       data-bs-autohide="false"
-      style="
-        position: fixed;
-        top: 12%;
-        right: 5%;
-        transform: translate(0, -50%);
-        width: 250px;
-        z-index: 1000;
-      "
+      style="position: fixed; top: 8%; right: 1%; width: 250px; z-index: 1000"
     >
       <div
         class="toast-body"
         id="cartToastBody"
-        style="font-weight: 600; font: 1.1em"
+        style="font-weight: 500; font: 1.1em"
       ></div>
     </div>
   </div>
@@ -272,6 +254,8 @@ import Footer from '@/views/FooterVue.vue'
 import VueCookies from 'vue-cookies'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
+import debounce from 'lodash/debounce'
+
 // /* global bootstrap */
 
 export default {
@@ -281,8 +265,15 @@ export default {
     Footer
   },
   props: ['category'],
+  emits: [
+    'addToCart',
+    'redirectToItem',
+    'addTofavorites',
+    'redirectToItemFromNavbar'
+  ],
   data() {
     return {
+      range: [1, 10000],
       isChecked: this.$store.state.isDiscountedChecked,
       backendEndpoint: `${config.backendEndpoint}`,
       categoryName: null,
@@ -327,6 +318,13 @@ export default {
             // console.error('error', error)
           }
         })
+      this.$watch(
+        () => [this.$store.state.productMin, this.$store.state.productMax],
+        () => {
+          this.updateRangeFromStore()
+        }
+      )
+      this.updateRangeFromStore()
     }
   },
   computed: {
@@ -452,6 +450,28 @@ export default {
     }
   },
   methods: {
+    updateRangeFromStore() {
+      this.range = [this.$store.state.productMin, this.$store.state.productMax]
+    },
+    debouncedUpdateSliderRange: debounce(function () {
+      let [minVal, maxVal] = this.range
+      if (maxVal - minVal < 100) {
+        minVal = Math.max(
+          minVal - Math.ceil((100 - (maxVal - minVal)) / 2),
+          this.productMin
+        )
+        maxVal = Math.min(
+          maxVal + Math.ceil((100 - (maxVal - minVal)) / 2),
+          this.productMax
+        )
+        return
+      }
+      this.$store.commit('SET_MIN_PRICE', minVal)
+      this.$store.commit('SET_MAX_PRICE', maxVal)
+    }, 500),
+    updateSliderRange() {
+      this.debouncedUpdateSliderRange()
+    },
     isActiveLink(link) {
       return this.$route.name === link
     },
@@ -572,9 +592,6 @@ export default {
         return count
       }
     },
-    updateInputs() {
-      this.$store.dispatch('updateInputs')
-    },
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'auto' })
     },
@@ -607,5 +624,8 @@ export default {
   display: grid !important;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   text-align: left;
+}
+.col-auto {
+  padding: 1px !important;
 }
 </style>

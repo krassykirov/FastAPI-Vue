@@ -32,7 +32,7 @@
       </nav>
     </div>
     <div class="product-container">
-      <div class="filter-products-container row col-2">
+      <div class="filter-products-container row col-4">
         <div class="filter-card">
           <div class="filter-content collapse show" id="collapse_2">
             <label style="display: block; margin-bottom: 10px"
@@ -78,34 +78,22 @@
           <div class="card-body">
             <label style="margin-bottom: 20px">Filter by Price</label>
           </div>
-          <!-- Slider -->
-          <div class="range-input">
-            <div class="slider-container">
-              <input
-                type="range"
-                class="min-range"
-                :min="productMin"
-                :max="productMax"
-                :value="min"
-                step="1"
-                @input="updateInputs"
-                :disabled="isPriceRangesSelected"
-              />
-              <input
-                type="range"
-                class="max-range"
-                :min="productMin"
-                :max="productMax"
-                :value="max"
-                step="1"
-                @input="updateInputs"
-                :disabled="isPriceRangesSelected"
-              />
-            </div>
-            <div class="range-display">
-              <span style="font-weight: 400">${{ min }}</span> -
-              <span style="font-weight: 400">${{ max }}</span>
-            </div>
+          <div>
+            <v-range-slider
+              v-model="range"
+              strict
+              color="#5e95e2"
+              :max="productMax"
+              :min="productMin"
+              :step="1"
+              class="align-center"
+              @update:modelValue="updateSliderRange"
+              hide-details
+              thumb-size="14"
+              track-size="2"
+              thumb-label="always"
+              :disabled="isPriceRangesSelected"
+            ></v-range-slider>
           </div>
         </div>
         <div class="filter-card">
@@ -329,22 +317,22 @@
         </template>
         <template v-if="filteredProducts && filteredProducts.length > 0">
           <div class="product-list" id="mycard">
-            <transition-group name="product-fade">
-              <ProductList
-                :products="paginatedProducts"
-                :key="products"
-                :currentPage="currentPage"
-                :itemsPerPage="itemsPerPage"
-                :cart="cart"
-                :favorites="favorites"
-                @addToCart="addToCart"
-                @addTofavorites="addTofavorites"
-                @removeFromCart="removeFromCart"
-                @removeFromFavorites="removeFromFavorites"
-                @redirectToItem="redirectToItem"
-                style="justify-content: left; margin-top: 0"
-              />
-            </transition-group>
+            <!-- <transition-group name="product-fade"> -->
+            <ProductList
+              :products="paginatedProducts"
+              :key="products"
+              :currentPage="currentPage"
+              :itemsPerPage="itemsPerPage"
+              :cart="cart"
+              :favorites="favorites"
+              @addToCart="addToCart"
+              @addTofavorites="addTofavorites"
+              @removeFromCart="removeFromCart"
+              @removeFromFavorites="removeFromFavorites"
+              @redirectToItem="redirectToItem"
+              style="justify-content: left; margin-top: 0"
+            />
+            <!-- </transition-group> -->
           </div>
         </template>
         <template
@@ -360,39 +348,12 @@
             <img :src="require('@/assets/no_result.gif')" />
           </div>
         </template>
-        <nav
-          v-if="totalPages > 1"
-          aria-label="Pagination"
-          class="pagination"
-          style="margin-top: 30px; margin-left: -190px"
-        >
-          <button
-            class="arrow"
-            id="prevPage"
-            :disabled="currentPage === 1"
-            @click="prevPage"
-          >
-            ← <span class="nav-text">PREV</span>
-          </button>
-          <div class="pages">
-            <template v-for="page in visiblePages" :key="page">
-              <div
-                class="page-number"
-                :class="{ active: currentPage === page }"
-                @click="setCurrentPage(page)"
-              >
-                {{ page }}
-              </div>
-            </template>
-          </div>
-          <button
-            class="arrow"
-            id="nextPage"
-            :disabled="currentPage === totalPages"
-            @click="nextPage"
-          >
-            <span class="nav-text">NEXT</span> →
-          </button>
+        <nav v-if="totalPages > 1">
+          <v-pagination
+            v-model="currentPage"
+            :length="totalPages"
+            @input="paginatedProducts"
+          ></v-pagination>
         </nav>
       </div>
     </div>
@@ -404,14 +365,7 @@
       aria-live="assertive"
       aria-atomic="true"
       data-bs-autohide="false"
-      style="
-        position: fixed;
-        top: 12%;
-        right: 2%;
-        transform: translate(0, -50%);
-        width: 250px;
-        z-index: 1000;
-      "
+      style="position: fixed; top: 8%; right: 1%; width: 250px; z-index: 1000"
     >
       <div
         class="toast-body"
@@ -432,23 +386,25 @@ import ProductList from '@/components/ProductListPagination.vue'
 import MyNavbar from '@/components/MyNavbar.vue'
 import Footer from '@/views/FooterVue.vue'
 import config from '@/config'
-// import VBtn from 'vuetify/lib/components/VBtn'
-// import VCheckbox from 'vuetify/lib/components/VCheckbox'
+import debounce from 'lodash/debounce'
+// import store from '@/store/index.js'
 
 export default {
   name: 'HomeView',
+  emits: [
+    'addToCart',
+    'redirectToItem',
+    'addTofavorites',
+    'redirectToItemFromNavbar'
+  ],
   components: {
     ProductList,
     MyNavbar,
     Footer
   },
-  props: {
-    isIdle: Boolean,
-    lastActiveDate: Date,
-    inactiveTime: Number
-  },
   data() {
     return {
+      range: [1, 10000],
       isChecked: this.$store.state.isDiscountedChecked,
       backendEndpoint: `${config.backendEndpoint}`,
       currentPage: 1,
@@ -513,6 +469,13 @@ export default {
     if (this.filteredProducts && this.filteredProducts.length > 0) {
       this.isLoading = false
     }
+    this.$watch(
+      () => [this.$store.state.productMin, this.$store.state.productMax],
+      () => {
+        this.updateRangeFromStore()
+      }
+    )
+    this.updateRangeFromStore()
   },
   computed: {
     isPriceRangesSelected() {
@@ -559,8 +522,6 @@ export default {
     totalPages() {
       const filteredProducts = this.$store.getters.filteredProducts
       const itemsPerPage = this.itemsPerPage
-
-      // Filter the products based on all conditions
       const filteredAndPaginatedProducts = filteredProducts.filter(item => {
         const categoryCondition =
           this.$store.state.selectedCategories.length === 0 ||
@@ -679,6 +640,28 @@ export default {
     }
   },
   methods: {
+    debouncedUpdateSliderRange: debounce(function () {
+      let [minVal, maxVal] = this.range
+      if (maxVal - minVal < 100) {
+        minVal = Math.max(
+          minVal - Math.ceil((100 - (maxVal - minVal)) / 2),
+          this.productMin
+        )
+        maxVal = Math.min(
+          maxVal + Math.ceil((100 - (maxVal - minVal)) / 2),
+          this.productMax
+        )
+        return
+      }
+      this.$store.commit('SET_MIN_PRICE', minVal)
+      this.$store.commit('SET_MAX_PRICE', maxVal)
+    }, 500),
+    updateRangeFromStore() {
+      this.range = [this.$store.state.productMin, this.$store.state.productMax]
+    },
+    updateSliderRange() {
+      this.debouncedUpdateSliderRange()
+    },
     isActiveLink(link) {
       return this.$route.name === link || !this.$route.name
     },
@@ -737,6 +720,7 @@ export default {
       this.handleCategoryChange()
       this.handlePriceRangeChange()
       this.handleDiscountChange()
+      this.updateRangeFromStore()
     },
     removeFilter(filter) {
       if (filter === 'Discounts %') {
@@ -761,6 +745,7 @@ export default {
         if (checkbox) {
           checkbox.checked = false
           this.handlePriceRangeChange()
+          this.range = [this.$store.state.min, this.$store.state.max]
         } else {
           const prices = this.$store.state.products.map(
             product => product.price
@@ -769,6 +754,7 @@ export default {
           const maxPrice = Math.ceil(Math.max(...prices))
           this.$store.commit('SET_MIN_PRICE', minPrice)
           this.$store.commit('SET_MAX_PRICE', maxPrice)
+          this.range = [this.$store.state.min, this.$store.state.max]
         }
         return
       } else if (
@@ -923,9 +909,9 @@ export default {
       }, 0)
       return count
     },
-    updateInputs() {
-      this.$store.dispatch('updateInputs')
-    },
+    // updateInputs() {
+    //   this.$store.dispatch('updateInputs')
+    // },
     scrollToTop() {
       window.scrollTo({
         top: 0,
@@ -1006,94 +992,9 @@ export default {
   opacity: 1;
   border-bottom: 2px solid darkred;
 }
-.page {
-  width: 300px;
-  margin: 0 auto;
-  padding: 0;
-}
-
-.page li {
-  list-style: none;
-  margin: 10px auto;
-  padding: 12px;
-  background: white;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.pagination {
-  text-align: center;
-  margin-top: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pages {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 100%;
-  width: auto; /* Change width to auto */
-}
-
-.page-number {
-  cursor: pointer;
-  font-size: 1em;
-  background-color: white;
-  color: #999;
-  border-radius: 50%;
-  height: 30px;
-  width: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.4s ease;
-  margin: 2px;
-}
-.pagination .active {
-  font-size: 1.2em;
-  height: 30px;
-  width: 30px;
-  background-color: #0057b3;
-  color: white;
-}
-
-.pagination button {
-  width: 120px;
-  padding: 8px 16px;
-  background-color: #ffffff00;
-  color: #0057b3;
-  border: none;
-  cursor: pointer;
-  margin: 0 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pagination button:hover {
-  color: #0056b3;
-}
-
-.pagination button:disabled {
-  background-color: #ffffff00;
-  color: #ccc;
-  cursor: not-allowed;
-}
-
-#prevPage {
-  margin-right: 5px;
-}
-
-#nextPage {
-  margin-left: 5px;
-}
-
 .arrow {
   font-size: 1.2em;
 }
-
 .nav-text {
   font-size: 0.7em;
   letter-spacing: 0.3em;

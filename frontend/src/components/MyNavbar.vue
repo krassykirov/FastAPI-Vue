@@ -70,10 +70,10 @@
           <span class="badge text-bg-danger rounded-pill">{{ favorites.length }}</span>
         </v-btn>
       </template>
-      <div class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px" @mouseleave="handleFavoritestMenuLeave">
+      <div v-if="favorites && favorites.length > 0" class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px" @mouseleave="handleFavoritestMenuLeave">
         <v-list width="280px" style="padding: 0; margin: 0; max-height: 350px; overflow-y: auto">
           <v-card v-for="(item, index) in favorites" :key="index" width="x-small" class="mx-2 my-2">
-            <v-row no-gutters align="center" style="height: 70px">
+            <v-row no-gutters align="center" style="height: 75px">
               <v-col cols="3">
                 <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
               </v-col>
@@ -88,7 +88,8 @@
               </v-col>
             </v-row>
           </v-card>
-          <v-btn @click="redirectToFavorites" size="small" width="100%" color="#029cf5">
+          <v-btn @click="redirectToFavorites" size="small" width="100%" color="#029cf5"
+          style="margin-top: -9px; margin-left: 7px">
             Go to Favorites
           </v-btn>
         </v-list>
@@ -108,10 +109,10 @@
           <span class="badge text-bg-primary rounded-pill">{{ cart.length }}</span>
         </v-btn>
       </template>
-      <div class="d-flex justify-center" style="margin-left: -70px; margin-top: 10px" @mouseleave="handleCartMenuLeave">
+      <div v-if="cart && cart.length > 0" class="d-flex justify-center" style="margin-left: -70px; margin-top: 10px" @mouseleave="handleCartMenuLeave">
         <v-list width="280px" style="padding: 0; margin: 0; max-height: 350px; overflow-y: auto">
           <v-card v-for="(item, index) in cart" :key="index" width="x-small" class="mx-2 my-2">
-            <v-row no-gutters align="center" style="height: 70px">
+            <v-row no-gutters align="center" style="height: 75px">
               <v-col cols="3">
                 <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
               </v-col>
@@ -126,7 +127,8 @@
               </v-col>
             </v-row>
           </v-card>
-          <v-btn @click="redirectToCart" size="small" width="100%" color="#029cf5">
+          <v-btn @click="redirectToCart" size="small" width="100%" color="#029cf5"
+          style="margin-top: -9px; margin-left: 7px">
             Go to Cart
           </v-btn>
         </v-list>
@@ -154,6 +156,11 @@
       </template>
       <div class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px">
       <v-list density="compact" nav class="profile-list" width="160px">
+        <v-list-item
+          prepend-icon="mdi-account"
+          style="margin: 0; padding: 0"
+          :subtitle="user"
+        ></v-list-item>
         <v-list-item
           prepend-icon="mdi-account"
           style="margin: 0; padding: 0"
@@ -452,8 +459,14 @@ import config from '@/config'
 import router from '@/router'
 
 export default {
-  props: ['cart', 'avatar', 'profile', 'favorites'],
-  emits: ['removeFromCart'],
+  props: ['cart', 'avatar', 'profile', 'favorites', 'total', 'user', 'user_id'],
+  emits: [
+    'addToCart',
+    'redirectToItem',
+    'addTofavorites',
+    'removeFromCart',
+    'redirectToItemFromNavbar'
+  ],
   data() {
     return {
       drawerVisible: false,
@@ -477,15 +490,6 @@ export default {
     },
     accessToken() {
       return this.$store.getters.accessToken || null
-    },
-    total() {
-      return this.$store.getters.total
-    },
-    user() {
-      return this.$store.getters.user
-    },
-    user_id() {
-      return this.$store.getters.user_id
     },
     categories() {
       return this.$store.getters.categories

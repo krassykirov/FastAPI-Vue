@@ -1,66 +1,25 @@
 <template>
-  <v-card
-    class="mx-auto"
-    width="276"
-    height="460"
-    style="padding: 3px; margin-bottom: 0"
-    elevation="5"
+  <div
+    class="card"
+    :id="product.id"
+    :data-category="product.category_id"
+    style="margin: 0.15%; padding: 0.15%"
   >
-    <v-img
-      :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
-      class="card-img-top"
-      @click="redirectToItemFromProduct(product.id)"
-      style="cursor: pointer"
-    ></v-img>
-    <!-- prettier-ignore -->
-    <v-card-text
-      @click="redirectToItemFromProduct(product.id)"
-      class="text-center"
-      style="cursor: pointer; font-size: 14px; text-align: center; margin-bottom: 0; max-height: 3em"
-    >
-      <b>{{ truncateName(product.name, 60) }}</b>
-    </v-card-text>
-    <!-- prettier-ignore -->
-    <v-card-text class="text-center" style="padding-left: 10px; font-size: 12px; margin-top: 10px; max-height: 1.5em">
-      {{ truncateName(product.description, 70) }}
-    </v-card-text>
-    <v-card-actions class="pa-3" style="margin-top: 15px !important">
-      <!-- prettier-ignore -->
-      <v-row align="center" class="ma-0" style="font-size: 14px">
-        <v-col cols="auto" class="pa-0">
-          <v-rating
-            :model-value="product.rating_float"
-            background-color="white"
-            color="orange-darken-2"
-            density="compact"
-            half-increments
-            size="x-small"
-            style="margin-left: 75px; padding: 0; margin-top: 3px"
-          ></v-rating>
-        </v-col>
-        <span
-          :id="'overall-rating' + product.id + '-float'"
-          style="font-size: 12px"
-          >&nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}</span
-        >
-        &nbsp;
-          <span class="grey--text text--lighten-2 caption mr-2" style="font-size: 12px">
-            ({{ product.review_number }})
-          </span>
-      </v-row>
-    </v-card-actions>
-    <!-- prettier-ignore -->
-    <v-card-actions style="justify-content: center; margin: 0; padding: 0">
+    <div class="card-body" style="padding: 1%">
+      <!-- Discount badge -->
       <span
-        v-if="product.discount >= 0.01"
         class="badge bg-danger position-absolute top-0 start-0"
-        style="font-size: 0.75rem; padding: 4px; margin-top: 5px; margin-left: 3px"
+        v-if="product.discount >= 0.01"
+        style="font-size: 0.8rem; margin: 1%; top: 0"
       >
         -{{ Math.floor(product.discount * 100) }}%
       </span>
+
+      <!-- Favorite icon -->
       <span
         :class="getHeartClasses(product)"
         @click="addTofavorites(product)"
+        :id="'heart' + product.id"
         style="
           position: absolute;
           top: 1%;
@@ -70,34 +29,99 @@
           cursor: pointer;
         "
       ></span>
-      <!-- prettier-ignore -->
-      <v-card-actions style="margin-top: -50px !important; padding: 0">
+
+      <!-- Product image -->
+      <img
+        :src="
+          `${backendEndpoint}/static/img/` + product.name + '/' + product.image
+        "
+        class="card-img-top"
+        @click="redirectToItemFromProduct(product.id)"
+        style="cursor: pointer"
+      />
+      <h7
+        @click="redirectToItemFromProduct(product.id)"
+        class="card-title"
+        style="
+          margin-bottom: 1%;
+          padding: 1%;
+          height: 3em;
+          font-size: 14px;
+          font-weight: 600;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          line-height: 1;
+          cursor: pointer;
+        "
+      >
+        {{ truncateName(product.name, 60) }}
+      </h7>
+      <p
+        style="cursor: pointer; margin-bottom: 1%; font-size: 1em"
+        @click="redirectToItemFromProduct(product.id)"
+      >
         <span
-          v-if="product.discount_price"
-          class="price"
-          >${{ formattedPrice(product.discount_price).integerPart }}</span
-        >
+          v-for="i in 5"
+          :key="i"
+          :class="getStarClasses(i, product.rating_float)"
+        ></span>
         <span
-          v-if="product.discount_price"
-          style="font-size: 0.7rem; color: #dc3545; position: relative; top: -0.4em"
-          >{{ formattedPrice(product.discount_price).decimalPart }}</span
+          :id="'overall-rating' + product.id + '-float'"
+          class="overall-rating"
         >
-      </v-card-actions>
-    </v-card-actions>
-    <!-- prettier-ignore -->
-    <v-card-text v-if="product.discount >= 0.01" class="old-price">
-       ${{ Math.floor(product.price) }}
-     </v-card-text>
-    <!-- prettier-ignore -->
-    <v-card-text v-else class="old-price">
-    </v-card-text>
-    <!-- prettier-ignore -->
-    <v-btn @click="addToCart(product)" color="outlined" elevation="10" width="100%"
-    style="padding: 0; margin-top: -10px !important;">
-      Add to Cart &nbsp;
-      <v-icon right>mdi-cart-outline</v-icon>
-    </v-btn>
-  </v-card>
+          &nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}
+        </span>
+        <span :id="'overall-rating' + product.id" class="overall-rating2">
+          ({{ product.review_number }})
+        </span>
+      </p>
+      <div
+        style="
+          margin: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          margin-top: 1.7%;
+        "
+      >
+        <span
+          style="
+            font-size: 0.95rem;
+            color: #dc3545;
+            font-weight: 800;
+            margin-bottom: 1%;
+            margin-left: -12px;
+          "
+        >
+          <span v-if="product.discount_price" style="font-size: 0.95rem">
+            ${{ formattedPrice(product.discount_price).integerPart }}
+          </span>
+          <span
+            v-if="product.discount_price"
+            style="font-size: 0.7rem; position: relative; top: -0.4em"
+          >
+            {{ formattedPrice(product.discount_price).decimalPart }}
+          </span>
+        </span>
+        <span v-if="product.discount >= 0.01" class="old-price">
+          ${{ Math.floor(product.price) }}
+        </span>
+        <span v-else class="old-price2">&nbsp;</span>
+      </div>
+      <v-btn
+        @click="addToCart(product)"
+        color="outlined"
+        elevation="10"
+        width="100%"
+        style="padding: 0; margin-top: 14px !important"
+      >
+        Add to Cart &nbsp;
+        <v-icon right>mdi-cart-outline</v-icon>
+      </v-btn>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -172,21 +196,7 @@ export default {
 }
 </script>
 <style scoped>
-.v-card-actions {
-  margin: 0 !important;
-  padding: 0 !important;
-}
 .v-btn:hover {
-  background-color: #67c0ff;
-}
-.old-price {
-  font-size: 0.8rem !important;
-  height: 0.5em !important;
-  text-decoration: line-through;
-  color: #404447;
-  margin-left: 115px;
-  margin-top: -40px !important;
-  margin-bottom: 10px !important;
-  padding: 0 !important;
+  background-color: #5e95e2;
 }
 </style>

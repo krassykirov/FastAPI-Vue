@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
 import config from '@/config'
 import axios from 'axios'
+
 // import ratingCache from '@/cache'
 
 // const MINUTES_BEFORE_EXPIRATION_TO_LOGOUT = 5
@@ -487,33 +488,6 @@ export default createStore({
         commit('REMOVE_RATING', index)
       }
     },
-    updateInputs({ commit, state }) {
-      let minVal = parseInt(document.querySelector('.min-range').value)
-      let maxVal = parseInt(document.querySelector('.max-range').value)
-
-      if (minVal >= maxVal) {
-        minVal = maxVal
-      } else if (maxVal <= minVal) {
-        maxVal = minVal
-      }
-      if (minVal >= state.max - 200) {
-        minVal = Math.floor(state.productMin)
-      }
-      if (maxVal <= state.min + 200) {
-        maxVal = Math.ceil(state.productMax)
-      }
-      const rangeInput = document.querySelector('.min-range')
-      const rangeInputMax = document.querySelector('.max-range')
-      if (rangeInput) {
-        rangeInput.value = Math.floor(minVal)
-      }
-      if (rangeInputMax) {
-        rangeInputMax.value = Math.ceil(maxVal)
-      }
-      commit('SET_MIN_PRICE', minVal)
-      commit('SET_MAX_PRICE', maxVal)
-      // commit('SET_RANGE_INPUT', { min: minVal, max: maxVal })
-    },
     updateHomeProductRange({ state, commit }) {
       const prices = this.state.products.map(product => product.price)
       state.productMin = Math.floor(Math.min(...prices))
@@ -813,22 +787,34 @@ export default createStore({
         )
       })
     },
-    formattedPrice: () => price => {
-      if (price !== null && price !== undefined) {
-        const [integerPart, decimalPart] = price.toFixed(2).split('.')
-        const formattedIntegerPart = integerPart.replace(
-          /\B(?=(\d{3})+(?!\d))/g,
-          '.'
-        )
-        const formattedDecimalPart = decimalPart || '00'
-        return {
-          integerPart: formattedIntegerPart,
-          decimalPart: formattedDecimalPart
-        }
-      } else {
-        return {
-          integerPart: '',
-          decimalPart: ''
+    formattedPrice() {
+      const formattedPrices = {}
+
+      return price => {
+        if (formattedPrices[price] !== undefined) {
+          // Return cached value if available
+          return formattedPrices[price]
+        } else {
+          if (price !== null && price !== undefined) {
+            const [integerPart, decimalPart] = price.toFixed(2).split('.')
+            const formattedIntegerPart = integerPart.replace(
+              /\B(?=(\d{3})+(?!\d))/g,
+              '.'
+            )
+            const formattedDecimalPart = decimalPart || '00'
+            const formattedPrice = {
+              integerPart: formattedIntegerPart,
+              decimalPart: formattedDecimalPart
+            }
+            // Cache the formatted price
+            formattedPrices[price] = formattedPrice
+            return formattedPrice
+          } else {
+            return {
+              integerPart: '',
+              decimalPart: ''
+            }
+          }
         }
       }
     },

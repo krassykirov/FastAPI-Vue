@@ -233,11 +233,12 @@ export default {
     CarouselMain,
     MessageArea
   },
-  props: {
-    isIdle: Boolean,
-    lastActiveDate: Date,
-    inactiveTime: Number
-  },
+  // props: {
+  //   isIdle: Boolean,
+  //   lastActiveDate: Date,
+  //   inactiveTime: Number,
+  //   paginateProducts: Array
+  // },
   data() {
     return {
       hover: false

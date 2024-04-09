@@ -18,7 +18,7 @@
       :profile="profile"
     />
     <div class="container my-5">
-      <div class="row" style="margin-left: 5%">
+      <div class="row" style="margin-left: 6%">
         <div class="col-md-5" style="min-height: 550px; max-height: 500px">
           <div
             class="main-img"
@@ -46,7 +46,7 @@
             />
           </div>
         </div>
-        <div class="col-md-7" style="margin-top: 5%">
+        <div class="col-md-7" style="margin-top: 4%; margin-left: -6%">
           <div class="main-description px-2">
             <div class="product-title text-bold my-3" v-if="item">
               {{ truncateName(item.name, 60) }}
@@ -108,7 +108,7 @@
           <div class="product-details my-2" v-if="item">
             <p class="details-title text-color mb-1">Product Details</p>
             <!-- prettier-ignore -->
-            <div style="max-height: 350px; width: 400px; text-align:left; margin-left: 30%">
+            <div style="max-height: 350px; width: 400px; text-align:left; margin-left: 32%">
               <ul style="width: 400px; list-style-position: outside;">
                 <li v-for="(point, index) in item.description.split(',')" :key="index">
                   {{ point.trim() }}
@@ -133,19 +133,12 @@
       aria-live="assertive"
       aria-atomic="true"
       data-bs-autohide="false"
-      style="
-        position: fixed;
-        top: 10%;
-        right: 5%;
-        transform: translate(0, -50%);
-        width: 250px;
-        z-index: 1000;
-      "
+      style="position: fixed; top: 8%; right: 1%; width: 250px; z-index: 1000"
     >
       <div
         class="toast-body"
         id="cartToastBody"
-        style="font-weight: 900; font: 1.1em"
+        style="font-weight: 500; font: 1.1em"
       ></div>
     </div>
     <v-card style="margin-top: 10%">
@@ -274,49 +267,17 @@
                   </div>
                 </div>
               </div>
-              <nav
+              <v-pagination
                 v-if="reviewsData.length > 2"
-                aria-label="Page navigation example"
-              >
-                <ul class="pagination" style="margin-left: 15%">
-                  <li
-                    class="page-item"
-                    :class="{ disabled: currentPage === 1 }"
-                  >
-                    <button
-                      class="page-link"
-                      @click="prevPage"
-                      :disabled="currentPage === 1"
-                    >
-                      Prev
-                    </button>
-                  </li>
-                  <li
-                    class="page-item"
-                    v-for="page in pages"
-                    :key="page"
-                    :class="{ active: currentPage === page }"
-                  >
-                    <button class="page-link" @click="setCurrentPage(page)">
-                      {{ page }}
-                    </button>
-                  </li>
-                  <li
-                    class="page-item"
-                    :class="{ disabled: currentPage === totalPages }"
-                  >
-                    <button
-                      class="page-link"
-                      @click="nextPage"
-                      :disabled="currentPage === totalPages"
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            </div></v-window-item
-          >
+                v-model="currentPage"
+                :length="totalPages"
+                prev-icon="mdi-chevron-left"
+                next-icon="mdi-chevron-right"
+                class="pagination"
+                style="margin-left: 15%"
+                @input="setCurrentPage"
+              ></v-pagination></div
+          ></v-window-item>
           <v-window-item value="two">
             <div>
               <!-- prettier-ignore -->
@@ -362,20 +323,13 @@
       aria-live="assertive"
       aria-atomic="true"
       data-bs-autohide="false"
-      style="
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(0, -50%);
-        width: 250px;
-        z-index: 1000;
-      "
+      style="position: fixed; top: 50%; left: 50%; width: 250px; z-index: 1000"
     >
       <div class="d-flex">
         <div
           class="toast-body bg-light"
           id="cartToastBody2"
-          style="font-weight: 900; color: grey"
+          style="font-weight: 500; color: grey"
         ></div>
       </div>
     </div>
@@ -744,25 +698,8 @@ export default {
 }
 </script>
 <style scoped>
-.price {
-  font-size: 1em;
-  color: #dc3545;
-  font-weight: 900;
-  margin-bottom: 1%;
-  margin-top: 1.5%;
-}
-.old-price {
-  font-size: 1em;
-  color: #404447;
-  margin-top: 1%;
-  margin-bottom: 2%;
-}
 .text-bold {
   font-weight: 800;
-}
-
-text-color {
-  color: #0093c4;
 }
 /* Main image - left */
 .main-img {
@@ -779,7 +716,6 @@ text-color {
   height: auto !important;
   max-height: 550px !important;
 }
-
 /* Preview images */
 .previews img {
   margin-top: 1%;
@@ -788,7 +724,6 @@ text-color {
   max-height: 200px !important;
 }
 .main-description .category {
-  text-transform: uppercase;
   color: #0093c4;
 }
 
@@ -808,7 +743,6 @@ text-color {
 }
 
 .details-title {
-  text-transform: uppercase;
   font-weight: 600;
   font-size: 1.2rem;
   color: #757575;
@@ -818,51 +752,12 @@ text-color {
   margin-right: 5px;
 }
 
-.quantity input {
-  border-radius: 0;
-  height: 40px;
-}
-
-.custom-btn {
-  text-transform: capitalize;
-  background-color: #0093c4;
-  color: white;
-  width: 150px;
-  height: 40px;
-  border-radius: 0;
-}
-
-.custom-btn:hover {
-  background-color: #0093c4 !important;
-  font-size: 18px;
-  color: white !important;
-}
-
 .display-5 {
   font-weight: 300;
   line-height: 1;
   font-size: 1.5em;
 }
 
-.questions .icon i {
-  font-size: 2rem;
-}
-
-.questions-icon {
-  font-size: 2rem;
-  color: #0093c4;
-}
-
-.pagination .page-item {
-  display: inline-block !important;
-  margin-right: 3px !important;
-}
-
-.pagination .page-item.active a {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
-}
 .text-center {
   text-align: center !important;
 }
@@ -880,19 +775,6 @@ text-color {
   margin-right: auto !important;
 }
 
-.pagination {
-  margin-top: 0.5% !important;
-}
-
-.pagination .page-item {
-  display: inline-block !important;
-  margin-right: 3px !important;
-}
-
-.pagination .page-item.active a {
-  background-color: #007bff;
-  color: #efe8e8;
-}
 .overall-rating {
   font-size: 1em !important;
   margin-bottom: 2%;
@@ -900,5 +782,8 @@ text-color {
 .overall-rating2 {
   font-size: 0.9em !important;
   margin-bottom: 2%;
+}
+.v-btn:hover {
+  background-color: #67c0ff;
 }
 </style>

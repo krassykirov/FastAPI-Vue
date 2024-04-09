@@ -3,10 +3,9 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-// import * as icons from 'vuetify/iconsets'
+import VueLazyload from 'vue-lazyload'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
-// import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import axios from 'axios'
 import store from '@/store/index.js'
 import App from './App.vue'
@@ -83,4 +82,13 @@ const vuetify = createVuetify({
   directives
 })
 const app = createApp(App)
-app.use(router).use(store).use(vuetify).use(VueCookies).mount('#app')
+app
+  .use(router)
+  .use(store)
+  .use(vuetify)
+  .use(VueCookies)
+  .use(VueLazyload, {
+    preLoad: 1.3,
+    attempt: 1
+  })
+  .mount('#app')

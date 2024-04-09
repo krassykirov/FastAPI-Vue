@@ -29,7 +29,6 @@ logger = detailed_logger()
 def get_profiles(db: Session = Depends(get_session), user: User = Depends(get_current_user)) -> List[UserProfile]:
     profiles = ProfileActions().get_profiles(db=db)
     if profiles is None:
-        logger.info(f"No profiles found")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No profiles found")
     profiles = jsonable_encoder(profiles)
     return profiles

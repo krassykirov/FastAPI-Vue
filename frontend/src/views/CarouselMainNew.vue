@@ -220,15 +220,6 @@ export default {
     },
     removeFromCart(itemId) {
       this.$store.dispatch('removeFromCart', itemId)
-    },
-    redirectToItemFromCart(itemId) {
-      this.$store.dispatch('redirectToItem', itemId)
-    },
-    redirectToItemFromNavbar(itemId) {
-      this.$router.push({ name: 'Item', params: { itemId } })
-    },
-    redirectToItemFromProduct(itemId) {
-      this.$store.dispatch('redirectToItem', itemId)
     }
   }
 }
