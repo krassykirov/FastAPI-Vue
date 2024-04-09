@@ -85,7 +85,7 @@
               color="#5e95e2"
               :max="productMax"
               :min="productMin"
-              :step="1"
+              :step="50"
               class="align-center"
               @update:modelValue="updateSliderRange"
               hide-details
@@ -94,6 +94,10 @@
               thumb-label="always"
               :disabled="isPriceRangesSelected"
             ></v-range-slider>
+          </div>
+          <div class="range-display">
+            <span style="font-weight: 400">${{ min }}</span> -
+            <span style="font-weight: 400">${{ max }}</span>
           </div>
         </div>
         <div class="filter-card">
@@ -317,22 +321,22 @@
         </template>
         <template v-if="filteredProducts && filteredProducts.length > 0">
           <div class="product-list" id="mycard">
-            <!-- <transition-group name="product-fade"> -->
-            <ProductList
-              :products="paginatedProducts"
-              :key="products"
-              :currentPage="currentPage"
-              :itemsPerPage="itemsPerPage"
-              :cart="cart"
-              :favorites="favorites"
-              @addToCart="addToCart"
-              @addTofavorites="addTofavorites"
-              @removeFromCart="removeFromCart"
-              @removeFromFavorites="removeFromFavorites"
-              @redirectToItem="redirectToItem"
-              style="justify-content: left; margin-top: 0"
-            />
-            <!-- </transition-group> -->
+            <transition-group name="product-fade">
+              <ProductList
+                :products="paginatedProducts"
+                :key="products"
+                :currentPage="currentPage"
+                :itemsPerPage="itemsPerPage"
+                :cart="cart"
+                :favorites="favorites"
+                @addToCart="addToCart"
+                @addTofavorites="addTofavorites"
+                @removeFromCart="removeFromCart"
+                @removeFromFavorites="removeFromFavorites"
+                @redirectToItem="redirectToItem"
+                style="justify-content: left; margin-top: 0"
+              />
+            </transition-group>
           </div>
         </template>
         <template

@@ -94,7 +94,7 @@
               color="#5e95e2"
               :max="productMax"
               :min="productMin"
-              :step="1"
+              :step="30"
               class="align-center"
               @update:modelValue="updateSliderRange"
               hide-details
@@ -102,6 +102,10 @@
               track-size="2"
               thumb-label="always"
             ></v-range-slider>
+            <div class="range-display">
+              <span style="font-weight: 400">${{ min }}</span> -
+              <span style="font-weight: 400">${{ max }}</span>
+            </div>
           </div>
         </div>
         <div
@@ -455,13 +459,13 @@ export default {
     },
     debouncedUpdateSliderRange: debounce(function () {
       let [minVal, maxVal] = this.range
-      if (maxVal - minVal < 100) {
+      if (maxVal - minVal < 200) {
         minVal = Math.max(
-          minVal - Math.ceil((100 - (maxVal - minVal)) / 2),
+          minVal - Math.ceil((200 - (maxVal - minVal)) / 2),
           this.productMin
         )
         maxVal = Math.min(
-          maxVal + Math.ceil((100 - (maxVal - minVal)) / 2),
+          maxVal + Math.ceil((200 - (maxVal - minVal)) / 2),
           this.productMax
         )
         return

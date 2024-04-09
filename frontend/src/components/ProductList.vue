@@ -1,127 +1,136 @@
 <template>
-  <div
-    class="card"
-    :id="product.id"
-    :data-category="product.category_id"
-    style="margin: 0.15%; padding: 0.15%"
+  <v-lazy
+    :min-height="200"
+    :options="{ threshold: 0.5 }"
+    transition="fade-transition"
   >
-    <div class="card-body" style="padding: 1%">
-      <!-- Discount badge -->
-      <span
-        class="badge bg-danger position-absolute top-0 start-0"
-        v-if="product.discount >= 0.01"
-        style="font-size: 0.8rem; margin: 1%; top: 0"
-      >
-        -{{ Math.floor(product.discount * 100) }}%
-      </span>
-
-      <!-- Favorite icon -->
-      <span
-        :class="getHeartClasses(product)"
-        @click="addTofavorites(product)"
-        :id="'heart' + product.id"
-        style="
-          position: absolute;
-          top: 1%;
-          right: 1%;
-          font-weight: 900;
-          font-size: 1.2em;
-          cursor: pointer;
-        "
-      ></span>
-
-      <!-- Product image -->
-      <img
-        :src="
-          `${backendEndpoint}/static/img/` + product.name + '/' + product.image
-        "
-        class="card-img-top"
-        @click="redirectToItemFromProduct(product.id)"
-        style="cursor: pointer"
-      />
-      <h7
-        @click="redirectToItemFromProduct(product.id)"
-        class="card-title"
-        style="
-          margin-bottom: 1%;
-          padding: 1%;
-          height: 3em;
-          font-size: 14px;
-          font-weight: 600;
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          line-height: 1;
-          cursor: pointer;
-        "
-      >
-        {{ truncateName(product.name, 60) }}
-      </h7>
-      <p
-        style="cursor: pointer; margin-bottom: 1%; font-size: 1em"
-        @click="redirectToItemFromProduct(product.id)"
-      >
+    <div
+      class="card"
+      :id="product.id"
+      :data-category="product.category_id"
+      style="margin: 0.15%; padding: 0.15%"
+    >
+      <div class="card-body" style="padding: 1%">
+        <!-- Discount badge -->
         <span
-          v-for="i in 5"
-          :key="i"
-          :class="getStarClasses(i, product.rating_float)"
-        ></span>
-        <span
-          :id="'overall-rating' + product.id + '-float'"
-          class="overall-rating"
+          class="badge bg-danger position-absolute top-0 start-0"
+          v-if="product.discount >= 0.01"
+          style="font-size: 0.8rem; margin: 1%; top: 0"
         >
-          &nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}
+          -{{ Math.floor(product.discount * 100) }}%
         </span>
-        <span :id="'overall-rating' + product.id" class="overall-rating2">
-          ({{ product.review_number }})
-        </span>
-      </p>
-      <div
-        style="
-          margin: 0;
-          padding: 0;
-          display: flex;
-          flex-direction: column;
-          margin-top: 1.7%;
-        "
-      >
+
+        <!-- Favorite icon -->
         <span
+          :class="getHeartClasses(product)"
+          @click="addTofavorites(product)"
+          :id="'heart' + product.id"
           style="
-            font-size: 0.95rem;
-            color: #dc3545;
-            font-weight: 800;
+            position: absolute;
+            top: 1%;
+            right: 1%;
+            font-weight: 900;
+            font-size: 1.2em;
+            cursor: pointer;
+          "
+        ></span>
+
+        <!-- Product image -->
+        <img
+          :src="
+            `${backendEndpoint}/static/img/` +
+            product.name +
+            '/' +
+            product.image
+          "
+          class="card-img-top"
+          @click="redirectToItemFromProduct(product.id)"
+          style="cursor: pointer"
+        />
+        <h7
+          @click="redirectToItemFromProduct(product.id)"
+          class="card-title"
+          style="
             margin-bottom: 1%;
-            margin-left: -12px;
+            padding: 1%;
+            height: 3em;
+            font-size: 14px;
+            font-weight: 600;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-height: 1;
+            cursor: pointer;
           "
         >
-          <span v-if="product.discount_price" style="font-size: 0.95rem">
-            ${{ formattedPrice(product.discount_price).integerPart }}
-          </span>
+          {{ truncateName(product.name, 60) }}
+        </h7>
+        <p
+          style="cursor: pointer; margin-bottom: 1%; font-size: 1em"
+          @click="redirectToItemFromProduct(product.id)"
+        >
           <span
-            v-if="product.discount_price"
-            style="font-size: 0.7rem; position: relative; top: -0.4em"
+            v-for="i in 5"
+            :key="i"
+            :class="getStarClasses(i, product.rating_float)"
+          ></span>
+          <span
+            :id="'overall-rating' + product.id + '-float'"
+            class="overall-rating"
           >
-            {{ formattedPrice(product.discount_price).decimalPart }}
+            &nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}
           </span>
-        </span>
-        <span v-if="product.discount >= 0.01" class="old-price">
-          ${{ Math.floor(product.price) }}
-        </span>
-        <span v-else class="old-price2">&nbsp;</span>
+          <span :id="'overall-rating' + product.id" class="overall-rating2">
+            ({{ product.review_number }})
+          </span>
+        </p>
+        <div
+          style="
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            margin-top: 1.7%;
+          "
+        >
+          <span
+            style="
+              font-size: 0.95rem;
+              color: #dc3545;
+              font-weight: 800;
+              margin-bottom: 1%;
+              margin-left: -12px;
+            "
+          >
+            <span v-if="product.discount_price" style="font-size: 0.95rem">
+              ${{ formattedPrice(product.discount_price).integerPart }}
+            </span>
+            <span
+              v-if="product.discount_price"
+              style="font-size: 0.7rem; position: relative; top: -0.4em"
+            >
+              {{ formattedPrice(product.discount_price).decimalPart }}
+            </span>
+          </span>
+          <span v-if="product.discount >= 0.01" class="old-price">
+            ${{ Math.floor(product.price) }}
+          </span>
+          <span v-else class="old-price2">&nbsp;</span>
+        </div>
+        <v-btn
+          @click="addToCart(product)"
+          color="outlined"
+          elevation="10"
+          width="100%"
+          style="padding: 0; margin-top: 14px !important"
+        >
+          Add to Cart &nbsp;
+          <v-icon right>mdi-cart-outline</v-icon>
+        </v-btn>
       </div>
-      <v-btn
-        @click="addToCart(product)"
-        color="outlined"
-        elevation="10"
-        width="100%"
-        style="padding: 0; margin-top: 14px !important"
-      >
-        Add to Cart &nbsp;
-        <v-icon right>mdi-cart-outline</v-icon>
-      </v-btn>
     </div>
-  </div>
+  </v-lazy>
 </template>
 
 <script>
