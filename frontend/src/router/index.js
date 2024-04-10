@@ -53,11 +53,9 @@ const routes = [
     component: CategoryComponent,
     props: true,
     beforeEnter: async (to, from, next) => {
-      const category = to.params.category
       try {
         await store.dispatch('getProducts')
         await store.dispatch('getProfile')
-        await store.dispatch('updateProductRange', category)
         next()
       } catch (error) {
         // console.log('error', error)

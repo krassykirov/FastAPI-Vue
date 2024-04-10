@@ -352,13 +352,16 @@
             <img :src="require('@/assets/no_result.gif')" />
           </div>
         </template>
-        <nav v-if="totalPages > 1">
-          <v-pagination
-            v-model="currentPage"
-            :length="totalPages"
-            @input="paginatedProducts"
-          ></v-pagination>
-        </nav>
+        <!-- prettier-ignore -->
+        <div v-if="totalPages > 1" style="margin-top: 30px; margin-left: -25%">
+          <nav>
+            <v-pagination
+              v-model="currentPage"
+              :length="totalPages"
+              @input="paginatedProducts"
+            ></v-pagination>
+          </nav>
+        </div>
       </div>
     </div>
     <Footer />

@@ -81,7 +81,7 @@
           >
             &nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}
           </span>
-          <span :id="'overall-rating' + product.id" class="overall-rating2">
+          <span :id="'overall-rating' + product.id" class="text-muted">
             ({{ product.review_number }})
           </span>
         </p>
@@ -123,7 +123,7 @@
           color="outlined"
           elevation="10"
           width="100%"
-          style="padding: 0; margin-top: 14px !important"
+          style="padding: 0; margin-top: 16px !important"
         >
           Add to Cart &nbsp;
           <v-icon right>mdi-cart-outline</v-icon>

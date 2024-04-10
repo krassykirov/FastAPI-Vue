@@ -13,208 +13,54 @@
     />
     <div
       class="container"
-      style="margin-top: 0.7%; margin-left: 7%; background-color: white"
+      style="margin-top: 0.7%; margin-left: 7.3%; background-color: white"
     >
       <CarouselMain carouselId="discount-products-carousel" />
     </div>
     <!-- prettier-ignore -->
-    <h4 style="text-align: center; margin-top: 2%; margin-bottom: 2%">SHOP BY CATEGORY</h4>
-    <section id="sm-banner" class="section-p1">
-      <div class="banner-box">
-        <h4>Laptops</h4>
-        <!-- <h2>Up to 50% Discount</h2> -->
-        <!-- <span>The best classic dress is on sales at cara</span> -->
-        <div style="margin-top: 47%">
-          <button class="btn white" @click="goToCategory('Laptops')">
-            SHOP NOW
-          </button>
-        </div>
-      </div>
-      <div class="banner-box2 banner-box" style="margin-left: 5px">
-        <h4>Smartphones</h4>
-        <h2>Special Offers</h2>
-        <!-- <span>The best classic dress is on sales at cara</span> -->
-        <div style="margin-top: 45%">
-          <button class="btn white" @click="goToCategory('Smartphones')">
-            SHOP NOW
-          </button>
-        </div>
-      </div>
-      <div class="banner-box3 banner-box" style="margin-left: 5px">
-        <h4>Tablets</h4>
-        <h2>Special Offers</h2>
-        <!-- <span>The best classic dress is on sales at cara</span> -->
-        <div style="margin-top: 45%">
-          <button class="btn white" @click="goToCategory('Tablets')">
-            SHOP NOW
-          </button>
-        </div>
-      </div>
-      <div class="banner-box5 banner-box">
-        <h4>TV's</h4>
-        <h2>Special Offers</h2>
-        <!-- <span>The best classic dress is on sales at cara</span> -->
-        <div style="margin-top: 45%">
-          <button class="btn white" @click="goToCategory('TV')">
-            SHOP NOW
-          </button>
-        </div>
-      </div>
-      <div class="banner-box4 banner-box" style="margin-left: 5px">
-        <div style="margin-top: 66%">
-          <button class="btn white" @click="goToAllProducts()">SHOP NOW</button>
-        </div>
-      </div>
-      <div class="banner-box6 banner-box" style="margin-left: 5px">
-        <!-- <h4>Discounts</h4>
-        <h2>Special Offers</h2> -->
-        <!-- <span>The best classic dress is on sales at cara</span> -->
-        <div style="margin-top: 66%">
-          <button class="btn white" @click="goToCategory('Smartwatches')">
-            SHOP NOW
-          </button>
-        </div>
-      </div>
-    </section>
-    <div class="form" style="margin-top: 15px; margin-left: 30%">
-      <button
-        class="custom-button"
-        style="height: 50px; width: 350px"
-        @click="goToAllProducts()"
-        @mouseover="hover = true"
-        @mouseleave="hover = false"
-        :style="{
-          backgroundColor: hover ? '#088178' : 'transparent',
-          color: hover ? '#fff' : 'inherit'
-        }"
-      >
-        Browse All Products
-      </button>
-    </div>
-    <section id="banner3" class="section-p1" style="margin-top: 15px">
-      <div class="banner-box" @click="goToItem(24)" style="cursor: pointer">
-        <!-- <h2>Today Offer</h2>
-        <h3>-50% OFF</h3> -->
-      </div>
-
-      <div
-        class="banner-box banner-img2"
-        @click="goToItem(9)"
-        style="cursor: pointer"
-      >
-        <!-- <h2>Today Offer</h2>
-        <h3>-50% OFF</h3> -->
-      </div>
-
-      <div
-        class="banner-box banner-img3"
-        @click="goToItem(57)"
-        style="cursor: pointer"
-      >
-        <!-- <h2>Today Offer</h2>
-        <h3>-50% OFF</h3> -->
-      </div>
-    </section>
+    <v-card
+      class="mx-auto"
+      max-width="88%"
+      style="margin-bottom: 3%; margin-left: 0; padding: 0; text-align: center"
+      title="Shop By category"
+    >
+    <v-container fluid style="width: 100vw; position: sticky; left: -5%">
+      <v-row dense>
+        <v-col
+          v-for="(card, index) in cards"
+          :key="card.title"
+          :cols="index < 2 ? card.flex * 2 : card.flex"
+          @click="goToCategory(card.title)"
+        >
+          <v-card :width="card.width" :height="card.height" elevation="15" rounded="lg">
+            <v-img
+              :src="card.src"
+              :aspect-ratio="card.aspectratio"
+              class="align-end"
+              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+              cover
+              style="cursor: pointer; object-fit: cover !important"
+            >
+              <v-card-title class="text-white" v-text="card.title"></v-card-title>
+            </v-img>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="surface-variant" icon="mdi-heart" size="small" variant="text"></v-btn>
+              <v-btn color="surface-variant" icon="mdi-bookmark" size="small" variant="text"></v-btn>
+              <v-btn color="surface-variant" icon="mdi-share-variant" size="small" variant="text"></v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
     <div
       class="container-fluid"
       style="margin: 0 !important; margin-left: 10% !important"
     >
       <MessageArea />
     </div>
-    <v-btn
-      @click="goToTop"
-      prepend-icon="mdi-arrow-up-bold-outline"
-      variant="elevated"
-      color="outlined"
-      width="100%"
-      style="
-        margin-top: 2%;
-        margin-bottom: 1%;
-        color: white !important;
-        background-color: #6c757d !important;
-        text-align: center !important;
-        cursor: pointer !important;
-        margin-top: 2%;
-        width: 100%;
-        height: 40px;
-        margin-left: 0;
-      "
-      >Back to Top</v-btn
-    >
-    <div style="margin-top: 10px">
-      <v-toolbar
-        image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
-        dark
-        prominent
-      >
-      </v-toolbar>
-    </div>
-
-    <footer class="section-p1" style="margin-top: 25px">
-      <div class="col">
-        <a href="#">
-          <img
-            class="logo"
-            src="../assets/eshop-logo-png.png"
-            style="
-              width: 100%;
-              height: 50px;
-              margin-bottom: 0;
-              margin-top: 0;
-              padding: 0;
-            "
-        /></a>
-        <h4>Contact</h4>
-        <p><strong>Phone:</strong>+123456789, +987654321</p>
-        <p><strong>Hours:</strong>10.00 - 18.00, Mon - Sat</p>
-        <div class="follow">
-          <h4>Follow Us</h4>
-          <div class="icon">
-            <i class="fab fa-facebook-f"></i>
-            <i class="fab fa-instagram"></i>
-            <i class="fab fa-twitter"></i>
-            <i class="fab fa-youtube"></i>
-            <i class="fab fa-pinterest-p"></i>
-          </div>
-        </div>
-      </div>
-
-      <div class="sec">
-        <div class="col">
-          <h4>About</h4>
-          <a href="#">About Us</a>
-          <a href="#">Delivery Information</a>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms and Condition</a>
-          <a href="#">Contact Us</a>
-        </div>
-
-        <div class="col">
-          <h4>My Account</h4>
-          <a href="#">View Cart</a>
-          <a href="#">My Account</a>
-          <a href="#">My Wishlist</a>
-          <a href="#">Track my Order</a>
-          <a href="#">Help</a>
-        </div>
-
-        <div class="col install">
-          <h4>Install App</h4>
-          <p>From App Store or Google Play</p>
-
-          <div class="row">
-            <img src="https://i.postimg.cc/Y2s5mLdR/app.jpg" alt="" />
-            <img src="https://i.postimg.cc/7YvyWTS6/play.jpg" alt="" />
-          </div>
-          <p>Secured Payment Gateways</p>
-          <img src="https://i.postimg.cc/kgfzqVRW/pay.png" alt="" />
-        </div>
-      </div>
-
-      <div class="coypright">
-        <p>© 2024 All rights reserved!</p>
-      </div>
-    </footer>
+    <Footer />
   </div>
 </template>
 
@@ -225,23 +71,56 @@ import { jwtDecode } from 'jwt-decode'
 import MyNavbar from '@/components/MyNavbar.vue'
 import CarouselMain from '@/views/CarouselMainNew.vue'
 import MessageArea from '@/views/MessageAreaVue.vue'
+import Footer from '@/views/FooterVue.vue'
 // /* global bootstrap */
 export default {
   name: 'NewHome',
   components: {
     MyNavbar,
     CarouselMain,
-    MessageArea
+    MessageArea,
+    Footer
   },
-  // props: {
-  //   isIdle: Boolean,
-  //   lastActiveDate: Date,
-  //   inactiveTime: Number,
-  //   paginateProducts: Array
-  // },
   data() {
     return {
-      hover: false
+      hover: false,
+      cards: [
+        {
+          title: 'Laptops',
+          src: require('@/assets/laptop-banner.jpeg'),
+          width: '800px',
+          height: '448px',
+          aspectratio: '16/9'
+        },
+        {
+          title: 'Smartphones',
+          src: require('@/assets/smartphone-banner.png'),
+          width: '800px',
+          height: '448px',
+          aspectratio: '16/9'
+        },
+        {
+          title: 'Tablets',
+          src: require('@/assets/ipad.jpeg'),
+          width: '530px',
+          height: '295px',
+          aspectratio: '16/9'
+        },
+        {
+          title: 'Smartwatches',
+          src: require('@/assets/smart-watch-banner.jpg'),
+          width: '530px',
+          height: '295px',
+          aspectratio: '19/10'
+        },
+        {
+          title: 'TV',
+          src: require('@/assets/tv-banner.webp'),
+          width: '530px',
+          height: '295px',
+          aspectratio: '16/9'
+        }
+      ]
     }
   },
   created() {
@@ -394,7 +273,6 @@ export default {
 html {
   scroll-behavior: smooth;
 }
-
 h1 {
   font-size: 50px;
   line-height: 64px;
@@ -735,6 +613,16 @@ footer .install img {
 footer .copyright {
   width: 100%;
   text-align: center;
+}
+.category-banner {
+  cursor: pointer;
+}
+
+.banner-content {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
 }
 
 /*----------------------Media Query ----------*/

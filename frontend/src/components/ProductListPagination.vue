@@ -82,11 +82,10 @@
                   class="overall-rating"
                   >&nbsp;{{ parseFloat(product.rating_float).toFixed(2) }}</span
                 >
-                <span
-                  :id="'overall-rating' + product.id"
-                  class="overall-rating2"
-                  >({{ product.review_number }})</span
-                >
+                <!-- prettier-ignore -->
+                <span :id="'overall-rating' + product.id" class="text-muted">
+                  ({{ product.review_number }})
+                </span>
               </p>
 
               <!-- Price -->

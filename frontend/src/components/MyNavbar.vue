@@ -71,25 +71,25 @@
         </v-btn>
       </template>
       <div v-if="favorites && favorites.length > 0" class="d-flex justify-center" style="margin-left: -50px; margin-top: 10px" @mouseleave="handleFavoritestMenuLeave">
-        <v-list width="280px" style="padding: 0; margin: 0; max-height: 350px; overflow-y: auto">
+        <v-list width="290px" style="padding: 0; margin: 0; max-height: 350px; overflow-y: auto">
           <v-card v-for="(item, index) in favorites" :key="index" width="x-small" class="mx-2 my-2">
             <v-row no-gutters align="center" style="height: 75px">
               <v-col cols="3">
-                <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
+                <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" style="margin-left: 5px"/>
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
                 <div style="font-size: 0.7rem; margin-top: 4px;">$ {{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}<span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
               </v-col>
               <v-col cols="2" class="text-right">
-                <v-btn @click="removeFromFavorites(item.id)" icon size="x-small">
+                <v-btn @click="removeFromFavorites(item.id)" icon size="x-small" color="red">
                   <v-icon size="x-small">mdi-trash-can-outline</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
           </v-card>
-          <v-btn @click="redirectToFavorites" size="small" width="100%" color="#029cf5"
-          style="margin-top: -9px; margin-left: 7px">
+          <v-btn @click="redirectToFavorites" size="small" width="290" color="#029cf5"
+          style="margin-top: -9px">
             Go to Favorites
           </v-btn>
         </v-list>
@@ -114,21 +114,21 @@
           <v-card v-for="(item, index) in cart" :key="index" width="x-small" class="mx-2 my-2">
             <v-row no-gutters align="center" style="height: 75px">
               <v-col cols="3">
-                <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" />
+                <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" style="margin-left: 5px"/>
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
                 <div style="font-size: 0.7rem; margin-top: 4px;">$ {{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}<span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
               </v-col>
               <v-col cols="2" class="text-right">
-                <v-btn @click="removeFromCart(item.id)" icon size="x-small">
+                <v-btn @click="removeFromCart(item.id)" icon size="x-small" color="red">
                   <v-icon size="x-small">mdi-trash-can-outline</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
           </v-card>
-          <v-btn @click="redirectToCart" size="small" width="100%" color="#029cf5"
-          style="margin-top: -9px; margin-left: 7px">
+          <v-btn @click="redirectToCart" size="small" width="290" color="#029cf5"
+          style="margin-top: -9px">
             Go to Cart
           </v-btn>
         </v-list>

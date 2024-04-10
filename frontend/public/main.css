@@ -45,10 +45,10 @@ padding-right: -17px;
   padding: 0 !important;
 }
 
-.card-img, .card-img-top, .card-img-bottom {
+.card-img-top, .card-img-bottom {
   width: 100% !important;
+  object-fit: contain !important;
   height: 13vw !important;
-  object-fit: cover !important;
   padding-left: 8px !important;
   padding-right: 8px !important;
   padding-bottom: 5px !important;

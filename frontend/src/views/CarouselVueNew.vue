@@ -108,15 +108,15 @@
             ${{ Math.floor(product.price) }}
           </span>
           <span v-else style="font-size: 1em; margin-top: 1%">&nbsp;</span>
-          <button
-            ref="addToCartButton"
+          <v-btn
             @click="addToCart(product)"
-            class="btn btn-secondary btn-sm"
-            style="width: 100%; margin-top: 1%; margin-bottom: 0"
+            flat
+            width="100%"
+            style="padding: 0; margin-top: 10px !important"
           >
-            Add to Cart
-            <i class="bi bi-cart-fill" style="font-size: 0.9rem"> </i>
-          </button>
+            Add to Cart &nbsp;
+            <v-icon right>mdi-cart-outline</v-icon>
+          </v-btn>
         </div>
       </div>
     </Slide>
@@ -249,7 +249,6 @@ export default defineComponent({
   transition: 0.3s;
 }
 .carousel__slide {
-  opacity: 0.9;
   transform: rotateY(-20deg) scale(0.9);
 }
 .carousel__prev,
@@ -262,5 +261,8 @@ export default defineComponent({
   width: 40px;
   height: 40px;
   display: flex;
+}
+.v-btn:hover {
+  background-color: #5e95e2;
 }
 </style>

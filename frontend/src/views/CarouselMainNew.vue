@@ -3,7 +3,7 @@
     id="carouselExampleFade"
     class="carousel slide carousel-fade"
     data-bs-ride="carousel"
-    style="width: 1420px; margin-left: 3.5%"
+    style="width: 1320px; margin-left: 8%"
   >
     <div class="carousel-indicators">
       <button
@@ -226,15 +226,15 @@ export default {
 </script>
 <style scoped>
 .carousel img {
-  height: 600px;
+  height: 620px;
   width: 1920px;
   margin-bottom: 1%;
+  border-radius: 20px;
 }
 
 .carousel .carousel-indicators li {
   background-color: rgb(140, 140, 196) !important;
 }
-
 .carousel-inner {
   background-color: white;
   width: 100%;
