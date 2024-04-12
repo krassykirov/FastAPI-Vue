@@ -132,7 +132,7 @@ export default {
         this.$store.commit('UPDATE_USER', user)
         this.$store.commit('UPDATE_USER_ID', user_id)
       } else {
-        this.errorMessage = 'Session expired'
+        this.$store.dispatch('setErrorMessage', 'Session expired')
         router.push('/login')
       }
     }

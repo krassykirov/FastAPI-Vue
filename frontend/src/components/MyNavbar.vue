@@ -79,7 +79,8 @@
               </v-col>
               <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
-                <div style="font-size: 0.7rem; margin-top: 4px;">$ {{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}<span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
+                <div style="font-size: 0.7rem; margin-top: 4px;">${{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}
+                <span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
               </v-col>
               <v-col cols="2" class="text-right">
                 <v-btn @click="removeFromFavorites(item.id)" icon size="x-small" color="red">
@@ -118,7 +119,8 @@
               </v-col>
               <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
-                <div style="font-size: 0.7rem; margin-top: 4px;">$ {{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}<span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
+                <div style="font-size: 0.7rem; margin-top: 4px;">${{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}
+                <span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
               </v-col>
               <v-col cols="2" class="text-right">
                 <v-btn @click="removeFromCart(item.id)" icon size="x-small" color="red">

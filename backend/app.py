@@ -52,11 +52,11 @@ app.add_middleware(
 
 logger = detailed_logger()
 
-# @app.middleware("http")
-# async def add_content_security_policy_header(request: Request, call_next):
-#     response = await call_next(request)
-#     response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
-#     return response
+@app.middleware("http")
+async def add_content_security_policy_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
+    return response
 
 @app.on_event("startup")
 def on_startup():

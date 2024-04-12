@@ -47,7 +47,7 @@
           @click="redirectToItemFromProduct(product.id)"
           style="cursor: pointer"
         />
-        <h7
+        <p
           @click="redirectToItemFromProduct(product.id)"
           class="card-title"
           style="
@@ -65,7 +65,7 @@
           "
         >
           {{ truncateName(product.name, 60) }}
-        </h7>
+        </p>
         <p
           style="cursor: pointer; margin-bottom: 1%; font-size: 1em"
           @click="redirectToItemFromProduct(product.id)"

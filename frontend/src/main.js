@@ -3,7 +3,6 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import VueLazyload from 'vue-lazyload'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 import axios from 'axios'
@@ -12,8 +11,6 @@ import App from './App.vue'
 import VueCookies from 'vue-cookies'
 import $ from 'jquery'
 window.$ = window.jQuery = $
-import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.css'
 
 axios.defaults.baseURL = process.env.BASE_URL || 'localhost:8081'
 import router from './router'
@@ -82,13 +79,4 @@ const vuetify = createVuetify({
   directives
 })
 const app = createApp(App)
-app
-  .use(router)
-  .use(store)
-  .use(vuetify)
-  .use(VueCookies)
-  .use(VueLazyload, {
-    preLoad: 1.3,
-    attempt: 1
-  })
-  .mount('#app')
+app.use(router).use(store).use(vuetify).use(VueCookies).mount('#app')

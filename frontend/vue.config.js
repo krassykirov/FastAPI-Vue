@@ -1,4 +1,6 @@
 const webpack = require('webpack')
+const { VueLoaderPlugin } = require('vue-loader')
+const { VuetifyPlugin } = require('webpack-plugin-vuetify')
 
 module.exports = {
   publicPath: '',
@@ -9,7 +11,9 @@ module.exports = {
     plugins: [
       new webpack.DefinePlugin({
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
-      })
+      }),
+      new VuetifyPlugin(),
+      new VueLoaderPlugin()
     ]
   }
 }

@@ -13,7 +13,7 @@ from typing import List
 from my_logger import detailed_logger
 from pathlib import Path
 import shutil, os
-import schemas
+import schemas, time
 
 PROJECT_ROOT = Path(__file__).parent.parent
 BASE_DIR = Path(__file__).resolve().parent
@@ -82,11 +82,13 @@ async def create_profile(request: Request, db: Session = Depends(get_session), u
 
 @profile_router.post("/update_profile", status_code=status.HTTP_200_OK, include_in_schema=False)
 async def update_profile(request: Request, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
+    start_time = time.time()
     form_data = await request.form()
-    filename = form_data.get('file')
+    print('form_data', form_data)
+    file = form_data.get('file')
     json_data = dict(form_data)
     for k, v in json_data.items():
-        if v == '':
+        if v == '' or v == 'null' or v == 'undefined':
             json_data[k] = None
     db_profile = ProfileActions().get_profile_by_user_id(db=db, user_id=user.id)
     if db_profile is None:
@@ -95,19 +97,23 @@ async def update_profile(request: Request, db: Session = Depends(get_session), u
     user_db = db.exec(query).first()
     if user_db:
         try:
-            if filename != 'undefined':
+            if file != 'null':
                 content = await form_data['file'].read()
                 with open(f"static/img/{user.username}/profile/{form_data['file'].filename}", 'wb') as f:
                     f.write(content)
         except Exception as e:
             logger.error(f"Something went wrong, error: {e}")
-        new_data = UserProfile(**dict(json_data), user=user, avatar=form_data['file'].filename if filename != 'undefined' else None).dict(exclude_unset=True,
-                                                                                                          exclude_none=True)
+        if file != 'null' and file != 'undefined':
+            avatar=form_data.get('file').filename
+        else:
+             avatar= "None"
+        new_data = UserProfile(**dict(json_data), user=user, avatar=avatar if avatar != 'None' else None).dict(exclude_unset=True, exclude_none=True)
         for key, value in new_data.items():
             setattr(db_profile, key, value)
             db.commit()
             db.refresh(db_profile)
     json_compatible_item_data = jsonable_encoder(db_profile)
+    print("--- %s seconds ---" % (time.time() - start_time))
     return JSONResponse(content=json_compatible_item_data)
 
 

@@ -17,33 +17,27 @@
       :profile="profile"
       :favorites="favorites"
     />
+    <!-- prettier-ignore -->
     <div class="container" style="margin-top: 2%">
       <h5 v-if="!profile" style="text-align: center">
         No Profile yet, create one?
       </h5>
-      <v-card class="mx-auto" max-width="500" v-if="profile">
-        <v-card-item class="bg-cyan-darken-1">
-          <v-card-title>
-            <span class="text-h5">{{ user }}</span>
-            <v-icon @click="editingProfile = !editingProfile"
-              >mdi-pencil</v-icon
-            >
-          </v-card-title>
-          <template v-slot:append>
-            <v-defaults-provider
-              :defaults="{
-                VBtn: {
-                  variant: 'text',
-                  density: 'comfortable'
-                }
-              }"
-            >
-            </v-defaults-provider>
-          </template>
-          <!-- Update Profile -->
-        </v-card-item>
-        <v-sheet class="mx-auto" width="480px">
-          <v-form ref="form" v-if="editingProfile">
+      <v-card class="mx-auto" width="480" color="grey-lighten-4" max-width="500" v-if="profile">
+        <v-toolbar flat color="grey-lighten-3">
+          <v-btn icon="mdi-account"></v-btn>
+          <v-toolbar-title class="font-weight-light">
+            User Profile
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="isEditing = !isEditing">
+            <v-fade-transition leave-absolute>
+              <v-icon v-if="isEditing">mdi-close</v-icon>
+              <v-icon v-else>mdi-pencil</v-icon>
+            </v-fade-transition>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-form enctype="multipart/form-data" v-if="isEditing" @submit.prevent="updateProfile">
             <v-text-field
               v-model="editedProfile.number"
               label="Telephone number"
@@ -74,22 +68,18 @@
               type="file"
               @change="handleFileChange"
             ></v-file-input>
-            <v-img
+            <!-- <v-img
               :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
               class="imng-fluid"
               style="width: 90%; max-height: 200px"
-            ></v-img>
-            <v-row justify="center" align="center" style="margin-top: 5px">
-              <v-col cols="6">
-                <v-btn width="100%" @click="updateProfile">Save</v-btn>
-              </v-col>
-              <v-col cols="6">
-                <v-btn width="100%" @click="cancelProfile">Cancel</v-btn>
-              </v-col>
-            </v-row>
+            ></v-img> -->
+            <v-card-actions style="margin-top: 15px">
+              <v-spacer></v-spacer>
+              <v-btn type="submit" width="200px" elevation="5">Save</v-btn>
+            </v-card-actions>
           </v-form>
           <v-list v-else style="width: 450px">
-            <v-list-item prepend-icon="mdi-phone" style="text-align: center">
+            <v-list-item prepend-icon="mdi-phone"  style="text-align: center">
               {{ profile.number }}
             </v-list-item>
             <v-divider inset></v-divider>
@@ -114,12 +104,22 @@
               ></v-img>
             </v-list-item>
           </v-list>
-        </v-sheet>
+          <v-snackbar
+          v-model="hasSaved"
+          :timeout="2000"
+          location="bottom left"
+          position="absolute"
+          attach
+        >
+          Your profile has been updated
+        </v-snackbar>
+        </v-card-text>
+        <v-divider></v-divider>
       </v-card>
       <!-- Create Profile -->
       <div class="container" style="margin-top: 2%; width: 480px">
         <v-card v-if="!profile">
-          <v-card-title class="bg-cyan-darken-1">
+          <v-card-title class="bg-cyan-darken-1" style="text-align: center">
             <span class="text-h5">{{ user }}</span>
           </v-card-title>
           <v-card-text>
@@ -155,7 +155,6 @@
           </v-card-text>
           <v-card-actions>
             <v-btn @click="createProfile" color="primary">Save</v-btn>
-            <v-btn @click="cancelCreateProfile" color="secondary">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </div>
@@ -167,9 +166,9 @@
 import $ from 'jquery'
 import NavBar from '@/components/MyNavbar.vue'
 import config from '@/config'
-import VueCookies from 'vue-cookies'
-import { jwtDecode } from 'jwt-decode'
-import router from '@/router'
+// import VueCookies from 'vue-cookies'
+// import { jwtDecode } from 'jwt-decode'
+// import router from '@/router'
 import axios from 'axios'
 
 export default {
@@ -180,7 +179,8 @@ export default {
   emits: ['addToCart'],
   data() {
     return {
-      editingProfile: false,
+      hasSaved: false,
+      isEditing: false,
       editedProfile: {
         email: '',
         number: '',
@@ -200,12 +200,6 @@ export default {
     }
   },
   computed: {
-    // isEmailValid() {
-    //   return this.emailRules.every(rule => rule(this.email.value) === true)
-    // },
-    // isPhoneValid() {
-    //   return this.phoneRules.every(rule => rule(this.number.value) === true)
-    // },
     emailRules() {
       return [
         v => {
@@ -239,24 +233,21 @@ export default {
       return this.$store.state.accessToken
     }
   },
-  created() {
-    const accessToken = VueCookies.get('access_token')
-    if (accessToken) {
-      const user = jwtDecode(accessToken).sub
-      const user_id = jwtDecode(accessToken).user_id
-      this.$store.commit('UPDATE_USER', user)
-      this.$store.commit('UPDATE_USER_ID', user_id)
-    } else {
-      router.push('/login')
-    }
-    this.$store.dispatch('getProfile')
-  },
+  // created() {
+  //   const accessToken = VueCookies.get('access_token')
+  //   if (accessToken) {
+  //     const user = jwtDecode(accessToken).sub
+  //     const user_id = jwtDecode(accessToken).user_id
+  //     this.$store.commit('UPDATE_USER', user)
+  //     this.$store.commit('UPDATE_USER_ID', user_id)
+  //   } else {
+  //     router.push('/login')
+  //   }
+  //   this.$store.dispatch('getProfile')
+  // },
   methods: {
     clearErrorMessage() {
       this.$store.dispatch('setErrorMessage', '')
-    },
-    cancelProfile() {
-      this.editingProfile = false
     },
     handleFileChange(event) {
       this.editedProfile.file = event.target.files[0]
@@ -285,28 +276,37 @@ export default {
         !this.editedProfile.address &&
         !this.editedProfile.file
       ) {
-        console.log('this.file', this.file)
         return
       }
       const formData = new FormData()
       formData.append('email', this.editedProfile.email)
       formData.append('number', this.editedProfile.number)
       formData.append('address', this.editedProfile.address)
-      formData.append('file', this.editedProfile.file)
+      if (
+        this.editedProfile.file !== 'undefined' &&
+        this.editedProfile.file !== 'null'
+      ) {
+        formData.append('file', this.editedProfile.file)
+      }
+      console.log('formData', formData)
+      console.log('this.editedProfile.file', this.editedProfile.file)
       try {
+        console.log('sending request')
         const response = await axios.post(
           `${config.backendEndpoint}/api/profile/update_profile`,
           formData
         )
         const data = response.data
-        const user = this.$store.getters.user
-        const img_path = `${config.backendEndpoint}/static/img/${user}/profile/${data.avatar}`
-        $('#card-email').text(`Email: ${data.email}`)
-        $('#card-address').text(`Address: ${data.address}`)
-        $('#card-phone').text(`Address: ${data.number}`)
-        $('#avatar-image').attr('src', img_path)
+        console.log(' response data', data)
         this.$store.dispatch('getProfile')
-        this.editingProfile = false
+        this.editedProfile = {
+          email: '',
+          number: '',
+          address: '',
+          file: null
+        }
+        this.isEditing = false
+        this.hasSaved = true
       } catch (error) {
         if (error.response && error.response.status === 404) {
           $('#UpdateProfileLabel').text(
@@ -329,15 +329,18 @@ export default {
       formData.append('number', this.newProfile.number)
       formData.append('address', this.newProfile.address)
       formData.append('file', this.newProfile.avatar)
+      console.log('formData', formData)
       axios
         .post(`${config.backendEndpoint}/api/profile/create_profile`, formData)
         .then(() => {
+          console.log('request sent')
           this.newProfile = {
             email: '',
             number: '',
             address: '',
             avatar: null
           }
+          console.log('getProfile sent')
           this.$store.dispatch('getProfile')
         })
         .catch(error => {
@@ -351,34 +354,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) !important;
-  margin-bottom: 10%;
-  margin-top: 5% !important;
-  margin: auto !important;
-  text-align: center !important;
-  font-family: arial !important;
-  width: 20rem !important;
-  height: auto !important;
-}
-
-button {
-  border: none !important;
-  outline: 0 !important;
-  display: inline-block !important;
-  padding: 8px !important;
-  color: white !important;
-  background-color: #0093c4 !important;
-  text-align: center !important;
-  cursor: pointer !important;
-  width: 100% !important;
-  font-size: 18px !important;
-  margin-bottom: 2%;
-}
-
-.navbar {
-  padding-left: 0 !important;
-}
-</style>

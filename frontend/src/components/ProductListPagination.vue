@@ -37,11 +37,12 @@
                   cursor: pointer;
                 "
               ></span>
-
-              <!-- Product image -->
               <img
-                v-lazy="
-                  `${backendEndpoint}/static/img/${product.name}/${product.image}`
+                :src="
+                  `${backendEndpoint}/static/img/` +
+                  product.name +
+                  '/' +
+                  product.image
                 "
                 class="card-img-top"
                 @click="redirectToItemFromProduct(product.id)"

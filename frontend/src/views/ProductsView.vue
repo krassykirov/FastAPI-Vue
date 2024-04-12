@@ -385,7 +385,7 @@
 
 <script>
 // import $ from 'jquery'
-import 'bootstrap'
+// import 'bootstrap'
 import router from '@/router'
 import VueCookies from 'vue-cookies'
 import { jwtDecode } from 'jwt-decode'
@@ -523,7 +523,7 @@ export default {
             discountCondition
           )
         })
-
+      this.scrollToTop()
       return paginatedAndFilteredProducts
     },
     totalPages() {
@@ -678,12 +678,15 @@ export default {
         this.$route.params.category === category
       )
     },
+    setCurrentPage(page) {
+      this.currentPage = page
+      window.scrollTo({ top: 0, left: 0 })
+    },
     goHome() {
       this.$router.push({ name: 'NewHome' })
     },
     goToAllProducts() {
       this.$router.push({ name: 'home' })
-      // window.location.assign('/products')
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: 'auto' })
       })
@@ -858,22 +861,6 @@ export default {
       this.$store.commit('UPDATE_SELECTED_PRICE_RANGES', selectedPriceRanges)
       this.currentPage = 1
     },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++
-      }
-      window.scrollTo({ top: 0, behavior: 'auto' })
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--
-      }
-      window.scrollTo({ top: 0, behavior: 'auto' })
-    },
-    setCurrentPage(page) {
-      this.currentPage = page
-      window.scrollTo({ top: 0, behavior: 'auto' })
-    },
     updateProductRange() {
       const prices = this.$store.state.products.map(product => product.price)
       this.$store.state.productMin = Math.ceil(Math.min(...prices))
@@ -916,14 +903,11 @@ export default {
       }, 0)
       return count
     },
-    // updateInputs() {
-    //   this.$store.dispatch('updateInputs')
-    // },
+    handlePaginationInput() {
+      this.scrollToTop()
+    },
     scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     addToCart(product) {
       this.$store.dispatch('addToCart', product)
