@@ -2,7 +2,7 @@ from fastapi import Depends,HTTPException,Request, APIRouter, status, Form, Back
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import RedirectResponse, JSONResponse
-from src.db import get_session
+from db import get_session, engine
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from pathlib import Path
@@ -12,25 +12,25 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel, Session
-from src.db import engine
-from src.routers.categories import category_router
-from src.routers.items import items_router
-from src.routers.reviews import reviews_router
-from src.routers.profile import profile_router
-# from src.routers.cart import cart_router
-from src.auth.oauth import oauth_router, get_current_user
-from src.models import Item, Category, Review, User, UserRead, UserProfile, Categories
-from src.crud.crud import CategoryActions, ItemActions, ReviewActions, ProfileActions
-from src.helper import delete_item_dir, create_categories
-import src.schemas
+from routers.categories import category_router
+from routers.items import items_router
+from routers.reviews import reviews_router
+from routers.profile import profile_router
+# from routers.cart import cart_router
+from auth.oauth import oauth_router, get_current_user
+from models import Item, Category, Review, User, UserRead, UserProfile, Categories
+from crud.crud import CategoryActions, ItemActions, ReviewActions, ProfileActions
+from helper import delete_item_dir, create_categories
+import schemas
 import os
 from os.path import abspath
-from src.my_logger import detailed_logger
+from my_logger import detailed_logger
 from fastapi.responses import FileResponse
 
 PROJECT_ROOT = Path(__file__).parent.parent # /
 BASE_DIR = Path(__file__).resolve().parent # / src
-
+print('PROJECT_ROOT', PROJECT_ROOT)
+print('BASE_DIR', BASE_DIR)
 templates = Jinja2Templates(directory=Path(BASE_DIR, 'static/templates'))
 
 app = FastAPI() # docs_url=None
@@ -61,7 +61,7 @@ def on_startup():
 async def home(request: Request, user: User = Depends(get_current_user)):
     return templates.TemplateResponse("base.html", {"request": request, 'current_user': user.username})
 
-@app.get("/products", include_in_schema=False, response_model=src.schemas.ItemRead)
+@app.get("/products", include_in_schema=False, response_model=schemas.ItemRead)
 def get_products(request: Request, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
     """ Return all Items """
     profile = ProfileActions().get_profile_by_user_id(db=db, user_id=user.id)
@@ -141,11 +141,11 @@ async def delete_item(request: Request, background_tasks: BackgroundTasks, id: i
      else:
         raise HTTPException(status_code=403,detail=f"User is not allowed to delete this item")
 
-@app.get("/items/{id}", status_code=status.HTTP_200_OK, response_model=src.schemas.ItemRead, include_in_schema=False) # http://127.0.0.1:8000/api/items?name=12
+@app.get("/items/{id}", status_code=status.HTTP_200_OK, response_model=schemas.ItemRead, include_in_schema=False) # http://127.0.0.1:8000/api/items?name=12
 async def read_item(request: Request, id: int, db: Session=Depends(get_session), user: User = Depends(get_current_user)):
     item_db = ItemActions().get_item_by_id(db=db, id=id)
     if item_db:
-        item = src.schemas.ItemRead.from_orm(item_db)
+        item = schemas.ItemRead.from_orm(item_db)
         item_rating = ReviewActions().get_item_reviews_rating(db=db,id=id)
         profile = ProfileActions().get_profile_by_user_id(db=db, user_id=user.id)
         if not profile:
@@ -167,8 +167,8 @@ async def read_item(request: Request, id: int, db: Session=Depends(get_session),
         response = RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
         return response
 
-@app.post("/update_product_ajax", status_code=status.HTTP_200_OK, include_in_schema=False, response_model=src.schemas.ItemRead)
-async def update_item_api(request: Request, db: Session=Depends(get_session), user: User = Depends(get_current_user)) -> src.schemas.ItemRead:
+@app.post("/update_product_ajax", status_code=status.HTTP_200_OK, include_in_schema=False, response_model=schemas.ItemRead)
+async def update_item_api(request: Request, db: Session=Depends(get_session), user: User = Depends(get_current_user)) -> schemas.ItemRead:
     data = await request.json()
     category_select = data.get('category')
     price = data.get('price')
@@ -198,8 +198,8 @@ async def update_item_api(request: Request, db: Session=Depends(get_session), us
         return HTTPException(status_code=400, detail=f"Something went wrong, error {e}")
     return item
 
-@app.post("/update_description_ajax", status_code=status.HTTP_200_OK, response_model=src.schemas.ItemRead, include_in_schema=False)
-async def update_description_ajax(request: Request, db: Session=Depends(get_session)) -> src.schemas.ItemRead:
+@app.post("/update_description_ajax", status_code=status.HTTP_200_OK, response_model=schemas.ItemRead, include_in_schema=False)
+async def update_description_ajax(request: Request, db: Session=Depends(get_session)) -> schemas.ItemRead:
     data = await request.json()
     item = ItemActions().get_item_by_id(db=db, id=data.get('id'))
     if not item:
@@ -330,7 +330,7 @@ async def get_category(request: Request,  db: Session = Depends(get_session), us
                                                           'current_user': user.username,
                                                           'items': category.items})
 
-@app.post("/category", status_code=status.HTTP_200_OK, response_model=src.schemas.ItemRead, include_in_schema=False)
+@app.post("/category", status_code=status.HTTP_200_OK, response_model=schemas.ItemRead, include_in_schema=False)
 async def get_category_ajax( request: Request, db: Session=Depends(get_session), user: User = Depends(get_current_user)):
     data = await request.json()
     category = CategoryActions().get_category_by_name(db=db, name=data.get('category'))

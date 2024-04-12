@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from sqlmodel import select
-from src.models import Item, Category, Review, UserProfile, User
-import src.schemas
+from models import Item, Category, Review, UserProfile, User
+import schemas
 
 # Events
 class ItemActions:
@@ -42,7 +42,7 @@ class ItemActions:
         db.refresh(item)
         return item
 
-    def update_item(self, id: int, db: Session, item: src.schemas.ItemUpdate):
+    def update_item(self, id: int, db: Session, item: schemas.ItemUpdate):
         item_exist = self.get_item_by_id(db=db, id=id)
         if not item_exist:
             return "Item not found"

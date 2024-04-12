@@ -2,13 +2,13 @@ from fastapi import APIRouter, status, Form
 from fastapi import Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from src.db import get_session
+from db import get_session
 from sqlalchemy.orm import Session
-from src.crud.crud import CategoryActions
-from src.schemas import CategoryCreate, CategoryItems, CategoryRead
-from src.models import Category, Categories
-from src.auth.oauth import get_current_user
-from src.my_logger import detailed_logger
+from crud.crud import CategoryActions
+from schemas import CategoryCreate, CategoryItems, CategoryRead
+from models import Category, Categories
+from auth.oauth import get_current_user
+from my_logger import detailed_logger
 
 PROTECTED = [Depends(get_current_user)]
 

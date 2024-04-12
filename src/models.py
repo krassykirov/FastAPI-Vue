@@ -12,7 +12,7 @@ from typing import Optional, List
 import datetime
 import uuid
 from enum import Enum
-from src.auth.oauth import pwd_context
+from auth.oauth import pwd_context
 
 class BaseSQLModel(SQLModel):
     def __init__(self, **kwargs):

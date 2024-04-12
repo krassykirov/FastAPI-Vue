@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status, Form
 from fastapi import Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
-from src.db import get_session
+from db import get_session
 from sqlalchemy.orm import Session
-from src.crud.crud import ReviewActions, ItemActions
-from src.models import Review, User
-from src.auth.oauth import get_current_user
+from crud.crud import ReviewActions, ItemActions
+from models import Review, User
+from auth.oauth import get_current_user
 
 PROTECTED = [Depends(get_current_user)]
 

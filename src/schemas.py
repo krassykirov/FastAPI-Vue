@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 import datetime
 from typing import List, Optional, Dict, Any
-from src.models import Item, Category
+from models import Item, Category
 import decimal
 
 class CategoryCreate(BaseModel):

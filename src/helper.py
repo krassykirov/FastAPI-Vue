@@ -1,7 +1,7 @@
 import shutil
 from functools import wraps
-from src.models import Categories, Category
-from src.db import get_session
+from models import Categories, Category
+from db import get_session
 from sqlalchemy.orm import Session
 
 

@@ -7,21 +7,21 @@ from starlette import status
 from fastapi import Depends, HTTPException, APIRouter, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-from src.db import get_session
-import src.models
+from db import get_session
+import models
 from jose import JWTError, jwt, ExpiredSignatureError
 from fastapi import BackgroundTasks
 from datetime import datetime, timedelta
-from src.auth.oauth_schemas import OAuth2PasswordBearerCookie
+from auth.oauth_schemas import OAuth2PasswordBearerCookie
 from passlib.context import CryptContext
 import datetime
-from src.my_logger import detailed_logger
+from my_logger import detailed_logger
 
 logger = detailed_logger()
 
 pwd_context = CryptContext(schemes="bcrypt")
 
-templates = Jinja2Templates(directory="src/static/templates")
+templates = Jinja2Templates(directory="static/templates")
 oauth_router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearerCookie(tokenUrl="/api/token")
@@ -75,10 +75,10 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
         expires = payload.get("exp")
         if username is None:
             raise credentials_exception
-        token_data = src.models.TokenData(username=username, expires=expires)
+        token_data = models.TokenData(username=username, expires=expires)
     except JWTError:
         raise credentials_exception
-    query = select(src.models.User).where(src.models.User.username == token_data.username)
+    query = select(models.User).where(models.User.username == token_data.username)
     user = db.exec(query).first()
     if user is None:
         raise credentials_exception
@@ -93,7 +93,7 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
 @oauth_router.post('/token', include_in_schema=False)
 def login_access_token(*, request: Request, response: Response, form_data: OAuth2PasswordRequestForm=Depends(),
                 db: Session = Depends(get_session), background_tasks: BackgroundTasks ):
-    query = select(src.models.User).where(src.models.User.username == form_data.username)
+    query = select(models.User).where(models.User.username == form_data.username)
     user = db.exec(query).first()
     if user and user.verify_password(form_data.password):
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -112,7 +112,7 @@ def login_access_token(*, request: Request, response: Response, form_data: OAuth
 @oauth_router.post('/api/token', include_in_schema=True)
 def login_access_token(*, request: Request, response: Response, form_data: OAuth2PasswordRequestForm=Depends(),
                 db: Session = Depends(get_session), background_tasks: BackgroundTasks ):
-    query = select(src.models.User).where(src.models.User.username == form_data.username)
+    query = select(models.User).where(models.User.username == form_data.username)
     user = db.exec(query).first()
     if user and user.verify_password(form_data.password):
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -135,12 +135,12 @@ async def signup(request: Request, db: Session = Depends(get_session)):
     passwd = form_data.get('password')
     passwd2 = form_data.get('password2')
     assert passwd == passwd2
-    query = select(src.models.User).where(src.models.User.username == username)
+    query = select(models.User).where(models.User.username == username)
     user = db.exec(query).first()
     if user:
         logger.error(f"Item with that name already exists!")
         raise HTTPException(status_code=403,detail=f"User with that email address already exists!")
-    user = src.models.User(username=username)
+    user = models.User(username=username)
     user.set_password(passwd)
     db.add(user)
     db.commit()
