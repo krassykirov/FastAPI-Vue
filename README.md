@@ -32,5 +32,5 @@ The application consists of two main parts:
 - **Vuetify:**
 - **Axios:**
 
-To see the application (it requires SingUP, could be non existing email as no validation is performed at this point):
+To see the application (requires SignUp, could be a non existing email as no validation is performed at this point):
   https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
