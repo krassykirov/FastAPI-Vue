@@ -31,14 +31,14 @@
               </template>
             </v-text-field>
             <div class="text-subtitle-1 text-medium-emphasis">Password</div>
-            <a
+            <!-- <a
               class="text-caption text-decoration-none text-blue"
               href="#"
               rel="noopener noreferrer"
               target="_blank"
             >
               Forgot login password?
-            </a>
+            </a> -->
             <v-text-field
               v-model="password.value.value"
               @input="clearErrorMessage"
