@@ -32,5 +32,5 @@ The application consists of two main parts:
 - Vuetify
 - Axios
 
-To see the application (requires SignUp, could be a non existing email as no emali verification is performed at this point):
-- https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
+The application requires SignUp, there is no email verification as it is just for test purposes:
+https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
