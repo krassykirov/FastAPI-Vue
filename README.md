@@ -35,6 +35,4 @@ The application consists of two main parts:
 The application requires SignUp, there is no email verification as it is just for test purposes:
 https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
 
-https://github.com/krassykirov/FastAPI-Vue/tree/vue_consolidation
-
 ![App Preview](https://github.com/krassykirov/FastAPI-Vue/blob/vue_consolidation/demo.png)
