@@ -22,7 +22,7 @@ class TokenData(BaseModel):
     expires: Optional[datetime.datetime]
 
 
-class OAuth2PasswordBearerCookie(OAuth2): # https://nilsdebruin.medium.com/fastapi-how-to-add-basic-and-cookie-authentication-a45c85ef47d3
+class OAuth2PasswordBearerCookie(OAuth2):
     def __init__(
         self,
         tokenUrl: str,

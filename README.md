@@ -20,17 +20,17 @@ The application consists of two main parts:
 
 ### Backend
 
-- **FastAPI:**
-- **SQLAlchemy & SQLite:**
-- **Pydantic:**
-- **JWT (JSON Web Tokens):**
+- FastAPI
+- SQLAlchemy & SQLite
+- Pydantic
+- JWT (JSON Web Tokens)
 
 ### Frontend
 
-- **Vue.js:**
-- **Vuex:**
-- **Vuetify:**
-- **Axios:**
+- Vue.js
+- Vuex
+- Vuetify
+- Axios
 
-To see the application (requires SignUp, could be a non existing email as no emali verification is performed at this point):
-  https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
+- To see the application (requires SignUp, could be a non existing email as no emali verification is performed at this point):
+- https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
