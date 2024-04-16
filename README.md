@@ -32,7 +32,8 @@ The application consists of two main parts:
 - Vuetify
 - Axios
 
-The application requires SignUp, there is no email verification as it is just for test purposes:
-https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
+### The application requires SignUp, there is no email verification as it is just for test purposes:
 
-![App Preview](https://github.com/krassykirov/FastAPI-Vue/blob/vue_consolidation/demo.png)
+- https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
+
+<!-- ![App Preview](https://github.com/krassykirov/FastAPI-Vue/blob/vue_consolidation/demo.png) -->
