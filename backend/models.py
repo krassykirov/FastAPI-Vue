@@ -4,7 +4,7 @@ import decimal
 from pydantic import BaseModel, EmailStr
 from typing import Optional, Union, Dict, Any
 from sqlmodel import SQLModel, Field, Relationship, Column, VARCHAR, Session
-from sqlalchemy import JSON, func, Column
+from sqlalchemy import JSON, func, Column, Boolean
 from sqlalchemy import ARRAY, String
 from sqlalchemy_utils import ChoiceType
 import enum
@@ -41,6 +41,7 @@ class User(SQLModel, table=True):
     id: int = Field(primary_key=True, default=None)
     username: Optional[EmailStr]= Field(sa_column=Column("username", VARCHAR, unique=True, index=True))
     password_hash: str = ""
+    is_admin: Optional[bool] = Field(sa_column=Column("is_admin", Boolean, unique=False, default=False))
     items: List['Item'] = Relationship(sa_relationship_kwargs={"cascade": "delete"}, back_populates="owner")
     reviews: List['Review'] = Relationship(sa_relationship_kwargs={"cascade": "delete"}, back_populates="user")
     profile: Optional['UserProfile'] = Relationship(sa_relationship_kwargs={"cascade": "delete"}, back_populates='user')

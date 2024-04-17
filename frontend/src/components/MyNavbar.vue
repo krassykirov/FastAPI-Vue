@@ -179,7 +179,7 @@
         ></v-list-item>
         <a
           class="dropdown-item"
-          v-if="user === 'krassy@mail.bg'"
+          v-if="user.is_admin"
           data-toggle="modal"
           data-target="#addItem"
           href="#"
@@ -189,7 +189,7 @@
         </a>
         <a
           class="dropdown-item"
-          v-if="user === 'krassy@mail.bg'"
+          v-if="user.is_admin"
           data-toggle="modal"
           data-target="#patchItem"
           href="#"
