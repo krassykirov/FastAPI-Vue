@@ -1,14 +1,10 @@
 version: '3'
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: krassy19/fast3-backend-new
     ports:
       - "8000:8000"
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: krassy19/fast3-frontend-new
     ports:
       - "8081:8080"
