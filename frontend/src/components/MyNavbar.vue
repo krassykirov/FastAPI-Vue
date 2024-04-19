@@ -29,6 +29,11 @@
                 All Products
               </v-list-item-title>
             </v-list-item>
+        <!-- <v-list-item prepend-icon="mdi mdi-devices" style="cursor: pointer" @click="goToData">
+              <v-list-item-title class="category-item">
+                Data
+              </v-list-item-title>
+        </v-list-item> -->
       </v-list>
     </v-menu>
   </div>
@@ -75,14 +80,14 @@
           <v-card v-for="(item, index) in favorites" :key="index" width="x-small" class="mx-2 my-2">
             <v-row no-gutters align="center" style="height: 75px">
               <v-col cols="3">
-                <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" style="margin-left: 5px"/>
+                <v-img :src="`${backendEndpoint}/static/img/${item.id}/${item.image}`" width="40" height="40" style="margin-left: 5px"/>
               </v-col>
               <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
                 <div style="font-size: 0.7rem; margin-top: 4px;">${{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}
                 <span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
               </v-col>
-              <v-col cols="2" class="text-right">
+              <v-col cols="2" class="text-right" style="padding-right: 2px">
                 <v-btn @click="removeFromFavorites(item.id)" icon size="x-small" color="red">
                   <v-icon size="x-small">mdi-trash-can-outline</v-icon>
                 </v-btn>
@@ -115,7 +120,7 @@
           <v-card v-for="(item, index) in cart" :key="index" width="x-small" class="mx-2 my-2">
             <v-row no-gutters align="center" style="height: 75px">
               <v-col cols="3">
-                <v-img :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`" width="40" height="40" style="margin-left: 5px"/>
+                <v-img :src="`${backendEndpoint}/static/img/${item.id}/${item.image}`" width="40" height="40" style="margin-left: 5px"/>
               </v-col>
               <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
@@ -179,7 +184,7 @@
         ></v-list-item>
         <a
           class="dropdown-item"
-          v-if="user.is_admin"
+          v-if="user === 'krassy@mail.bg'"
           data-toggle="modal"
           data-target="#addItem"
           href="#"
@@ -189,7 +194,7 @@
         </a>
         <a
           class="dropdown-item"
-          v-if="user.is_admin"
+          v-if="user === 'krassy@mail.bg'"
           data-toggle="modal"
           data-target="#patchItem"
           href="#"
@@ -461,7 +466,15 @@ import config from '@/config'
 import router from '@/router'
 
 export default {
-  props: ['cart', 'avatar', 'profile', 'favorites', 'total', 'user', 'user_id'],
+  props: [
+    'cart',
+    'profile',
+    'favorites',
+    'total',
+    'user',
+    'user_id',
+    'is_admin'
+  ],
   emits: [
     'addToCart',
     'redirectToItem',
@@ -523,6 +536,9 @@ export default {
       this.$nextTick(() => {
         window.scrollTo({ top: 0, behavior: 'auto' })
       })
+    },
+    goToData() {
+      this.$router.push({ name: 'data' })
     },
     formatTotal(price) {
       const [integerPart, decimalPart] = price.toString().split('.')
@@ -651,7 +667,7 @@ export default {
     createItem() {
       const formData = new FormData(document.getElementById('createItem'))
       axios
-        .post(`${config.backendEndpoint}/api/items/create_item`, formData, {})
+        .post(`${config.backendEndpoint}/api/items/create_item`, formData)
         .then(response => {
           if (response.status === 201) {
             // router.push('/')

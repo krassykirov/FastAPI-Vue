@@ -7,6 +7,7 @@ import CartVueNew from '@/views/CartVueNew.vue'
 import FavoritesVue from '@/views/FavoritesVue.vue'
 import store from '@/store/index.js'
 import NotFound from '@/views/NotFound.vue'
+// import DataIterator from '@/views/DataIterator.vue'
 
 const routes = [
   {
@@ -32,6 +33,17 @@ const routes = [
     name: 'NewHome',
     component: () => import('../views/HomeViewNew.vue'),
     props: true
+  },
+  {
+    path: '/data',
+    name: 'data',
+    component: () => import('../views/DataIterator.vue'),
+    props: () => ({
+      cart: store.state.cart,
+      profile: store.state.profile,
+      favorites: store.state.favorites,
+      user: store.state.user
+    })
   },
   {
     path: '/login',

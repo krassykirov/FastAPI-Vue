@@ -42,12 +42,11 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     return encoded_jwt
 
 def create_refresh_token(user_id: int, username: str, minutes: str):
-    refresh_token_data = {"sub": username, 'user_id': user_id, "iat": datetime.datetime.utcnow()}
+    refresh_token_data = {"sub": username, 'user_id': user_id ,"iat": datetime.datetime.utcnow()}
     exp = datetime.datetime.utcnow() + timedelta(minutes=minutes)
     refresh_token_data.update({"exp": exp})
     refresh_token = jwt.encode(refresh_token_data, SECRET_KEY, algorithm=ALGORITHM)
     return refresh_token
-
 
 def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authorized") # , headers = {"Location": "/login"}
@@ -70,7 +69,6 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
         raise credentials_exception
     return user
 
-
 @oauth_router.post('/api/token/refresh', include_in_schema=True)
 async def refresh_access_token(request: Request, db: Session = Depends(get_session)):
     try:
@@ -92,7 +90,7 @@ async def refresh_access_token(request: Request, db: Session = Depends(get_sessi
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        new_access_token = create_access_token(data={"sub": user.username, 'user_id': user.id}, expires_delta=access_token_expires)
+        new_access_token = create_access_token(data={"sub": user.username, 'user_id': user.id, 'is_admin': user.is_admin}, expires_delta=access_token_expires)
         return {"access_token": new_access_token, "token_type": "bearer"}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
@@ -108,12 +106,12 @@ async def login_access_token(*, request: Request, form_data: OAuth2PasswordReque
         token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         if remember_me == 'true':
             access_token = create_access_token(
-                data={"sub": user.username, 'user_id': user.id}, expires_delta=token_expires)
+                data={"sub": user.username, 'user_id': user.id, 'is_admin': user.is_admin}, expires_delta=token_expires)
             refresh_token = create_refresh_token(user.id, user.username, minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 12)
             return {"access_token": access_token, "token_type": "bearer", "refresh_token": refresh_token}
         else:
             access_token = create_access_token(
-            data={"sub": user.username, 'user_id': user.id}, expires_delta=token_expires)
+            data={"sub": user.username, 'user_id': user.id, 'is_admin': user.is_admin}, expires_delta=token_expires)
             refresh_token = create_refresh_token(user.id, user.username, minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 5)
             return {"access_token": access_token, "token_type": "bearer", "refresh_token": refresh_token}
     else:

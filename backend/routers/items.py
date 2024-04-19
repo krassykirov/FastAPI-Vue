@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, Response, BackgroundTasks, UploadFile
+from fastapi import APIRouter, Query, Response, BackgroundTasks, UploadFile, Form
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi import Request, Depends, HTTPException, status
@@ -75,46 +75,60 @@ def get_items(request: Request, db: Session = Depends(get_session), user: User =
 @items_router.post("/user_items_in_cart/create_item", status_code=status.HTTP_201_CREATED, include_in_schema=False)
 @items_router.post("/user/profile/create_item", status_code=status.HTTP_201_CREATED,  include_in_schema=False)
 async def create_item(request: Request, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
-        """ Create an Item """
-        form_data = await request.form()
-        print('form_data', form_data)
-        item = dict(form_data)
-        file = form_data.get('file')
-        filename = form_data.get('file').filename
-        files_initial: List[UploadFile] = form_data.getlist('files')
-        item_name = form_data.get('name')
-        category_select = form_data.get('Category')
-        category = CategoryActions().get_category_by_name(db=db, name=category_select)
-        item_db = db.query(Item).where(Item.name == item_name).first()
-        if item_db:
-            logger.error(f"Item with that name already exists!")
-            raise HTTPException(status_code=403,detail=f"Item with that name already exists!")
-        IMG_DIR = os.path.join(PROJECT_ROOT, f'static/img')
-        if file:
+    """Create an Item"""
+    form_data = await request.form()
+    item_data = dict(form_data)
+    category = CategoryActions().get_category_by_name(db=db, name=form_data.get('Category'))
+    if not category:
+        raise HTTPException(status_code=400, detail="Invalid category")
+
+    if ItemActions().get_item_by_name(db, name=form_data.get('name')):
+        raise HTTPException(status_code=403, detail="Item with that name already exists")
+
+    try:
+        item = Item(**item_data, category=category, username=user.username)
+        item.update_discount()
+        db.add(item)
+        db.commit()
+        db.refresh(item)
+    except Exception as e:
+        logger.error(f"Error occurred while creating item: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+    try:
+        await save_item_images(item, form_data, db=db)
+    except Exception as e:
+        logger.error(f"Error occurred while saving item images: {e}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+    return item
+
+async def save_item_images(item: Item, form_data: Form, db: Session = Depends(get_session)):
+    """Save item images"""
+    IMG_DIR = os.path.join(PROJECT_ROOT, f'static/img')
+    os.makedirs(IMG_DIR, exist_ok=True)
+    filename = form_data.get('file').filename
+    files_initial: List[UploadFile] = form_data.getlist('files')
+    if filename:
+        content = await form_data.get('file').read()
+        path = os.path.join(IMG_DIR, str(item.id))
+        if not os.path.exists(path):
+            os.makedirs(path,exist_ok=True)
+        with open(f"{PROJECT_ROOT}/static/img/{item.id}/{filename}", 'wb') as f:
+            f.write(content)
+        item.image = filename
+    if files_initial:
+        files = [file.filename for file in files_initial]
+        files_dict = {'images': files}
+        for file in files_initial:
             content = await file.read()
-            path = os.path.join(IMG_DIR, item_name)
-            if not os.path.exists(path):
-                os.makedirs(path,exist_ok=True)
-            with open(f"{PROJECT_ROOT}/static/img/{item_name}/{filename}", 'wb') as f:
+            with open(f"{PROJECT_ROOT}/static/img/{item.id}/{file.filename}", 'wb') as f:
                 f.write(content)
-        if files_initial:
-            files = [file.filename for file in files_initial]
-            files_dict = {'images': files}
-            for file in files_initial:
-                content = await file.read()
-                with open(f"{PROJECT_ROOT}/static/img/{item_name}/{file.filename}", 'wb') as f:
-                    f.write(content)
-        try:
-            logger.info(f"Add to DB Item {item}")
-            item = Item(**item, category=category, image=filename, images=files_dict, username=user.username)
-            item.update_discount()
-            db.add(item)
-            db.commit()
-            db.refresh(item)
-        except Exception as e:
-            logger.info(f"ERROR OCCURED to DB Item {e}")
-            db.rollback()
-        return item
+        item.images = files_dict
+    db.add(item)
+    db.commit()
+    db.refresh(item)
 
 @items_router.post("/update_item", include_in_schema=True)
 async def update_item(request: Request, db: Session=Depends(get_session)):

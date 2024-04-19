@@ -9,6 +9,7 @@
       :total="total"
       :user="user"
       :user_id="user_id"
+      :is_admin="is_admin"
       :profile="profile"
     />
     <div
@@ -129,8 +130,10 @@ export default {
       if (accessToken) {
         const user = jwtDecode(accessToken).sub
         const user_id = jwtDecode(accessToken).user_id
+        const is_admin = jwtDecode(accessToken).is_admin
         this.$store.commit('UPDATE_USER', user)
         this.$store.commit('UPDATE_USER_ID', user_id)
+        this.$store.commit('UPDATE_IS_ADMIN', is_admin)
       } else {
         this.$store.dispatch('setErrorMessage', 'Session expired')
         router.push('/login')
@@ -145,6 +148,9 @@ export default {
           console.error('error', error)
         }
       })
+    console.log('user', this.$store.state.user)
+    console.log('user_id', this.$store.state.user_id)
+    console.log('is_admin', this.$store.state.is_admin)
   },
   methods: {
     goToCategory(category) {
@@ -256,6 +262,9 @@ export default {
     },
     user_id() {
       return this.$store.state.user_id
+    },
+    is_admin() {
+      return this.$store.state.is_admin
     },
     user() {
       return this.$store.state.user

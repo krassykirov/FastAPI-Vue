@@ -21,6 +21,7 @@ export default createStore({
     itemRatingsFetched: false,
     user: null,
     user_id: null,
+    is_admin: null,
     profile: null,
     min: 1,
     max: 10000,
@@ -92,6 +93,9 @@ export default createStore({
     },
     UPDATE_USER_ID(state, user_id) {
       state.user_id = user_id
+    },
+    UPDATE_IS_ADMIN(state, is_admin) {
+      state.is_admin = is_admin
     },
     UPDATE_PROFILE(state, profile) {
       state.profile = profile
@@ -252,6 +256,7 @@ export default createStore({
         const expires_in = jwtDecode(data.access_token).exp
         const user = jwtDecode(data.access_token).sub
         const user_id = jwtDecode(data.access_token).user_id
+        const is_admin = jwtDecode(data.access_token).is_admin
         const expiresInMinutes = Math.max(
           0,
           Math.floor((expires_in - Math.floor(Date.now() / 1000)) / 60)
@@ -265,6 +270,7 @@ export default createStore({
         commit('setAccessToken', data.access_token)
         commit('UPDATE_USER', user)
         commit('UPDATE_USER_ID', user_id)
+        commit('UPDATE_IS_ADMIN', is_admin)
         return data.access_token
       } catch (error) {
         dispatch('setErrorMessage', 'Session has expired. Please log in')
@@ -291,6 +297,7 @@ export default createStore({
         const expires_in = jwtDecode(data.access_token).exp
         const user = jwtDecode(data.access_token).sub
         const user_id = jwtDecode(data.access_token).user_id
+        const is_admin = jwtDecode(data.access_token).is_admin
         this.lastActiveDate = new Date()
         this.inactiveTime = 0
         const expiresInMinutes = Math.max(
@@ -314,6 +321,7 @@ export default createStore({
         })
         commit('UPDATE_USER', user)
         commit('UPDATE_USER_ID', user_id)
+        commit('UPDATE_IS_ADMIN', is_admin)
         commit('setAccessToken', data.access_token)
         commit('setRefreshToken', data.refresh_token)
         router.push({ name: 'NewHome' })
@@ -821,6 +829,7 @@ export default createStore({
     accessToken: state => state.accessToken,
     user: state => state.user,
     user_id: state => state.user_id,
+    is_admin: state => state.is_admin,
     profile: state => state.profile,
     profiles: state => state.profiles,
     products: state => state.products,

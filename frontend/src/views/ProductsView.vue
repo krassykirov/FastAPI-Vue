@@ -9,6 +9,7 @@
       :total="total"
       :user="user"
       :user_id="user_id"
+      :is_admin="is_admin"
       :profile="profile"
       @addToCart="addToCart"
       @removeFromCart="removeFromCart"
@@ -241,7 +242,7 @@
                   margin-top: 5px;
                 "
               >
-                Active Filters ({{ appliedFilters.length }}) Products Found ({{
+                Active Filters ({{ appliedFilters.length }}) Products ({{
                   paginatedProducts.length
                 }}/{{ filteredProducts.length }}) Page({{ this.currentPage }}/{{
                   totalPages
@@ -361,6 +362,10 @@
               @input="paginatedProducts"
             ></v-pagination>
           </nav>
+          <p style="margin-left: 48%">
+            Products ({{
+              paginatedProducts.length}}/{{ filteredProducts.length }})
+         </p>
         </div>
       </div>
     </div>
@@ -453,8 +458,10 @@ export default {
       if (accessToken) {
         const user = jwtDecode(accessToken).sub
         const user_id = jwtDecode(accessToken).user_id
+        const is_admin = jwtDecode(accessToken).is_admin
         this.$store.commit('UPDATE_USER', user)
         this.$store.commit('UPDATE_USER_ID', user_id)
+        this.$store.commit('UPDATE_IS_ADMIN', is_admin)
       } else {
         this.errorMessage = 'Please Login'
         router.push('/login')
@@ -635,6 +642,9 @@ export default {
     },
     user() {
       return this.$store.state.user
+    },
+    is_admin() {
+      return this.$store.state.is_admin
     },
     profile() {
       return this.$store.state.profile

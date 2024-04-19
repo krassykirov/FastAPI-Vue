@@ -29,7 +29,7 @@
             <v-row v-for="product in cart" :key="product.id" align="center">
               <v-col cols="2">
                 <v-img
-                  :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
+                  :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
                   max-width="96"
                   max-height="96"
                   contain
@@ -156,7 +156,7 @@
                       <tr v-for="product in cart" :key="product.id">
                         <td>
                           <img
-                            :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
+                            :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
                             class="img-fluid"
                             alt="Product Image"
                             style="

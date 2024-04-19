@@ -8,7 +8,7 @@
     <Slide v-for="(image, index) in item.images.images" :key="index">
       <div class="carousel__item">
         <img
-          :src="`${backendEndpoint}/static/img/${item.name}/${image}`"
+          :src="`${backendEndpoint}/static/img/${item.id}/${image}`"
           alt="Image"
           class="img-fluid"
         />
@@ -26,7 +26,7 @@
     <Slide v-for="(image, index) in item.images.images" :key="index">
       <div class="carousel__item" @click="slideTo(index)">
         <img
-          :src="`${backendEndpoint}/static/img/${item.name}/${image}`"
+          :src="`${backendEndpoint}/static/img/${item.id}/${image}`"
           alt="Image"
           class="img-thumbnail"
           style="cursor: pointer"

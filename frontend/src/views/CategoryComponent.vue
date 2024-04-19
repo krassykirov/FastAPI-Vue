@@ -303,8 +303,10 @@ export default {
       if (accessToken) {
         const user = jwtDecode(accessToken).sub
         const user_id = jwtDecode(accessToken).user_id
+        const is_admin = jwtDecode(accessToken).is_admin
         this.$store.commit('UPDATE_USER', user)
         this.$store.commit('UPDATE_USER_ID', user_id)
+        this.$store.commit('UPDATE_IS_ADMIN', is_admin)
       } else {
         this.errorMessage = 'Session expired'
         router.push('/login')

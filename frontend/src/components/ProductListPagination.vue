@@ -40,7 +40,7 @@
               <img
                 :src="
                   `${backendEndpoint}/static/img/` +
-                  product.name +
+                  product.id +
                   '/' +
                   product.image
                 "

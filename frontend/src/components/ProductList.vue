@@ -38,10 +38,7 @@
         <!-- Product image -->
         <img
           :src="
-            `${backendEndpoint}/static/img/` +
-            product.name +
-            '/' +
-            product.image
+            `${backendEndpoint}/static/img/` + product.id + '/' + product.image
           "
           class="card-img-top"
           @click="redirectToItemFromProduct(product.id)"

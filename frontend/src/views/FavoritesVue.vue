@@ -34,7 +34,7 @@
             >
               <v-col cols="2">
                 <v-img
-                  :src="`${backendEndpoint}/static/img/${product.name}/${product.image}`"
+                  :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
                   max-width="96"
                   max-height="96"
                   contain

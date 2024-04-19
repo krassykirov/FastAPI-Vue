@@ -91,6 +91,13 @@ padding-right: -17px;
   margin-bottom: 1.2% !important;
   margin-left: -17px !important;
 }
+.old-price3 {
+  font-size: 11px;
+  text-decoration: line-through;
+  color: #404447;
+  margin-top: 1% !important;
+  margin-bottom: 1.2% !important;
+}
 .old-price2 {
   font-size: 0.9rem !important;
   /* color: #404447 !important; */
@@ -623,22 +630,6 @@ button.normal {
   background-size: cover;
   padding: 30px;
   margin-bottom: 5px;
-}
-
-#sm-banner .banner-box2 {
-  background-image: url('../assets/smartphone-banner.png');
-}
-#sm-banner .banner-box3 {
-  background-image: url('../assets/ipad.jpeg');
-}
-#sm-banner .banner-box4 {
-  background-image: url('../assets/smart-watch-banner.jpg');
-}
-#sm-banner .banner-box5 {
-  background-image: url('../assets/tv-banner.webp');
-}
-#sm-banner .banner-box6 {
-  background-image: url('../assets/smartwatches-banner.webp');
 }
 
 #sm-banner {
