@@ -1,6 +1,6 @@
 <template>
   <!-- prettier-ignore -->
-  <v-toolbar>
+  <v-toolbar color="primary">
   <v-btn @click="goHome" style="font-size: 1.2rem; margin-top: 5px">
     <v-icon left>mdi-home-outline</v-icon>
   </v-btn>
@@ -29,11 +29,6 @@
                 All Products
               </v-list-item-title>
             </v-list-item>
-        <!-- <v-list-item prepend-icon="mdi mdi-devices" style="cursor: pointer" @click="goToData">
-              <v-list-item-title class="category-item">
-                Data
-              </v-list-item-title>
-        </v-list-item> -->
       </v-list>
     </v-menu>
   </div>
@@ -66,7 +61,7 @@
     <v-menu open-on-hover v-model="favoritesVisible" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
         <v-btn
-          v-if="cart && accessToken"
+          v-if="favorites && accessToken"
           v-bind="props"
           @dblclick="redirectToFavorites"
         >
@@ -88,8 +83,8 @@
                 <span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
               </v-col>
               <v-col cols="2" class="text-right" style="padding-right: 2px">
-                <v-btn @click="removeFromFavorites(item.id)" icon size="x-small" color="red">
-                  <v-icon size="x-small">mdi-trash-can-outline</v-icon>
+                <v-btn @click="removeFromFavorites(item.id)" icon size="x-small" color="grey">
+                  <v-icon size="x-small">mdi-close</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
@@ -128,8 +123,8 @@
                 <span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
               </v-col>
               <v-col cols="2" class="text-right">
-                <v-btn @click="removeFromCart(item.id)" icon size="x-small" color="red">
-                  <v-icon size="x-small">mdi-trash-can-outline</v-icon>
+                <v-btn @click="removeFromCart(item.id)" icon size="x-small" color="grey">
+                  <v-icon size="x-small">mdi-close</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
@@ -484,11 +479,9 @@ export default {
   ],
   data() {
     return {
-      drawerVisible: false,
       displayCart: true,
       displayLiked: true,
       displayCategories: true,
-      isDropdownVisible: false,
       backendEndpoint: `${config.backendEndpoint}`,
       searchQuery: '',
       categoryName: null,
@@ -539,6 +532,12 @@ export default {
     },
     goToData() {
       this.$router.push({ name: 'data' })
+    },
+    goToMenu() {
+      this.$router.push({ name: 'menu' })
+    },
+    goToMenu2() {
+      this.$router.push({ name: 'menu2' })
     },
     formatTotal(price) {
       const [integerPart, decimalPart] = price.toString().split('.')

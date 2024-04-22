@@ -236,7 +236,6 @@ export default {
   background-color: rgb(140, 140, 196) !important;
 }
 .carousel-inner {
-  background-color: white;
   width: 100%;
 }
 </style>

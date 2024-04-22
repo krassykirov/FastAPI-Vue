@@ -35,17 +35,6 @@ const routes = [
     props: true
   },
   {
-    path: '/data',
-    name: 'data',
-    component: () => import('../views/DataIterator.vue'),
-    props: () => ({
-      cart: store.state.cart,
-      profile: store.state.profile,
-      favorites: store.state.favorites,
-      user: store.state.user
-    })
-  },
-  {
     path: '/login',
     name: 'login',
     component: () => import('../views/LoginVue.vue')

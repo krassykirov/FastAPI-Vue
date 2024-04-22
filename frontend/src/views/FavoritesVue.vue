@@ -35,19 +35,31 @@
               <v-col cols="2">
                 <v-img
                   :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
-                  max-width="96"
-                  max-height="96"
+                  max-width="128"
+                  max-height="128"
                   contain
                 ></v-img>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="8">
                 <div
                   class="text-overline"
                   @click="redirectToItemFromCart(product.id)"
-                  style="cursor: pointer"
+                  style="cursor: pointer; font-size: 14px; font-weight: 800"
                 >
                   {{ product.name }}
                 </div>
+                <!-- prettier-ignore -->
+                <div style="font-size: 14px; font-weight: 800; color: #dc3545">
+                  <span style="font-size: 0.9rem;">$</span>
+                  <span v-if="product.discount_price" style="font-size: 0.9rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
+                  <span v-if="product.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
+                </div>
+                <v-col cols="14">
+                  <!-- prettier-ignore -->
+                  <div style="font-size: 14px">
+                  {{ product.description }}
+                 </div>
+                </v-col>
                 <v-rating
                   :model-value="product.rating_float"
                   color="orange-darken-2"
@@ -56,14 +68,6 @@
                   half-increments
                   readonly
                 ></v-rating>
-              </v-col>
-              <v-col cols="2">
-                <!-- prettier-ignore -->
-                <div>
-                      <span style="font-size: 0.9rem;">$</span>
-                      <span v-if="product.discount_price" style="font-size: 0.9rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
-                      <span v-if="product.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
-                    </div>
               </v-col>
               <v-col cols="1">
                 <!-- prettier-ignore -->

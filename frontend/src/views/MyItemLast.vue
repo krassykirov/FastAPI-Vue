@@ -39,7 +39,7 @@
             style="margin-top: 10%"
           >
             <img
-              :src="`${backendEndpoint}/static/img/${item.name}/${item.image}`"
+              :src="`${backendEndpoint}/static/img/${item.id}/${item.image}`"
               alt="Image"
               class="img-top"
               style="cursor: pointer"

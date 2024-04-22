@@ -1,7 +1,8 @@
 <template>
+  <!-- prettier-ignore -->
   <div
     class="container-fluid"
-    style="width: 100vw; position: sticky; margin: 0; padding: 0"
+    style="width: 100vw; position: sticky; margin: 0; padding: 0;"
   >
     <MyNavbar
       :cart="cart"
@@ -12,20 +13,11 @@
       :is_admin="is_admin"
       :profile="profile"
     />
-    <div
-      class="container"
-      style="margin-top: 0.7%; margin-left: 7.3%; background-color: white"
-    >
+    <div class="container" style="margin-top: 0.7%; margin-left: 7.3%; background-color: #f2f6f6" >
       <CarouselMain carouselId="discount-products-carousel" />
     </div>
     <!-- prettier-ignore -->
-    <v-card
-      class="mx-auto"
-      max-width="88%"
-      style="margin-bottom: 3%; margin-left: 0; padding: 0; text-align: center"
-      title="Shop By category"
-    >
-    <v-container fluid style="width: 100vw; position: sticky; left: -5%">
+    <v-container fluid style="width: 90%; position: sticky; background-color: #f2f6f6; margin-left: 5%; margin-right: 15%">
       <v-row dense>
         <v-col
           v-for="(card, index) in cards"
@@ -54,10 +46,9 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-card>
     <div
       class="container-fluid"
-      style="margin: 0 !important; margin-left: 10% !important"
+      style="margin: 0 !important; margin-left: 10% !important; background-color: #f2f6f6"
     >
       <MessageArea />
     </div>
@@ -89,35 +80,35 @@ export default {
         {
           title: 'Laptops',
           src: require('@/assets/laptop-banner.jpeg'),
-          width: '800px',
+          width: '819px',
           height: '448px',
           aspectratio: '16/9'
         },
         {
           title: 'Smartphones',
           src: require('@/assets/smartphone-banner.png'),
-          width: '800px',
+          width: '819px',
           height: '448px',
           aspectratio: '16/9'
         },
         {
           title: 'Tablets',
           src: require('@/assets/ipad.jpeg'),
-          width: '530px',
+          width: '540px',
           height: '295px',
           aspectratio: '16/9'
         },
         {
           title: 'Smartwatches',
           src: require('@/assets/smart-watch-banner.jpg'),
-          width: '530px',
+          width: '540px',
           height: '295px',
           aspectratio: '19/10'
         },
         {
           title: 'TV',
           src: require('@/assets/tv-banner.webp'),
-          width: '530px',
+          width: '540px',
           height: '295px',
           aspectratio: '16/9'
         }
@@ -148,9 +139,6 @@ export default {
           console.error('error', error)
         }
       })
-    console.log('user', this.$store.state.user)
-    console.log('user_id', this.$store.state.user_id)
-    console.log('is_admin', this.$store.state.is_admin)
   },
   methods: {
     goToCategory(category) {
@@ -278,442 +266,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-html {
-  scroll-behavior: smooth;
-}
-h1 {
-  font-size: 50px;
-  line-height: 64px;
-  color: #222;
-}
-
-h2 {
-  font-size: 46px;
-  line-height: 54px;
-  color: #222;
-}
-
-h4 {
-  font-size: 20px;
-  color: #222;
-}
-
-h6 {
-  font-size: 12px;
-  font-weight: 700;
-}
-
-p {
-  font-size: 16px;
-  color: #465b52;
-  margin: 15px 0 20px 0;
-}
-
-.section-p1 {
-  padding: 0 80px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.section-m1 {
-  padding: 40px 0;
-}
-
-#header {
-  position: fixed;
-  width: 100%;
-  overflow: hidden;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 80px;
-  background-color: #e3e6f3;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
-}
-
-#mobile {
-  display: none;
-  align-items: center;
-}
-
-#banner {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-  height: 80vh;
-  background-position: center;
-  background-size: cover;
-}
-
-#banner h4 {
-  color: #fff;
-  font-size: 16px;
-}
-
-#banner h2 {
-  color: #fff;
-  font-size: 30px;
-  padding: 10px 0;
-}
-
-#banner h2 span {
-  color: #ef3636;
-}
-
-button.normal {
-  color: #000;
-  padding: 15px 25px;
-  height: 50px;
-  font-weight: 400;
-  font-size: 14px;
-  border-radius: 4px;
-  background-color: #fff;
-  border: none;
-  outline: none;
-  transition: 0.2s;
-  cursor: pointer;
-}
-
-#banner button:hover {
-  background-color: #088178;
-  color: #fff;
-}
-
-#sm-banner .banner-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  text-align: center;
-  background-image: url('../assets/laptop-banner.jpeg');
-  min-width: 520px;
-  height: 40vh;
-  background-position: center;
-  background-size: cover;
-  padding: 30px;
-  margin-bottom: 5px;
-}
-
-#sm-banner .banner-box2 {
-  background-image: url('../assets/smartphone-banner.png');
-}
-#sm-banner .banner-box3 {
-  background-image: url('../assets/ipad.jpeg');
-}
-#sm-banner .banner-box4 {
-  background-image: url('../assets/sale-grab.jpeg');
-}
-#sm-banner .banner-box5 {
-  background-image: url('../assets/tv-banner.webp');
-}
-#sm-banner .banner-box6 {
-  background-image: url('../assets/smartwatches-banner.webp');
-}
-
-#sm-banner {
-  display: flex;
-  justify-content: left;
-  margin: 30px;
-  flex-wrap: wrap;
-}
-
-#sm-banner h4 {
-  color: #fff;
-  font-size: 20px;
-  font-weight: 300;
-}
-
-#sm-banner h2 {
-  color: #fff;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-#sm-banner span {
-  color: #0e0e0e;
-  font-size: 16px;
-  font-weight: 500;
-  padding-bottom: 16px;
-}
-
-button.white {
-  color: #faf8f8;
-  padding: 10px 20px;
-  font-weight: 400;
-  font-size: 14px;
-  border-radius: 4px;
-  background-color: transparent;
-  border: 1px solid #fff;
-  outline: none;
-  transition: 0.2s;
-  cursor: pointer;
-}
-button.white:hover {
-  background-color: #088178 !important;
-  color: #fff !important;
-}
-
-#sm-banner .banner-box:hover button {
-  background-color: #088178;
-  color: #fff;
-  border: 1px solid #088178;
-}
-
-#banner3 {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 0 80px;
-}
-
-#banner3 h2 {
-  color: #fff;
-  font-weight: 900;
-  font-size: 22px;
-}
-
-#banner3 h3 {
-  color: #ec544e;
-  font-weight: 800;
-  font-size: 15px;
-}
-
-#banner3 .banner-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  text-align: center;
-  background-image: url('../assets/dell_xps_9730.jpg');
-  min-width: 33%;
-  height: 35vh;
-  background-position: center;
-  background-size: cover;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-#banner3 .banner-img2 {
-  background-image: url('../assets/Laptop.jpg');
-}
-
-#banner3 .banner-img3 {
-  background-image: url('../assets/hp_zbook_studio_16.jpg');
-}
-
-#newsletter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  background-repeat: no-repeat;
-  background-position: 20% 30%;
-  background-color: #041e42;
-}
-
-#newsletter h4 {
-  color: #fff;
-  font-weight: 700;
-  font-size: 22px;
-}
-
-#newsletter p {
-  color: #818ea0;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-#newsletter p span {
-  color: #ffbd27;
-}
-
-#newsletter input {
-  height: 3.125rem;
-  width: 100%;
-  font-size: 14px;
-  padding: 0 1.25em;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  outline: none;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-#newsletter button {
-  background-color: #088178;
-  color: #fff;
-  white-space: nowrap;
-}
-#newsletter .form {
-  display: flex;
-  width: 40%;
-}
-
-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  position: relative;
-}
-
-footer .col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 20px;
-  margin-left: 50px;
-}
-
-footer .sec {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-footer .logo {
-  margin-bottom: 20px;
-}
-
-footer h4 {
-  font-size: 14px;
-  padding-bottom: 20px;
-}
-
-footer p {
-  font-size: 13px;
-  margin: 0 0 8px 0;
-}
-
-footer a {
-  font-size: 13px;
-  text-decoration: none;
-  color: #222;
-  margin-bottom: 10px;
-}
-
-footer .follow {
-  margin-top: 20px;
-}
-
-footer .follow i {
-  color: #465b52;
-  padding-right: 5px;
-  cursor: pointer;
-}
-
-footer .follow i:hover,
-footer a:hover {
-  color: #088178;
-}
-
-footer .install .row img {
-  border: 1px solid #088178;
-  border-radius: 6px;
-}
-
-footer .install img {
-  margin: 10px 0 15px 0;
-}
-
-footer .copyright {
-  width: 100%;
-  text-align: center;
-}
-.category-banner {
-  cursor: pointer;
-}
-
-.banner-content {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  color: white;
-}
-
-/*----------------------Media Query ----------*/
-
-@media (max-width: 920px) {
-  .section-p1 {
-    padding: 40px 40px;
-  }
-
-  #mobile {
-    display: flex;
-    align-items: center;
-  }
-  #mobile i {
-    font-size: 32px;
-    color: #1a1a1a;
-    padding-left: 20px;
-  }
-  body #lg-bag {
-    display: none;
-  }
-
-  #lg-bag {
-    display: none;
-  }
-
-  #banner {
-    height: 25vh;
-  }
-
-  #sm-banner .banner-box {
-    min-width: 100%;
-    height: 30vh;
-  }
-
-  #banner3 {
-    padding: 0 40px;
-  }
-
-  #banner3 .banner-box {
-    width: 28%;
-  }
-
-  #newsletter .form {
-    width: 70%;
-  }
-}
-
-@media (max-width: 477px) {
-  .section-p1 {
-    padding: 20px;
-  }
-
-  #banner {
-    height: 40vh;
-  }
-  #sm-banner .banner-box {
-    height: 40vh;
-  }
-
-  #sm-banner .banner-box2 {
-    margin-top: 20px;
-  }
-
-  #banner3 {
-    padding: 0 20px;
-  }
-
-  #banner3 .banner-box {
-    width: 100%;
-  }
-
-  #newsletter .form {
-    width: 100%;
-  }
-
-  #newsletter {
-    padding: 40px 20px;
-  }
-
-  footer .copyright {
-    text-align: start;
-  }
-}
-</style>
