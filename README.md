@@ -39,14 +39,3 @@ To run the project using Docker Compose, make sure you have Docker installed on 
 1. docker-compose up --build
 2. Navigate to localhost:8081
 
-
-The application is hosted on an Azure Static Website. You can access it at the following URL:
-
-- https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net
-
-### Note
-
-The application requires SignUp, and there is no email verification as it is just for test purposes.
-
-
-<!-- ![App Preview](https://github.com/krassykirov/FastAPI-Vue/blob/vue_consolidation/demo.png) -->
