@@ -137,6 +137,30 @@ async def signup(request: Request, db: Session = Depends(get_session)):
         return True
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail=f"Password did not match!")
 
+@oauth_router.get("/login", include_in_schema=False)
+def login(request: Request):
+    response = templates.TemplateResponse("login.html",{"request":request})
+    return response
+
+@oauth_router.post('/token', include_in_schema=False)
+def login_access_token_old(*, request: Request, response: Response, form_data: OAuth2PasswordRequestForm=Depends(),
+                db: Session = Depends(get_session)):
+    query = select(models.User).where(models.User.username == form_data.username)
+    user = db.exec(query).first()
+    if user and user.verify_password(form_data.password):
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.username}, expires_delta=access_token_expires
+        )
+        response = RedirectResponse(url='/admin', status_code=status.HTTP_303_SEE_OTHER)
+        response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
+        return response
+
+    else:
+        context = {'request': request, 'message': "Username or password are incorrect!"}
+        print('failed response login:', r)
+        return templates.TemplateResponse("login.html", context)
+
 # @oauth_router.get("/signup", include_in_schema=False)
 # def login(request: Request):
 #     response = templates.TemplateResponse("signup.html",{"request":request})

@@ -104,8 +104,8 @@ async def create_review_ajax(request: Request, db: Session=Depends(get_session),
             db.rollback()
             return HTTPException(status_code=400, detail=f"Something went wrong, error {e}")
     logger.info('Review_exist, You can write only one review for this item')
-    raise HTTPException(status_code=403, 
-                        detail=f"You can write only one review for this item.",
+    raise HTTPException(status_code=403,
+                        detail="You can write only one review for this item.",
                         headers={"X-Error": "You can write only one review for this item"},)
 
 

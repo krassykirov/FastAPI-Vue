@@ -1,21 +1,15 @@
 import datetime
-from datetime import date
 import decimal
 from pydantic import BaseModel, EmailStr
 from typing import Optional, Union, Dict, Any
 from sqlmodel import SQLModel, Field, Relationship, Column, VARCHAR, Session
 from sqlalchemy import JSON, func, Column, Boolean
-from sqlalchemy import ARRAY, String
 from sqlalchemy_utils import ChoiceType
 import enum
 from typing import Optional, List
 import datetime
-import uuid, base64
-from enum import Enum
+import uuid
 from auth.oauth import pwd_context
-# from helper import default_avatar_base64
-from db import get_session
-
 
 class BaseSQLModel(SQLModel):
     def __init__(self, **kwargs):

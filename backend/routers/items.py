@@ -6,6 +6,7 @@ from db import get_session
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from models import Item, User
+from builders.abs_builder import LaptopBuilder
 from pydantic import Field
 import schemas
 from crud.crud import ItemActions, CategoryActions

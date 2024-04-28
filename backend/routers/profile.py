@@ -82,9 +82,7 @@ async def create_profile(request: Request, db: Session = Depends(get_session), u
 
 @profile_router.post("/update_profile", status_code=status.HTTP_200_OK, include_in_schema=False)
 async def update_profile(request: Request, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
-    start_time = time.time()
     form_data = await request.form()
-    print('form_data', form_data)
     file = form_data.get('file')
     json_data = dict(form_data)
     for k, v in json_data.items():
@@ -113,7 +111,6 @@ async def update_profile(request: Request, db: Session = Depends(get_session), u
             db.commit()
             db.refresh(db_profile)
     json_compatible_item_data = jsonable_encoder(db_profile)
-    print("--- %s seconds ---" % (time.time() - start_time))
     return JSONResponse(content=json_compatible_item_data)
 
 

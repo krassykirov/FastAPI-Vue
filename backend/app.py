@@ -1,4 +1,5 @@
-from fastapi import Response, Request
+from fastapi import Response, Request, HTTPException, status, Depends
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pathlib import Path
@@ -6,23 +7,29 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from sqlmodel import SQLModel, Session
+from sqlmodel import SQLModel, Session, select
 from db import engine
 from routers.categories import category_router
 from routers.items import items_router
 from routers.reviews import reviews_router
 from routers.profile import profile_router
 # from src.routers.cart import cart_router
-from auth.oauth import oauth_router, get_current_user
-from models import Category, Categories
-from os.path import abspath
+from auth.oauth import oauth_router, get_current_user, SECRET_KEY, ALGORITHM
+import models
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.responses import RedirectResponse
+from jose import JWTError, jwt, ExpiredSignatureError
+from models import Category, Categories, User, Item, Review, UserProfile
 from my_logger import detailed_logger
 from datetime import datetime, timedelta
 import os
+from starlette_admin.contrib.sqla import Admin, ModelView
+
 # from prometheus_fastapi_instrumentator import Instrumentator
 
 PROJECT_ROOT = Path(__file__).parent.parent # /
 BASE_DIR = Path(__file__).resolve().parent # / src
+PROTECTED = [Depends(get_current_user)]
 
 templates = Jinja2Templates(directory=Path(BASE_DIR, 'static/templates'))
 
@@ -32,16 +39,25 @@ app.include_router(items_router)
 app.include_router(reviews_router)
 app.include_router(oauth_router)
 app.include_router(profile_router)
-# app.include_router(cart_router)
+
 origins = [
-    "https://agreeable-glacier-022fe8c03-preview.westeurope.4.azurestaticapps.net",
-    "https://agreeable-glacier-022fe8c03.4.azurestaticapps.net"
     "http://localhost:8081",
     "http://localhost:3000"
 ]
 
-# instrumentator = Instrumentator().instrument(app)
+admin = Admin(
+    engine,
+    title="Auth",
+)
 
+admin.add_view(ModelView(User))
+admin.add_view(ModelView(Item))
+admin.add_view(ModelView(Review))
+admin.add_view(ModelView(Category))
+admin.add_view(ModelView(UserProfile))
+
+admin.mount_to(app)
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -57,6 +73,50 @@ async def add_content_security_policy_header(request: Request, call_next):
     response = await call_next(request)
     response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
     return response
+
+@app.middleware("http")
+async def admin_panel_middleware(request: Request, call_next):
+    if request.url.path.startswith("/admin"):
+        if request.cookies.get("access_token") is not None:
+            token: str = request.cookies.get("access_token").split(' ')[1]
+            try:
+                payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                username: str = payload.get("sub")
+                expires = payload.get("exp")
+                if username is None:
+                    return JSONResponse(
+                    status_code=401,
+                    content={"message": "Login Required!"},
+                )
+                token_data = models.TokenData(username=username, expires=expires)
+            except jwt.ExpiredSignatureError:
+                return JSONResponse(
+                    status_code=401,
+                    content={"message": "Token has expired!"},
+                )
+            except jwt.JWTError:
+                return JSONResponse(
+                    status_code=401,
+                    content={"message": "Login Required!"},
+                )
+            except Exception:
+                return JSONResponse(
+                    status_code=401,
+                    content={"message": "Login Required!"},
+                )
+            with Session(engine) as session:
+                statement = select(models.User).where(models.User.username == token_data.username)
+                user = session.exec(statement).first()
+                if user and user.is_admin:
+                    response = await call_next(request)
+                    return response
+                else:
+                   return Response('Unauthorized!')
+        else:
+            return RedirectResponse(url='/login', status_code=303)
+    else:
+        response = await call_next(request)
+        return response
 
 @app.on_event("startup")
 def on_startup():
@@ -84,3 +144,13 @@ def create_categories(engine):
                 session.add(category)
             session.commit()
             session.refresh(category)
+
+
+# @app.get("/admin", response_class=Response)
+# def setup(request: Request, response: Response, user: User = Depends(get_current_user)):
+#     a = UsernameAndPasswordProvider()
+#     r = a.login(request=request, response=response, username= 'Admin', password= 'password')
+#     print('r', r)
+
+
+
