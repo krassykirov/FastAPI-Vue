@@ -1,8 +1,7 @@
-from fastapi import Response, Request, HTTPException, status, Depends
+from fastapi import Response, Request, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -13,17 +12,21 @@ from routers.categories import category_router
 from routers.items import items_router
 from routers.reviews import reviews_router
 from routers.profile import profile_router
-# from src.routers.cart import cart_router
 from auth.oauth import oauth_router, get_current_user, SECRET_KEY, ALGORITHM
 import models
+from pathlib import Path
+import os
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import RedirectResponse
-from jose import JWTError, jwt, ExpiredSignatureError
+from jose import jwt
 from models import Category, Categories, User, Item, Review, UserProfile
 from my_logger import detailed_logger
 from datetime import datetime, timedelta
-import os
 from starlette_admin.contrib.sqla import Admin, ModelView
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+from redis import asyncio as aioredis
 
 # from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -76,6 +79,10 @@ async def add_content_security_policy_header(request: Request, call_next):
 
 @app.middleware("http")
 async def admin_panel_middleware(request: Request, call_next):
+    response = JSONResponse(
+                    status_code=401,
+                    content={"message": "Token has expired!"},
+                )
     if request.url.path.startswith("/admin"):
         if request.cookies.get("access_token") is not None:
             token: str = request.cookies.get("access_token").split(' ')[1]
@@ -84,26 +91,18 @@ async def admin_panel_middleware(request: Request, call_next):
                 username: str = payload.get("sub")
                 expires = payload.get("exp")
                 if username is None:
-                    return JSONResponse(
-                    status_code=401,
-                    content={"message": "Login Required!"},
-                )
+                    response.delete_cookie("access_token")
+                    return response
                 token_data = models.TokenData(username=username, expires=expires)
             except jwt.ExpiredSignatureError:
-                return JSONResponse(
-                    status_code=401,
-                    content={"message": "Token has expired!"},
-                )
+                response.delete_cookie("access_token")
+                return response
             except jwt.JWTError:
-                return JSONResponse(
-                    status_code=401,
-                    content={"message": "Login Required!"},
-                )
+                response.delete_cookie("access_token")
+                return response
             except Exception:
-                return JSONResponse(
-                    status_code=401,
-                    content={"message": "Login Required!"},
-                )
+                response.delete_cookie("access_token")
+                return response
             with Session(engine) as session:
                 statement = select(models.User).where(models.User.username == token_data.username)
                 user = session.exec(statement).first()
