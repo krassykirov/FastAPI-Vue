@@ -23,10 +23,6 @@ from models import Category, Categories, User, Item, Review, UserProfile
 from my_logger import detailed_logger
 from datetime import datetime, timedelta
 from starlette_admin.contrib.sqla import Admin, ModelView
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
-from redis import asyncio as aioredis
 
 # from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -85,7 +81,7 @@ async def admin_panel_middleware(request: Request, call_next):
                 )
     if request.url.path.startswith("/admin"):
         if request.cookies.get("access_token") is not None:
-            token: str = request.cookies.get("access_token").split(' ')[1]
+            token: str = request.cookies.get("access_token")
             try:
                 payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
                 username: str = payload.get("sub")

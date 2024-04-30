@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from models import Item, User, Category, Laptop, Smartphone, Tablet, TV, Smartwatch
+from models import Item, User, Category
 from sqlmodel import SQLModel
 import decimal
 

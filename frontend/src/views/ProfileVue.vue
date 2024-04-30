@@ -288,16 +288,12 @@ export default {
       ) {
         formData.append('file', this.editedProfile.file)
       }
-      console.log('formData', formData)
-      console.log('this.editedProfile.file', this.editedProfile.file)
       try {
-        console.log('sending request')
         const response = await axios.post(
           `${config.backendEndpoint}/api/profile/update_profile`,
           formData
         )
         const data = response.data
-        console.log(' response data', data)
         this.$store.dispatch('getProfile')
         this.editedProfile = {
           email: '',
@@ -329,18 +325,16 @@ export default {
       formData.append('number', this.newProfile.number)
       formData.append('address', this.newProfile.address)
       formData.append('file', this.newProfile.avatar)
-      console.log('formData', formData)
       axios
         .post(`${config.backendEndpoint}/api/profile/create_profile`, formData)
         .then(() => {
-          console.log('request sent')
           this.newProfile = {
             email: '',
             number: '',
             address: '',
             avatar: null
           }
-          console.log('getProfile sent')
+          this.$store.commit('UPDATE_HAS_PROFILE', true)
           this.$store.dispatch('getProfile')
         })
         .catch(error => {

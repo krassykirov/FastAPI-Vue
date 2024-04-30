@@ -518,7 +518,6 @@ export default {
           },
           data: formData,
           success: data => {
-            console.log('data', data)
             $(document).ready(function () {
               $('#exampleModal').hide()
             })

@@ -23,6 +23,7 @@ export default createStore({
     user_id: null,
     is_admin: null,
     profile: null,
+    hasProfile: false,
     min: 1,
     max: 10000,
     productMin: 0,
@@ -99,6 +100,9 @@ export default createStore({
     },
     UPDATE_PROFILE(state, profile) {
       state.profile = profile
+    },
+    UPDATE_HAS_PROFILE(state, hasProfile) {
+      state.hasProfile = hasProfile
     },
     UPDATE_PROFILES(state, profiles) {
       state.profiles = profiles
@@ -298,6 +302,7 @@ export default createStore({
         const user = jwtDecode(data.access_token).sub
         const user_id = jwtDecode(data.access_token).user_id
         const is_admin = jwtDecode(data.access_token).is_admin
+        const hasProfile = jwtDecode(data.access_token).hasProfile
         this.lastActiveDate = new Date()
         this.inactiveTime = 0
         const expiresInMinutes = Math.max(
@@ -324,6 +329,7 @@ export default createStore({
         commit('UPDATE_IS_ADMIN', is_admin)
         commit('setAccessToken', data.access_token)
         commit('setRefreshToken', data.refresh_token)
+        commit('UPDATE_HAS_PROFILE', hasProfile)
         router.push({ name: 'NewHome' })
       } catch (error) {
         if (error.message.startsWith('Cannot read')) {
@@ -352,8 +358,13 @@ export default createStore({
       if (state.products.length === 0) {
         try {
           const response = await axios.get(
-            `${config.backendEndpoint}/api/items/`
+            `${config.backendEndpoint}/api/items/`,
+            { headers: { 'If-None-Match': state.etag } }
           )
+          if (response.status === 304) {
+            // Content hasn't changed, use cached response
+            return
+          }
           const products = response.data
           commit('SET_PRODUCTS', products.items)
           commit('UPDATE_CART', products.items_in_cart)
@@ -400,41 +411,39 @@ export default createStore({
         }
       }
     },
-    async getProfile({ commit, dispatch, state }) {
+    async getProfile({ commit, state }) {
       if (!state.user_id || !state.accessToken) {
         const accessToken = VueCookies.get('access_token')
         if (accessToken) {
           const user = jwtDecode(accessToken).sub
           const user_id = jwtDecode(accessToken).user_id
+          const hasProfile = jwtDecode(accessToken).hasProfile
           commit('UPDATE_USER', user)
           commit('UPDATE_USER_ID', user_id)
+          commit('UPDATE_HAS_PROFILE', hasProfile)
         } else {
           router.push('/login')
         }
       }
-      try {
-        const response = await axios.get(
-          `${config.backendEndpoint}/api/profile/${state.user_id}`
-        )
-        if (response.status === 200) {
-          commit('UPDATE_PROFILE', response.data)
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          // console.log('Profile 401 trying to handle:', error.response)
-        } else if (error.response && error.response.status === 404) {
-          commit('UPDATE_PROFILE', null)
-        } else if (error === 'Token Expired') {
-          // console.log('Profile Other error occured trying to handle', error)
-          dispatch('logout')
-        } else {
-          // console.log(
-          //   'Unexpected Profile error occured trying to handle',
-          //   error
-          // )
-          // throw new Error(error)
-          // router.push('/login')
-          // throw new Error('Token Expired')
+      if (
+        (state.hasProfile === true || state.hasProfile === 1) &&
+        state.user_id
+      ) {
+        try {
+          const response = await axios.get(
+            `${config.backendEndpoint}/api/profile/${state.user_id}`
+          )
+          if (response.status === 200) {
+            const data = response.data
+            commit('UPDATE_PROFILE', data)
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            commit('UPDATE_PROFILE', null)
+            commit('UPDATE_HAS_PROFILE', false)
+          } else {
+            console.error('Error fetching user profile:', error)
+          }
         }
       }
     },
