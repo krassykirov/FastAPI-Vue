@@ -355,7 +355,6 @@ export default createStore({
       }
     },
     async getProducts({ commit, state }) {
-      console.log('products', state.products.length)
       if (state.products.length === 0) {
         try {
           const response = await axios.get(

@@ -51,9 +51,6 @@
         <button type="submit" class="btn btn-outline-success">
           <i class="fas fa-search"></i>
         </button>
-        <!-- <button class="btn btn-outline-danger" @submit.prevent="clearSearch">
-          <i class="fas fa-times"></i>
-        </button> -->
       </div>
     </div>
   </form>

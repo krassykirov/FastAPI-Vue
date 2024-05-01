@@ -87,20 +87,25 @@
               <div class="block">
                 <v-btn
                   @click="addTofavorites(item)"
+                  dark
                   color="primary"
-                  variant="outlined"
-                  >Add to Favorites</v-btn
+                  width="100%"
+                >
+                  <v-icon right>mdi-heart</v-icon>
+                  Add to Favorites</v-btn
                 >
               </div>
               <div class="block">
                 <v-btn
-                  @click="addToCart(item)"
-                  ref="addToCartButton"
+                  dark
                   color="primary"
-                  variant="outlined"
+                  width="100%"
+                  class="btn btn-primary"
+                  @click="addToCart(product)"
                 >
-                  Add to cart
-                </v-btn>
+                  <v-icon right>mdi-cart-outline</v-icon>
+                  Add to Cart</v-btn
+                >
               </div>
             </div>
           </div>

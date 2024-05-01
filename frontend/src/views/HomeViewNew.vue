@@ -118,7 +118,6 @@ export default {
   created() {
     if (!this.$store.state.accessToken) {
       const accessToken = VueCookies.get('access_token')
-      console.log('accessToken', accessToken)
       if (accessToken) {
         const user = jwtDecode(accessToken).sub
         const user_id = jwtDecode(accessToken).user_id
