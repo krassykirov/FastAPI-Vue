@@ -355,6 +355,7 @@ export default createStore({
       }
     },
     async getProducts({ commit, state }) {
+      console.log('products', state.products.length)
       if (state.products.length === 0) {
         try {
           const response = await axios.get(
@@ -362,7 +363,6 @@ export default createStore({
             { headers: { 'If-None-Match': state.etag } }
           )
           if (response.status === 304) {
-            // Content hasn't changed, use cached response
             return
           }
           const products = response.data

@@ -23,11 +23,12 @@
       <v-row justify="center" style="margin-top: 1%">
         <v-col cols="12" md="6">
           <v-card class="px-6 py-8" elevation="2" outlined>
-            <h3 class="text-center mb-4" style="margin-right: 15%">
+            <h3 class="text-center mb-4">
               <v-icon size="24" class="mr-2">mdi-cart-outline</v-icon>
               Shopping Cart
             </h3>
             <v-row v-for="product in cart" :key="product.id" align="center">
+              <v-divider class="my-4" color="blue-darken-4" thickness="3"></v-divider>
               <v-col cols="2">
                 <v-img
                   :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
@@ -98,7 +99,7 @@
               </v-col>
               <v-col cols="6">
                 <!-- prettier-ignore -->
-                <v-btn @click="proceedToPayment" color="primary" dark
+                <v-btn @click="paymentCheckout" color="primary" dark
                   type="button"
                   class="btn btn-primary"
                   data-toggle="modal"
