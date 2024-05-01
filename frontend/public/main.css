@@ -60,7 +60,7 @@ padding-right: -17px;
   margin-left: 1px !important;
   margin-right: 1px !important;
   width: 15vw !important;
-  height: 23vw !important;
+  height: 22.3vw !important;
   justify-content: left !important;
   /* border: 2px solid #969696; */
   text-align: center !important;
@@ -546,13 +546,13 @@ INPUT[type="checkbox"]:disabled {
   }
   ol.breadcrumb li.breadcrumb-item.active > a {
     text-decoration: underline;
-    color: rgb(67, 152, 217);
+    color: rgb(22, 102, 163);
   }
   ol.breadcrumb li.breadcrumb-item > a {
     cursor: pointer;
   }
   ol.breadcrumb li.breadcrumb-item :hover {
-    color: rgb(67, 152, 217);
+    color: rgb(22, 102, 163);
     text-decoration: underline;
   }
   .v-application.v-theme--light.v-layout.v-layout--full-height.v-locale--is-ltr {

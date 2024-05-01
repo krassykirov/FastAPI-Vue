@@ -79,20 +79,22 @@
               </v-col>
               <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
-                <div style="font-size: 0.7rem; margin-top: 4px;">${{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}
-                <span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
+                <div style="font-size: 0.7rem; margin-top: 4px;">${{ formattedPrice(item.discount_price).integerPart }}.{{ formattedPrice(item.discount_price).decimalPart }}</div>
               </v-col>
               <v-col cols="2" class="text-right" style="padding-right: 2px">
-                <v-btn @click="removeFromFavorites(item.id)" icon size="x-small" color="grey">
+                <v-btn @click="removeFromFavorites(item.id)" icon size="x-small" color="lightgrey">
                   <v-icon size="x-small">mdi-close</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
           </v-card>
-          <v-btn @click="redirectToFavorites" size="small" width="290" color="#029cf5"
-          style="margin-top: -9px">
-            Go to Favorites
-          </v-btn>
+          <v-btn @click="redirectToFavorites" color="primary" dark
+                  size="small"
+                  type="button"
+                  width="290"
+                  style="margin-top: -9px"
+                  >Go to Favorites</v-btn
+                >
         </v-list>
       </div>
     </v-menu>
@@ -119,20 +121,25 @@
               </v-col>
               <v-col cols="7" @click="redirectToItemFromNavbar(item.id)" style="cursor: pointer">
                 <div style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ truncateDescription(item.name, 40) }}</div>
-                <div style="font-size: 0.7rem; margin-top: 4px;">${{ item.discount_price ? formattedPrice(item.discount_price).integerPart : '' }}
-                <span v-if="item.discount_price" style="font-size: 0.7rem;">.{{ formattedPrice(item.discount_price).decimalPart }}</span></div>
+                <div style="font-size: 0.7rem; margin-top: 4px;">${{ formattedPrice(item.discount_price).integerPart }}.{{ formattedPrice(item.discount_price).decimalPart }}</div>
               </v-col>
               <v-col cols="2" class="text-right">
-                <v-btn @click="removeFromCart(item.id)" icon size="x-small" color="grey">
+                <v-btn @click="removeFromCart(item.id)" icon size="x-small" color="lightgrey">
                   <v-icon size="x-small">mdi-close</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
           </v-card>
-          <v-btn @click="redirectToCart" size="small" width="290" color="#029cf5"
+          <!-- <v-btn @click="redirectToCart" size="small" width="290" color="#029cf5"
           style="margin-top: -9px">
             Go to Cart
-          </v-btn>
+          </v-btn> -->
+          <v-btn @click="redirectToCart" color="primary" dark
+                  size="small"
+                  width="290"
+                  style="margin-top: -20px"
+                  >Go to Cart</v-btn
+                >
         </v-list>
       </div>
     </v-menu>
@@ -581,12 +588,9 @@ export default {
         const products = response.data
         if (products.length > 0) {
           this.$store.commit('SET_SEARCH_RESULTS', products)
-          this.$store.state.searchResults.map(product => {
-            return this.$store.dispatch('getItemRating', product.id)
-          })
           this.$store.dispatch(
             'updateMessage',
-            `Found ${products.length} results for ${this.searchQuery}'`
+            `Found ${products.length} results for "${this.searchQuery}"`
           )
           this.$router.push('/search')
         } else {

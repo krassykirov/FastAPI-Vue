@@ -104,18 +104,13 @@
               </span>
             </div>
           </div>
-          <span v-if="product.discount >= 0.01" class="old-price">
-            ${{ Math.floor(product.price) }}
-          </span>
-          <span v-else style="font-size: 1em; margin-top: 1%">&nbsp;</span>
           <v-btn
             @click="addToCart(product)"
-            flat
-            width="100%"
+            dark
+            color="primary"
             style="padding: 0; margin-top: 10px !important"
-          >
-            Add to Cart &nbsp;
-            <v-icon right>mdi-cart-outline</v-icon>
+            ><v-icon right>mdi-cart-outline</v-icon>
+            Add to Cart
           </v-btn>
         </div>
       </div>

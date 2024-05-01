@@ -21,17 +21,19 @@
       <v-row justify="center" style="margin-top: 1%">
         <v-col cols="12" md="6">
           <v-card class="px-6 py-8" elevation="2" outlined>
-            <h3 class="text-center mb-4" style="margin-right: 15%">
+            <h3 class="text-center mb-4" style="margin-right: 3%">
               <v-icon size="32" class="mr-2" color="red"
                 >mdi-heart-outline</v-icon
               >
               Favorite Products
             </h3>
+            <!-- prettier-ignore -->
             <v-row
               v-for="product in favorites"
               :key="product.id"
               align="center"
             >
+              <v-divider class="my-4" color="blue-darken-4" thickness="3"></v-divider>
               <v-col cols="2">
                 <v-img
                   :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"

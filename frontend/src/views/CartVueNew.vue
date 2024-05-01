@@ -161,7 +161,7 @@
                         <td>
                           <img
                             :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
-                            class="img-fluid"
+                            class="img"
                             alt="Product Image"
                             style="
                               max-width: 50px;
@@ -389,20 +389,22 @@
                       </div>
                     </div>
                     <div class="modal-footer" style="padding-right: 40%">
-                      <button
+                      <v-btn
+                        color="primary"
+                        dark
                         type="button"
                         class="btn btn-primary"
                         @click="hideModal"
+                        >Cancel</v-btn
                       >
-                        Cancel
-                      </button>
-                      <button
+                      <v-btn
+                        color="primary"
+                        dark
                         type="submit"
                         class="btn btn-primary"
                         @click="paymentCheckout"
+                        >Pay</v-btn
                       >
-                        Pay
-                      </button>
                     </div>
                   </form>
                 </div>
@@ -517,7 +519,7 @@ export default {
             Authorization: `Bearer ${this.$store.state.accessToken}`
           },
           data: formData,
-          success: data => {
+          success: () => {
             $(document).ready(function () {
               $('#exampleModal').hide()
             })

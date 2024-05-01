@@ -69,7 +69,7 @@ def get_items(request: Request, db: Session = Depends(get_session), user: User =
         return updated_items
     except Exception as e:
         logger.error(f"Error fetching items, error message: {e}")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error fetching items")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error fetching items")
 
 @items_router.post("/create_item", status_code=status.HTTP_201_CREATED, include_in_schema=False)
 @items_router.post("/products/create_item", status_code=status.HTTP_201_CREATED,  include_in_schema=False)

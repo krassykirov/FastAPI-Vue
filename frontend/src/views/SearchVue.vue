@@ -17,7 +17,7 @@
       :profile="profile"
       :favorites="favorites"
     />
-    <!-- <MessageArea /> -->
+    <!-- prettier-ignore -->
     <div class="container-fluid mt-5" style="margin-left: 10%">
       <div
         class="row"
@@ -30,99 +30,78 @@
         "
       >
         <div>
-          <h3 class="text-center mb-4">
-            <h6 v-if="message" style="margin-right: 19%; margin-bottom: 3%">
-              <i class="fa fa-search" style="font-size: 1.2rem"> </i>&nbsp;{{
-                message
-              }}
-            </h6>
-            <div v-else style="align-items: center; margin-right: 25%">
-              <img :src="require('@/assets/no_result.gif')" />
-            </div>
-          </h3>
-        </div>
-        <div class="col-md-8" style="max-width: 1200px; margin-left: 3%">
-          <table class="table table-hover">
-            <tbody>
-              <tr v-for="product in searchResults" :key="product.id">
-                <td style="padding-top: 1%">
-                  <img
-                    :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
-                    class="img-fluid"
-                    alt="Product Image"
-                    style="
-                      max-width: 270px;
-                      height: 200px;
-                      object-fit: cover;
-                      cursor: pointer;
-                    "
-                    @click="redirectToItemFromCart(product.id)"
-                  />
-                </td>
-                <td
-                  v-if="product"
-                  style="cursor: pointer; padding-top: 1%; text-align: center"
-                >
-                  <h6 @click="redirectToItemFromCart(product.id)">
-                    {{ truncateName(product.name, 45) }}
-                  </h6>
-                  <p
-                    v-if="product.description"
-                    @click="redirectToItemFromCart(product.id)"
-                    style="
-                      font-size: 0.95em;
-                      padding-top: 3%;
-                      padding-right: 10%;
-                      padding-left: 10%;
-                      padding-bottom: 0;
-                    "
-                  >
-                    {{ truncateName(product.description, 200) }}
-                  </p>
-                  <p style="cursor: pointer">
-                    <span
-                      v-for="i in 5"
-                      :key="i"
-                      :class="getStarClasses(i, product.rating_float)"
-                    ></span>
-                    <span
-                      :id="'overall-rating' + product.id + '-float'"
-                      class="overall-rating"
-                      style="font-size: 0.9rem !important"
-                      >&nbsp;{{
-                        parseFloat(product.rating_float).toFixed(2)
-                      }}</span
-                    >
-                    <span
-                      :id="'overall-rating' + product.id"
-                      class="overall-rating2"
-                      style="font-size: 0.9rem !important"
-                    >
-                      ({{ product.review_number }})
-                    </span>
-                  </p>
-                  <button
-                    class="btn btn-secondary"
-                    ref="addToCartButton"
-                    @click="addToCart(product)"
-                    style="margin-top: 10px"
-                  >
-                    Add to Cart
-                    <i class="bi bi-cart-fill" style="font-size: 1rem"> </i>
-                  </button>
-                </td>
-                <!-- prettier-ignore -->
-                <td v-if="product" style="padding-top: 5.3%; padding-right: 10px">
-                  <span style="font-size: 1.1rem;">$</span>
-                  <span style="font-size: 1.1rem;">{{ formatPrice(product.discount_price).integerPart }}</span>
-                  <span style="font-size: 0.8em; position: relative; top: -0.4em;">.{{ formatPrice(product.discount_price).decimalPart }}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      </div>
       </div>
     </div>
+    <v-container fluid>
+      <v-row justify="center">
+        <v-col cols="12" md="6">
+          <!-- prettier-ignore -->
+          <v-card class="px-6 py-8" elevation="2" outlined>
+            <h3 class="text-center mb-4" style="margin-left: 14%">
+              <h6 v-if="message" style="margin-right: 19%; margin-bottom: 1%">
+                <i class="fa fa-search" style="font-size: 1.2rem"> </i>&nbsp;{{
+                  message
+                }}
+              </h6>
+              <div v-else style="align-items: center; margin-right: 25%">
+                <img :src="require('@/assets/no_result.gif')" />
+              </div>
+            </h3>
+            <v-row
+              v-for="product in searchResults"
+              :key="product.id"
+              align="center"
+            >
+              <v-divider class="my-4" color="blue-darken-4" thickness="3"></v-divider>
+              <v-col cols="2">
+                <v-img
+                  :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
+                  max-width="128"
+                  max-height="128"
+                  contain
+                ></v-img>
+              </v-col>
+              <v-col cols="8">
+                <div
+                  class="text-overline"
+                  @click="redirectToItemFromCart(product.id)"
+                  style="cursor: pointer; font-size: 14px; font-weight: 800"
+                >
+                  {{ product.name }}
+                </div>
+                <!-- prettier-ignore -->
+                <div @click="redirectToItemFromCart(product.id)" style="font-size: 14px; font-weight: 800; color: #dc3545; cursor: pointer">
+                  <span style="font-size: 0.9rem;">$</span>
+                  <span v-if="product.discount_price" style="font-size: 0.95rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
+                  <span v-if="product.discount_price" style="font-size: 0.65rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
+                </div>
+                <v-col cols="14">
+                  <!-- prettier-ignore -->
+                  <div style="font-size: 14px; cursor: pointer" @click="redirectToItemFromCart(product.id)">
+                  {{ product.description }}
+                 </div>
+                </v-col>
+                <v-rating
+                  :model-value="product.rating_float"
+                  color="orange-darken-2"
+                  density="compact"
+                  size="small"
+                  half-increments
+                  readonly
+                ></v-rating>
+              </v-col>
+              <v-col cols="1">
+                <v-btn @click="addToCart(product)" size="small" icon="mdi-cart-outline" color="primary"></v-btn>
+              </v-col>
+              <!-- <v-col cols="1">
+                <v-btn @click="addTofavorites(product)" size="small" icon="mdi-heart" color="red"></v-btn>
+              </v-col> -->
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
     <div
       class="toast"
       id="cartToast"
@@ -183,6 +162,9 @@ export default {
     },
     categories() {
       return this.$store.getters.categories
+    },
+    formattedPrice() {
+      return this.$store.getters.formattedPrice
     }
   },
   methods: {
@@ -216,6 +198,9 @@ export default {
     },
     addToCart(product) {
       this.$store.dispatch('addToCart', product)
+    },
+    addTofavorites(product) {
+      this.$store.dispatch('addTofavorites', product)
     },
     removeFromCart(itemId) {
       this.$store.dispatch('removeFromCart', itemId)

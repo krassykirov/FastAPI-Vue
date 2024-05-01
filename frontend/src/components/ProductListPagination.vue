@@ -116,15 +116,15 @@
 
               <!-- Add to Cart button -->
               <v-btn
-                @click="addToCart(product)"
-                color="outlined"
-                elevation="10"
+                dark
+                color="primary"
                 width="100%"
-                style="padding: 0; margin-top: 12px !important"
+                class="btn btn-primary"
+                @click="addToCart(product)"
               >
-                Add to Cart &nbsp;
                 <v-icon right>mdi-cart-outline</v-icon>
-              </v-btn>
+                Add to Cart</v-btn
+              >
             </div>
           </div>
         </transition-group>

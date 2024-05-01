@@ -78,32 +78,34 @@
               <v-btn type="submit" width="200px" elevation="5">Save</v-btn>
             </v-card-actions>
           </v-form>
-          <v-list v-else style="width: 450px">
-            <v-list-item prepend-icon="mdi-phone"  style="text-align: center">
-              {{ profile.number }}
-            </v-list-item>
-            <v-divider inset></v-divider>
-            <v-list-item prepend-icon="mdi-email" style="text-align: center">
-              {{ profile.email }}
-            </v-list-item>
-            <v-divider inset></v-divider>
-            <v-list-item
-              prepend-icon="mdi-map-marker"
-              style="text-align: center"
-            >
-              {{ profile.address }}
-            </v-list-item>
-            <v-list-item
-              prepend-icon="mdi-account-circle"
-              style="text-align: center"
-            >
-              <v-img
-                :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
-                class="imng-fluid"
-                style="width: 90%; max-height: 200px"
-              ></v-img>
-            </v-list-item>
-          </v-list>
+          <v-form v-else>
+            <v-text-field
+              :model-value="profile.number"
+              label="Telephone number"
+              type="tel"
+              prepend-inner-icon="mdi-phone"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              :model-value="profile.email"
+              label="Secondary Email"
+              type="email"
+              prepend-inner-icon="mdi-email"
+              readonly
+            ></v-text-field>
+            <v-text-field
+              :model-value="profile.address"
+              label="Address"
+              type="address"
+              prepend-inner-icon="mdi-map-marker"
+              readonly
+            ></v-text-field>
+            <v-img
+              :src="`${backendEndpoint}/static/img/${profile.primary_email}/profile/${profile.avatar}`"
+              class="img-fluid"
+              style="width: 90%; max-height: 200px"
+            ></v-img>
+          </v-form>
           <v-snackbar
           v-model="hasSaved"
           :timeout="2000"
@@ -119,7 +121,7 @@
       <!-- Create Profile -->
       <div class="container" style="margin-top: 2%; width: 480px">
         <v-card v-if="!profile">
-          <v-card-title class="bg-cyan-darken-1" style="text-align: center">
+          <v-card-title class="blue-darken-1" style="text-align: center">
             <span class="text-h5">{{ user }}</span>
           </v-card-title>
           <v-card-text>
@@ -289,11 +291,10 @@ export default {
         formData.append('file', this.editedProfile.file)
       }
       try {
-        const response = await axios.post(
+        await axios.post(
           `${config.backendEndpoint}/api/profile/update_profile`,
           formData
         )
-        const data = response.data
         this.$store.dispatch('getProfile')
         this.editedProfile = {
           email: '',

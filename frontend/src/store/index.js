@@ -327,9 +327,9 @@ export default createStore({
         commit('UPDATE_USER', user)
         commit('UPDATE_USER_ID', user_id)
         commit('UPDATE_IS_ADMIN', is_admin)
+        commit('UPDATE_HAS_PROFILE', hasProfile)
         commit('setAccessToken', data.access_token)
         commit('setRefreshToken', data.refresh_token)
-        commit('UPDATE_HAS_PROFILE', hasProfile)
         router.push({ name: 'NewHome' })
       } catch (error) {
         if (error.message.startsWith('Cannot read')) {
