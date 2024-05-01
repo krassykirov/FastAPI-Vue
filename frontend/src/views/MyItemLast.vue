@@ -101,7 +101,7 @@
                   color="primary"
                   width="100%"
                   class="btn btn-primary"
-                  @click="addToCart(product)"
+                  @click="addToCart(item)"
                 >
                   <v-icon right>mdi-cart-outline</v-icon>
                   Add to Cart</v-btn
