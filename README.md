@@ -34,7 +34,8 @@ The application consists of two main parts:
 ## Running with Docker Compose
 
 To run the project using Docker Compose, make sure you have Docker installed on your system. Then, follow these steps:
-
+```
 1. docker-compose up --build
 2. Navigate to localhost:8081
+```
 
