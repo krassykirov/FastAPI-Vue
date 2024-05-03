@@ -1,7 +1,6 @@
 # FastAPI and Vue.js Application
 
 This project is a test of building a web app using FastAPI for the backend and Vue.js for the frontend.
-It is only for testing purposes.
 ## Overview
 
 The application consists of two main parts:
