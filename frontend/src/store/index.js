@@ -426,7 +426,8 @@ export default createStore({
       }
       if (
         (state.hasProfile === true || state.hasProfile === 1) &&
-        state.user_id
+        state.user_id &&
+        !state.profile
       ) {
         try {
           const response = await axios.get(
@@ -462,15 +463,17 @@ export default createStore({
         commit('SET_SELECTED_BRANDS', selectedBrands)
       })
     },
-    async fetchCategories({ commit }) {
-      try {
-        const response = await axios.get(
-          `${config.backendEndpoint}/api/categories/`
-        )
-        const categories = await response.data
-        commit('SET_CATEGORIES', categories)
-      } catch (error) {
-        console.error('Error fetching categories:', error)
+    async fetchCategories({ commit, state }) {
+      if (state.categories.length === 0) {
+        try {
+          const response = await axios.get(
+            `${config.backendEndpoint}/api/categories/`
+          )
+          const categories = await response.data
+          commit('SET_CATEGORIES', categories)
+        } catch (error) {
+          console.error('Error fetching categories:', error)
+        }
       }
     },
     async handleCategoryChange({ commit, dispatch }) {

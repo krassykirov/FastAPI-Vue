@@ -14,7 +14,6 @@
             :data-category="product.category_id"
           >
             <div class="card-body">
-              <!-- Discount badge -->
               <span
                 class="badge bg-danger position-absolute top-0 start-0"
                 v-if="product.discount >= 0.01"
@@ -22,8 +21,6 @@
               >
                 -{{ Math.floor(product.discount * 100) }}%
               </span>
-
-              <!-- Favorite icon -->
               <span
                 :class="getHeartClasses(product)"
                 @click="addTofavorites(product)"
@@ -48,8 +45,6 @@
                 @click="redirectToItemFromProduct(product.id)"
                 style="cursor: pointer"
               />
-
-              <!-- Product name -->
               <h6
                 @click="redirectToItemFromProduct(product.id)"
                 class="card-title"
@@ -88,8 +83,6 @@
                   ({{ product.review_number }})
                 </span>
               </p>
-
-              <!-- Price -->
               <div class="card-price">
                 <span
                   style="
@@ -109,7 +102,7 @@
                   </div>
                 </span>
                 <span v-if="product.discount >= 0.01" class="old-price">
-                  ${{ Math.floor(product.price) }}
+                  ${{ formattedPrice(product.price).integerPart }}
                 </span>
                 <span v-else class="old-price2">&nbsp;</span>
               </div>

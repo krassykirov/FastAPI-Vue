@@ -111,7 +111,7 @@
             </span>
           </span>
           <span v-if="product.discount >= 0.01" class="old-price">
-            ${{ Math.floor(product.price) }}
+            ${{ formattedPrice(product.price).integerPart }}
           </span>
           <span v-else class="old-price2">&nbsp;</span>
         </div>
