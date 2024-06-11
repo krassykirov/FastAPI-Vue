@@ -73,7 +73,7 @@
               </v-col>
               <v-col cols="1">
                 <!-- prettier-ignore -->
-                <v-btn @click="addToCart(product)" size="small" icon="mdi-cart-outline"></v-btn>
+                <v-btn @click="addToCart(product)" size="x-small" icon="mdi-cart-outline"></v-btn>
               </v-col>
             </v-row>
             <v-divider class="my-4"></v-divider>

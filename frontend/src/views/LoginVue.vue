@@ -57,7 +57,18 @@
               label="Keep me signed in"
               type="checkbox"
             ></v-checkbox>
-            <v-btn color="primary" dark block type="submit">Login</v-btn>
+            <v-btn
+              color="primary"
+              dark
+              block
+              type="submit"
+              style="margin-bottom: 10px"
+              >Login</v-btn
+            >
+            <v-btn dark block @click="loginWithAzure">
+              <i class="fa-brands fa-microsoft">&nbsp;</i> Login with Microsoft
+              Account</v-btn
+            >
             <v-card-text class="text-center mt-2">
               Don't have an account?
               <a
@@ -82,7 +93,7 @@ import store from '@/store/index.js'
 import router from '@/router'
 import { useField, useForm } from 'vee-validate'
 import VueCookies from 'vue-cookies'
-// import { jwtDecode } from 'jwt-decode'
+import config from '@/config'
 
 export default {
   beforeMount() {
@@ -161,6 +172,9 @@ export default {
     const clearErrorMessage = () => {
       store.dispatch('setErrorMessage', '')
     }
+    const loginWithAzure = () => {
+      window.location.href = `${config.backendEndpoint}/auth/azure`
+    }
 
     return {
       email,
@@ -171,6 +185,7 @@ export default {
       submit,
       redirectToSignup,
       clearErrorMessage,
+      loginWithAzure,
       isEmailValid
     }
   }

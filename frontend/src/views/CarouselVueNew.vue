@@ -107,6 +107,7 @@
           <v-btn
             @click="addToCart(product)"
             dark
+            size="small"
             color="primary"
             style="padding: 0; margin-top: 10px !important"
             ><v-icon right>mdi-cart-outline</v-icon>

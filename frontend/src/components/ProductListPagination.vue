@@ -111,6 +111,7 @@
               <v-btn
                 dark
                 color="primary"
+                size="small"
                 width="100%"
                 class="btn btn-primary"
                 @click="addToCart(product)"

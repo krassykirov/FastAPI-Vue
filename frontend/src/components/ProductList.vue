@@ -119,6 +119,7 @@
           dark
           color="primary"
           width="100%"
+          size="small"
           class="btn btn-primary"
           @click="addToCart(product)"
         >

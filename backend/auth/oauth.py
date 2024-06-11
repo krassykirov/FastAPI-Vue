@@ -8,14 +8,31 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from db import get_session
 import models
-from jose import JWTError, jwt
+from jose import JWTError, jwt, jws
 from datetime import datetime, timedelta
 from auth.oauth_schemas import OAuth2PasswordBearerCookie
 from passlib.context import CryptContext
 from my_logger import detailed_logger
-import datetime 
+import datetime, uuid
+import urllib.parse, requests, json
+import adal, os
 
 logger = detailed_logger()
+
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+TENANT = os.environ.get('TENANT')
+SCOPES = os.environ.get('SCOPES')
+FRONTEND = os.environ.get('FRONTEND')
+REDIRECT_URI = "http://localhost:8000/token"
+AUTHORITY_URL = 'https://login.microsoftonline.com/common' # f'https://login.microsoftonline.com/{TENANT}'
+AUTH_ENDPOINT = '/oauth2/v2.0/authorize'
+TOKEN_ENDPOINT = '/oauth2/v2.0/token'
+RESOURCE = 'https://graph.microsoft.com/'
+API_VERSION = 'beta'
+keys_url = 'https://login.microsoftonline.com/common/discovery/keys' # f'https://login.microsoftonline.com/{TENANT}/discovery/keys'
+keys_raw = requests.get(keys_url).text
+keys = json.loads(keys_raw)
 
 pwd_context = CryptContext(schemes="bcrypt")
 
@@ -24,10 +41,74 @@ oauth_router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearerCookie(tokenUrl="/api/token")
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 15
 ALGORITHM = "HS256"
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 
+@oauth_router.get("/auth/azure", include_in_schema=True)
+async def azure_login():
+    try:
+        auth_state = str(uuid.uuid4())
+        prompt_behavior = 'select_account'  # prompt_behavior = 'login' select_account
+        params = urllib.parse.urlencode({'response_type': 'code id_token',
+                                         'client_id': CLIENT_ID,
+                                         'redirect_uri': REDIRECT_URI,
+                                         'state': auth_state,
+                                         'nonce': str(uuid.uuid4()),
+                                         'prompt': prompt_behavior,
+                                         'scope': SCOPES,
+                                         'response_mode': 'form_post'})
+
+        return RedirectResponse(AUTHORITY_URL + '/oauth2/v2.0/authorize?' + params)
+    except Exception as error:
+        return str(error)
+
+@oauth_router.post("/token", include_in_schema=True)
+async def azure_token(request: Request, db: Session = Depends(get_session)):
+    try:
+        body_form =  await request.form()
+        id_token = body_form.get('id_token')
+        code = body_form.get('code')
+        id_token_decoded = json.loads(jws.verify(id_token, keys, algorithms=['RS256'], verify=False))
+        username = id_token_decoded.get('preferred_username')
+        email = id_token_decoded.get('email')
+        issuer = id_token_decoded.get('iss')
+        if not username and not email:
+            raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Username or password are incorrect!",
+        )
+        query = select(models.User).where(models.User.username == username)
+        user = db.exec(query).first()
+        if not user:
+            user = models.User(username=username)
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": username, 'issuer': issuer, "user_id": user.id, "hasProfile": True if user.profile else False},
+            expires_delta=access_token_expires,
+        )
+        refresh_token = create_refresh_token(
+                user.id, user.username, minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 2
+            )
+        return RedirectResponse(f"{FRONTEND}/?token={access_token}&refresh_token={refresh_token}", status_code=303)
+    except Exception as e:
+        logger.error(f'Error processing id_token: {e}')
+        return RedirectResponse(f"{FRONTEND}/?token=false", status_code=303)
+
+@oauth_router.post("/graph", include_in_schema=True)
+async def ms_graph_call(code: str, graph_endpoint=None):
+    """Get Access Token for Micorosft Graph and call the API"""
+    auth_context = adal.AuthenticationContext(AUTHORITY_URL, api_version=None)
+    token_response = auth_context.acquire_token_with_authorization_code(
+            code, REDIRECT_URI, RESOURCE, CLIENT_ID, CLIENT_SECRET)
+    access_token = token_response['accessToken']
+    graph_endpoint = "https://graph.microsoft.com/beta/me/profile"
+    headers = {'Authorization': 'Bearer {}'.format(access_token)}
+    response = requests.get(graph_endpoint, headers=headers).json()
+    return response
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     to_encode = data.copy()
@@ -82,7 +163,6 @@ def get_current_user(
         raise credentials_exception
     return user
 
-
 @oauth_router.post("/api/token/refresh", include_in_schema=True)
 async def refresh_access_token(request: Request, db: Session = Depends(get_session)):
     try:
@@ -118,7 +198,6 @@ async def refresh_access_token(request: Request, db: Session = Depends(get_sessi
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
         )
 
-
 @oauth_router.post("/api/token", include_in_schema=True)
 async def login_access_token(
     *,
@@ -131,7 +210,7 @@ async def login_access_token(
     remember_me = [v.get("rememberMe") for k, v in data.items() if k == "_form"][0]
     user = db.exec(query).first()
     if user and user.verify_password(form_data.password):
-        token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 5)
+        token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 1)
         if remember_me == "true":
             access_token = create_access_token(
                 data={
@@ -143,7 +222,7 @@ async def login_access_token(
                 expires_delta=token_expires,
             )
             refresh_token = create_refresh_token(
-                user.id, user.username, minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 12
+                user.id, user.username, minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 2
             )
             return {
                 "access_token": access_token,
@@ -207,7 +286,7 @@ def login(request: Request):
     response = templates.TemplateResponse("login.html", {"request": request})
     return response
 
-@oauth_router.post("/token", include_in_schema=False)
+@oauth_router.post("/token_admin", include_in_schema=False)
 def login_access_token_old(
     *,
     request: Request,
@@ -222,12 +301,10 @@ def login_access_token_old(
         access_token = create_access_token(
             data={"sub": user.username, "is_admin": user.is_admin}, expires_delta=access_token_expires
         )
-        print('access_token', access_token)
         response = RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
         response.set_cookie(
             key="access_token", value=f"{access_token}", httponly=True
         )
-        print('cookie', request.cookies.get("access_token"))
         return response
 
     else:

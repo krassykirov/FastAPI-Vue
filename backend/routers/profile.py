@@ -56,7 +56,7 @@ async def create_profile(request: Request, db: Session = Depends(get_session), u
     user_db = db.exec(query).first()
     if user_db:
         try:
-            IMG_DIR = os.path.join(PROJECT_ROOT, f'backend/static/img/{user.username}/profile')
+            IMG_DIR = os.path.join(PROJECT_ROOT, f'static/img/{user.username}/profile')
             content = await file.read()
             if not os.path.exists(IMG_DIR):
                 os.makedirs(IMG_DIR, exist_ok=True)
@@ -95,7 +95,7 @@ async def update_profile(request: Request, db: Session = Depends(get_session), u
     user_db = db.exec(query).first()
     if user_db:
         try:
-            if file != 'null':
+            if file != 'null' and file != 'undefined':
                 content = await form_data['file'].read()
                 with open(f"static/img/{user.username}/profile/{form_data['file'].filename}", 'wb') as f:
                     f.write(content)

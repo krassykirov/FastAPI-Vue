@@ -3,7 +3,7 @@ import decimal
 from pydantic import BaseModel, EmailStr
 from typing import Optional, Union, Dict, Any
 from sqlmodel import SQLModel, Field, Relationship, Column, VARCHAR, Session
-from sqlalchemy import JSON, func, Column, Boolean
+from sqlalchemy import JSON, func, Boolean
 from sqlalchemy_utils import ChoiceType
 import enum
 from typing import Optional, List

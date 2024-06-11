@@ -116,6 +116,9 @@ export default {
     }
   },
   created() {
+    const urlParams = new URLSearchParams(window.location.search)
+    const token = urlParams.get('token')
+    const refresh_token = urlParams.get('refresh_token')
     if (!this.$store.state.accessToken) {
       const accessToken = VueCookies.get('access_token')
       if (accessToken) {
@@ -127,6 +130,41 @@ export default {
         this.$store.commit('UPDATE_USER_ID', user_id)
         this.$store.commit('UPDATE_IS_ADMIN', is_admin)
         this.$store.commit('UPDATE_HAS_PROFILE', hasProfile)
+      } else if (token !== null && refresh_token !== null) {
+        const decodedToken = jwtDecode(token)
+        const expires_in = decodedToken.exp
+        const user = decodedToken.sub
+        const user_id = decodedToken.user_id
+        const is_admin = decodedToken.is_admin
+        const hasProfile = decodedToken.hasProfile
+        this.lastActiveDate = new Date()
+        this.inactiveTime = 0
+        const expiresInMinutes = Math.max(
+          0,
+          Math.floor((expires_in - Math.floor(Date.now() / 1000)) / 60)
+        )
+        VueCookies.set('access_token', token, {
+          expires: new Date(Date.now() + expiresInMinutes * 60 * 1000)
+        })
+        const refresh_token_expires_in = jwtDecode(refresh_token).exp
+        const expiresInMinutesrefreshToken = Math.max(
+          0,
+          Math.floor(
+            (refresh_token_expires_in - Math.floor(Date.now() / 1000)) / 60
+          )
+        )
+        VueCookies.set('refresh_token', refresh_token, {
+          expires: new Date(
+            Date.now() + expiresInMinutesrefreshToken * 60 * 1000
+          )
+        })
+        this.$store.commit('UPDATE_USER', user)
+        this.$store.commit('UPDATE_USER_ID', user_id)
+        this.$store.commit('UPDATE_IS_ADMIN', is_admin)
+        this.$store.commit('UPDATE_HAS_PROFILE', hasProfile)
+        this.$store.commit('setAccessToken', token)
+        this.$store.commit('setRefreshToken', refresh_token)
+        router.push({ name: 'NewHome' })
       } else {
         this.$store.dispatch('setErrorMessage', 'Session expired')
         router.push('/login')

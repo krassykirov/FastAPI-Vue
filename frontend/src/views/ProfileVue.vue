@@ -168,9 +168,6 @@
 import $ from 'jquery'
 import NavBar from '@/components/MyNavbar.vue'
 import config from '@/config'
-// import VueCookies from 'vue-cookies'
-// import { jwtDecode } from 'jwt-decode'
-// import router from '@/router'
 import axios from 'axios'
 
 export default {
@@ -235,18 +232,6 @@ export default {
       return this.$store.state.accessToken
     }
   },
-  // created() {
-  //   const accessToken = VueCookies.get('access_token')
-  //   if (accessToken) {
-  //     const user = jwtDecode(accessToken).sub
-  //     const user_id = jwtDecode(accessToken).user_id
-  //     this.$store.commit('UPDATE_USER', user)
-  //     this.$store.commit('UPDATE_USER_ID', user_id)
-  //   } else {
-  //     router.push('/login')
-  //   }
-  //   this.$store.dispatch('getProfile')
-  // },
   methods: {
     clearErrorMessage() {
       this.$store.dispatch('setErrorMessage', '')
@@ -291,11 +276,11 @@ export default {
         formData.append('file', this.editedProfile.file)
       }
       try {
-        await axios.post(
+        const response = await axios.post(
           `${config.backendEndpoint}/api/profile/update_profile`,
           formData
         )
-        this.$store.dispatch('getProfile')
+        this.$store.commit('UPDATE_PROFILE', response.data)
         this.editedProfile = {
           email: '',
           number: '',

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, Response, BackgroundTasks, UploadFile, Form
+from fastapi import APIRouter, Query, BackgroundTasks, UploadFile, Form
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi import Request, Depends, HTTPException, status
@@ -275,6 +275,7 @@ async def update_item_api(request: Request, db: Session=Depends(get_session), us
 @items_router.post("/checkout", status_code=status.HTTP_200_OK,  include_in_schema=True)
 async def checkout(request: Request, db: Session = Depends(get_session), user: User = Depends(get_current_user)):
     form_data = await request.form()
+    print('form_data', form_data)
     logger.info('data checkout', form_data)
     return JSONResponse(content="Your Order has been processed!")
     # item = ItemActions().get_item_by_id(db=db, id=data.get('item_id'))

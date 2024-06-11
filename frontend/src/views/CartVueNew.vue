@@ -17,7 +17,6 @@
       :profile="profile"
       :favorites="favorites"
     />
-    <!-- <MessageArea /> -->
     <!-- prettier-ignore -->
     <v-container fluid>
       <v-row justify="center" style="margin-top: 1%">
@@ -99,7 +98,7 @@
               </v-col>
               <v-col cols="6">
                 <!-- prettier-ignore -->
-                <v-btn @click="paymentCheckout" color="primary" dark
+                <v-btn @click="showModal" color="primary" dark
                   type="button"
                   class="btn btn-primary"
                   data-toggle="modal"
@@ -121,300 +120,138 @@
         </v-col>
       </v-row>
     </v-container>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-      data-backdrop="false"
-    >
-      <div class="modal-dialog" role="document" style="width: 628px">
-        <div class="modal-content" style="width: 628px">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Payment Details</h5>
-            <button
-              type="button"
-              class="close"
-              id="close-modal"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body" style="width: 628px">
-            <div class="row">
-              <div class="col-75">
-                <div class="col-25" style="padding: 0">
-                  <div class="container">
-                    <h5>
-                      Cart
-                      <span style="color: black"
-                        ><i class="fa fa-shopping-cart"></i>
-                        <b>&nbsp;{{ cart.length }}</b></span
-                      >
-                    </h5>
-                    <tbody style="width: 100%">
-                      <tr v-for="product in cart" :key="product.id">
-                        <td>
-                          <img
-                            :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
-                            class="img"
-                            alt="Product Image"
-                            style="
-                              max-width: 50px;
-                              max-height: 35px;
-                              margin: 5px;
-                            "
-                          />
-                        </td>
-                        <td class="align-left text-left">
-                          <div
-                            class="input-group"
-                            style="
-                              max-width: 120px;
-                              margin: auto;
-                              max-height: 40px;
-                            "
-                          >
-                            <button
-                              class="btn btn-outline-secondary"
-                              type="button"
-                              @click="
-                                updateQuantity(product.id, product.quantity - 1)
-                              "
-                            >
-                              -
-                            </button>
-                            <input
-                              type="number"
-                              class="form-control text-center"
-                              min="1"
-                              max="3"
-                              :value="product.quantity"
-                              disabled
-                            />
-                            <button
-                              class="btn btn-outline-secondary"
-                              type="button"
-                              @click="
-                                updateQuantity(product.id, product.quantity + 1)
-                              "
-                            >
-                              +
-                            </button>
-                          </div>
-                        </td>
-                        <!-- prettier-ignore -->
-                        <td
-                          @click="redirectToItemFromCart(product.id)"
-                          style="cursor: pointer"
-                        >
-                          <p style="cursor: pointer; margin: 15px; font-size: 14px">
-                            {{ truncateName(product.name, 20) }}
-                          </p>
-                        </td>
-                        <!-- prettier-ignore -->
-                        <td style="width: 100px">
-                          <!-- prettier-ignore -->
-                          <div>
-                          <span style="font-size: 0.9rem;">$</span>
-                          <span v-if="product.discount_price" style="font-size: 0.9rem;">{{ formattedPrice(product.discount_price).integerPart }}</span>
-                          <span v-if="product.discount_price" style="font-size: 0.6rem; position: relative; top: -0.4em;">{{ formattedPrice(product.discount_price).decimalPart }}</span>
-                        </div>
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            class="btn btn-outline-danger btn-sm"
-                            style="margin-bottom: 1px"
-                            @click="removeFromCart(product.id)"
-                          >
-                            <i class="bi bi-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                    <hr />
-                    <div
-                      style="
-                        width: 100%;
-                        white-space: nowrap;
-                        align-items: right;
-                        white-space: nowrap;
-                        overflow: hidden;
-                      "
-                    >
-                      <!-- prettier-ignore -->
-                      <div class="text-end mt-4">
-                        <h4
+    <!-- prettier-ignore -->
+    <v-dialog v-model="dialog" max-width="800px" style="font-size: 12px">
+      <v-card color="grey-lighten-4" style="font-size: 12px">
+        <v-card-title>
+          <span class="headline">Payment Details</span>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="hideModal" size="x-small">
+            <v-icon size="x-small">mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form" id="paymentForm" @submit.prevent="paymentCheckout" v-model="valid">
+            <v-container>
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th style="padding-left: 150px">Name</th>
+                      <th style="padding-left: 30px">Quantity</th>
+                      <th style="padding-left: 15px">Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="product in cart" :key="product.id">
+                      <td>
+                        <img
+                          :src="`${backendEndpoint}/static/img/${product.id}/${product.image}`"
+                          class="img"
+                          alt="Product Image"
                           style="
-                            width: 150px;
-                            margin-left: 60%;
-                            margin-right: 5%;
+                            max-width: 50px;
+                            max-height: 35px;
+                            margin: 5px;
                           "
-                        > <!-- prettier-ignore -->
-                          <!-- Total: ${{ total }} -->
-                          <span style="font-size: 1.3rem;">$</span>
-                          <span style="font-size: 1.3rem;">{{ formatTotal(total).integerPart }}</span>
-                          <span style="font-size: 0.8rem; position: relative; top: -0.6em;">{{ formatTotal(total).decimalPart }}</span>
-                        </h4>
-                      </div>
-                    </div>
-                    <hr />
-                  </div>
-                </div>
-                <div class="container">
-                  <form
-                    id="paymentForm"
-                    enctype="multipart/form-data"
-                    data-toggle="validator"
-                  >
-                    <div class="row">
-                      <div class="col-50">
-                        <h3>Shipping Address</h3>
-                        <label for="fname"
-                          ><i class="fa fa-user"></i> Full Name</label
-                        >
-                        <input
-                          type="text"
-                          id="fname"
-                          name="firstname"
-                          placeholder="John M. Doe"
                         />
-                        <label for="email"
-                          ><i class="fa fa-envelope"></i> Email</label
+                      </td>
+                      <td>{{ product.name }}</td>
+                      <td class="align-left text-left">
+                        <div
+                          class="input-group"
+                          style="
+                            max-width: 120px;
+                            max-height: 40px;
+                          "
                         >
-                        <input
-                          type="text"
-                          id="email"
-                          name="email"
-                          placeholder="john@example.com"
-                        />
-                        <label for="adr"
-                          ><i class="fa fa-address-card-o"></i> Address</label
-                        >
-                        <input
-                          type="text"
-                          id="adr"
-                          name="address"
-                          placeholder="542 W. 15th Street"
-                        />
-                        <label for="city"
-                          ><i class="fa fa-institution"></i> City</label
-                        >
-                        <input
-                          type="text"
-                          id="city"
-                          name="city"
-                          placeholder="New York"
-                        />
-
-                        <div class="row">
-                          <div class="col-50">
-                            <label for="state">Telephone</label>
-                            <input
-                              type="text"
-                              id="state"
-                              name="state"
-                              placeholder="NY"
-                            />
-                          </div>
-                          <div class="col-50">
-                            <label for="zip">Zip</label>
-                            <input
-                              type="text"
-                              id="zip"
-                              name="zip"
-                              placeholder="10001"
-                            />
-                          </div>
+                          <v-btn
+                            class="btn btn-outline-secondary"
+                            type="button"
+                            size="x-small"
+                            @click="
+                              updateQuantity(product.id, product.quantity - 1)
+                            "
+                          >
+                            -
+                          </v-btn>
+                          <input
+                            type="number"
+                            class="form-control text-center"
+                            min="1"
+                            max="3"
+                            style="height: 22px"
+                            :value="product.quantity"
+                            disabled
+                          />
+                          <v-btn
+                            class="btn btn-outline-secondary"
+                            type="button"
+                            size="x-small"
+                            @click="
+                              updateQuantity(product.id, product.quantity + 1)
+                            "
+                          >
+                            +
+                          </v-btn>
                         </div>
-                      </div>
-                      <div class="col-50">
-                        <h3>Payment</h3>
-                        <label for="fname">Accepted Cards</label>
-                        <div class="icon-container">
-                          <i class="fa fa-cc-visa" style="color: navy"></i>
-                          <i class="fa fa-cc-amex" style="color: blue"></i>
-                          <i class="fa fa-cc-mastercard" style="color: red"></i>
-                          <i
-                            class="fa fa-cc-discover"
-                            style="color: orange"
-                          ></i>
-                        </div>
-                        <label for="cname">Name on Card</label>
-                        <input
-                          type="text"
-                          id="cname"
-                          name="cardname"
-                          placeholder="John More Doe"
-                        />
-                        <label for="ccnum">Credit card number</label>
-                        <input
-                          type="text"
-                          id="ccnum"
-                          name="cardnumber"
-                          placeholder="1111-2222-3333-4444"
-                        />
-                        <label for="expmonth">Exp Month</label>
-                        <input
-                          type="text"
-                          id="expmonth"
-                          name="expmonth"
-                          placeholder="September"
-                        />
-                        <div class="row">
-                          <div class="col-50">
-                            <label for="expyear">Exp Year</label>
-                            <input
-                              type="text"
-                              id="expyear"
-                              name="expyear"
-                              placeholder="2018"
-                            />
-                          </div>
-                          <div class="col-50">
-                            <label for="cvv">CVV</label>
-                            <input
-                              type="text"
-                              id="cvv"
-                              name="cvv"
-                              placeholder="352"
-                            />
-                          </div>
-                        </div>
-                      </div>
+                      </td>
+                      <td style="padding-left: 10px; padding-bottom: 15px">${{ product.price }}</td>
+                      <td style="padding-left: 10px; padding-bottom: 15px">
+                        <v-btn @click="removeFromCart(product.id)" size="x-small" icon="mdi-trash-can-outline"></v-btn>
+                      </td>
+                    </tr>
+                    <div class="text-end mt-4">
+                      <h4
+                        style="
+                          width: 120px;
+                          margin-left: 90%;
+                        "
+                      > <!-- prettier-ignore -->
+                        <span style="font-size: 1rem;">Total: $</span>
+                        <span style="font-size: 1rem;">{{ formatTotal(total).integerPart }}</span>
+                        <span style="font-size: 0.6rem; position: relative; top: -0.4em;">{{ formatTotal(total).decimalPart }}</span>
+                      </h4>
                     </div>
-                    <div class="modal-footer" style="padding-right: 40%">
-                      <v-btn
-                        color="primary"
-                        dark
-                        type="button"
-                        class="btn btn-primary"
-                        @click="hideModal"
-                        >Cancel</v-btn
-                      >
-                      <v-btn
-                        color="primary"
-                        dark
-                        type="submit"
-                        class="btn btn-primary"
-                        @click="paymentCheckout"
-                        >Pay</v-btn
-                      >
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                  </tbody>
+                </template>
+              </v-simple-table>
+              <h6>Shipping Address</h6>
+              <v-text-field v-model="formData.firstname" label="Full Name" required prepend-icon="mdi-account" type="address"></v-text-field>
+              <v-text-field v-model="formData.email" label="Email" required prepend-icon="mdi-email" type="email"></v-text-field>
+              <v-text-field v-model="formData.address" label="Address" required prepend-icon="mdi-home" type="address"></v-text-field>
+              <v-text-field v-model="formData.city" label="City" required prepend-icon="mdi-city" type="address"></v-text-field>
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field v-model="formData.tel" label="Telephone" required pattern="[0-9]{10,}" prepend-icon="mdi-phone" type="tel"></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field v-model="formData.zip" label="Zip" pattern="[0-9]" prepend-icon="mdi-map-marker" type="tel"></v-text-field>
+                </v-col>
+              </v-row>
+              <h6>Payment</h6>
+              <v-text-field v-model="formData.cardname" label="Name on Card" prepend-icon="mdi-credit-card" type="address"></v-text-field>
+              <v-text-field v-model="formData.cardnumber" label="Credit Card Number" prepend-icon="mdi-credit-card-outline" type="tel"></v-text-field>
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field v-model="formData.expmonth" label="Exp Month" prepend-icon="mdi-calendar" type="tel"></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field v-model="formData.expyear" label="Exp Year" prepend-icon="mdi-calendar" type="tel"></v-text-field>
+                </v-col>
+              </v-row>
+              <v-text-field v-model="formData.cvv" label="CVV" width="150" type="tel" prepend-icon="mdi-lock"></v-text-field>
+            </v-container>
+            <v-card-actions>
+              <v-btn color="blue darken-1" @click="hideModal">Cancel</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" type="submit" :disabled="!valid">Pay</v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <Footer />
   </div>
 </template>
@@ -424,6 +261,7 @@ import NavBar from '@/components/MyNavbar.vue'
 import Footer from '@/views/FooterVue.vue'
 import $ from 'jquery'
 import config from '@/config'
+import axios from 'axios'
 
 export default {
   components: {
@@ -435,7 +273,22 @@ export default {
     return {
       item: null,
       itemId: this.itemId,
-      backendEndpoint: `${config.backendEndpoint}`
+      backendEndpoint: `${config.backendEndpoint}`,
+      dialog: false,
+      valid: false,
+      formData: {
+        firstname: '',
+        email: '',
+        address: '',
+        city: '',
+        tel: '',
+        zip: '',
+        cardname: '',
+        cardnumber: '',
+        expmonth: '',
+        expyear: '',
+        cvv: ''
+      }
     }
   },
   created() {
@@ -502,35 +355,32 @@ export default {
       return description
     },
     hideModal() {
-      $(document).ready(function () {
-        $('#close-modal').click()
-        $('#exampleModal').hide()
-      })
+      this.dialog = false
+    },
+    showModal() {
+      this.dialog = true
     },
     paymentCheckout() {
-      $('#paymentForm').submit(e => {
-        e.preventDefault()
-        const formData = new FormData(e.target)
-        $.ajax({
-          url: `${config.backendEndpoint}/api/items/checkout`,
-          type: 'POST',
-          processData: false,
-          contentType: false,
-          headers: {
-            Authorization: `Bearer ${this.$store.state.accessToken}`
-          },
-          data: formData,
-          success: () => {
-            $(document).ready(function () {
-              $('#exampleModal').hide()
-            })
-          },
-          error: function (xhr) {
-            if (xhr.status === 403) {
+      this.$refs.form.validate().then(isValid => {
+        if (!isValid) return
+
+        const formData = new FormData()
+        Object.keys(this.formData).forEach(key => {
+          formData.append(key, this.formData[key])
+        })
+
+        axios
+          .post(`${config.backendEndpoint}/api/items/checkout`, formData, {})
+          .then(() => {
+            // Handle success
+            this.closeModal()
+          })
+          .catch(error => {
+            if (error.response && error.response.status === 403) {
               $('#error').text('Item with that name already exists!')
             }
-          }
-        })
+            // Handle other errors
+          })
       })
     }
   }

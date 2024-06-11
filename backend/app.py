@@ -23,7 +23,9 @@ from models import Category, Categories, User, Item, Review, UserProfile
 from my_logger import detailed_logger
 from datetime import datetime, timedelta
 from starlette_admin.contrib.sqla import Admin, ModelView
+from dotenv import load_dotenv
 
+load_dotenv()
 # from prometheus_fastapi_instrumentator import Instrumentator
 
 PROJECT_ROOT = Path(__file__).parent.parent # /

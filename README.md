@@ -10,7 +10,7 @@ The application consists of two main parts:
 
 ## Features
 
-- User registration and authentication (OAuth JWT)
+- User registration and authentication (OAuth JWT) + Azure OAuth 2.0 authorization code flow
 - CRUD operations for managing data entities
 - Responsive user interface
 - Integration of backend and frontend using RESTful APIs
@@ -35,7 +35,9 @@ The application consists of two main parts:
 
 To run the project using Docker Compose, make sure you have Docker installed on your system. Then, follow these steps:
 ```
-1. docker-compose up --build
-2. Navigate to localhost:8081
+1. git clone https://github.com/krassykirov/FastAPI-Vue.git
+2. cd FastAPI-Vue
+3. docker-compose up --build
+4. Navigate to localhost:8081
 ```
 
