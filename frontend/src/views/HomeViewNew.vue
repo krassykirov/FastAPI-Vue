@@ -10,7 +10,7 @@
       :total="total"
       :user="user"
       :user_id="user_id"
-      :is_admin="is_admin"
+      :scopes="scopes"
       :profile="profile"
     />
     <div class="container" style="margin-top: 0.7%; margin-left: 7.3%; background-color: #f2f6f6" >
@@ -124,19 +124,19 @@ export default {
       if (accessToken) {
         const user = jwtDecode(accessToken).sub
         const user_id = jwtDecode(accessToken).user_id
-        const is_admin = jwtDecode(accessToken).is_admin
         const hasProfile = jwtDecode(accessToken).hasProfile
+        const scopes = jwtDecode(accessToken).scopes
         this.$store.commit('UPDATE_USER', user)
         this.$store.commit('UPDATE_USER_ID', user_id)
-        this.$store.commit('UPDATE_IS_ADMIN', is_admin)
         this.$store.commit('UPDATE_HAS_PROFILE', hasProfile)
+        this.$store.commit('UPDATE_SCOPES', scopes)
       } else if (token !== null && refresh_token !== null) {
         const decodedToken = jwtDecode(token)
         const expires_in = decodedToken.exp
         const user = decodedToken.sub
         const user_id = decodedToken.user_id
-        const is_admin = decodedToken.is_admin
         const hasProfile = decodedToken.hasProfile
+        const scopes = decodedToken.scopes
         this.lastActiveDate = new Date()
         this.inactiveTime = 0
         const expiresInMinutes = Math.max(
@@ -160,8 +160,9 @@ export default {
         })
         this.$store.commit('UPDATE_USER', user)
         this.$store.commit('UPDATE_USER_ID', user_id)
-        this.$store.commit('UPDATE_IS_ADMIN', is_admin)
         this.$store.commit('UPDATE_HAS_PROFILE', hasProfile)
+        this.$store.commit('UPDATE_SCOPES', scopes)
+        console.log('scopes', scopes)
         this.$store.commit('setAccessToken', token)
         this.$store.commit('setRefreshToken', refresh_token)
         router.push({ name: 'NewHome' })
@@ -291,11 +292,11 @@ export default {
     user_id() {
       return this.$store.state.user_id
     },
-    is_admin() {
-      return this.$store.state.is_admin
-    },
     user() {
       return this.$store.state.user
+    },
+    scopes() {
+      return this.$store.state.scopes
     },
     profile() {
       return this.$store.state.profile

@@ -183,7 +183,7 @@
         ></v-list-item>
         <a
           class="dropdown-item"
-          v-if="user === 'krassy@mail.bg'"
+          v-if="scopes === 'admin'"
           data-toggle="modal"
           data-target="#addItem"
           href="#"
@@ -193,7 +193,7 @@
         </a>
         <a
           class="dropdown-item"
-          v-if="user === 'krassy@mail.bg'"
+          v-if="scopes === 'admin'"
           data-toggle="modal"
           data-target="#patchItem"
           href="#"
@@ -465,15 +465,7 @@ import config from '@/config'
 import router from '@/router'
 
 export default {
-  props: [
-    'cart',
-    'profile',
-    'favorites',
-    'total',
-    'user',
-    'user_id',
-    'is_admin'
-  ],
+  props: ['cart', 'profile', 'favorites', 'total', 'user', 'user_id', 'scopes'],
   emits: [
     'addToCart',
     'redirectToItem',

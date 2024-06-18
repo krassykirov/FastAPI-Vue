@@ -1,4 +1,4 @@
-from fastapi import Response, Request, Depends
+from fastapi import Response, Request, Depends, Security
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -88,6 +88,7 @@ async def admin_panel_middleware(request: Request, call_next):
                 payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
                 username: str = payload.get("sub")
                 expires = payload.get("exp")
+                scopes = payload.get("scopes")
                 if username is None:
                     response.delete_cookie("access_token")
                     return response
@@ -104,7 +105,7 @@ async def admin_panel_middleware(request: Request, call_next):
             with Session(engine) as session:
                 statement = select(models.User).where(models.User.username == token_data.username)
                 user = session.exec(statement).first()
-                if user and user.is_admin:
+                if user and 'admin' in scopes:
                     response = await call_next(request)
                     return response
                 else:
@@ -142,12 +143,6 @@ def create_categories(engine):
             session.commit()
             session.refresh(category)
 
-
-# @app.get("/admin", response_class=Response)
-# def setup(request: Request, response: Response, user: User = Depends(get_current_user)):
-#     a = UsernameAndPasswordProvider()
-#     r = a.login(request=request, response=response, username= 'Admin', password= 'password')
-#     print('r', r)
 
 
 

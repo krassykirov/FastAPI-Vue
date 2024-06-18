@@ -9,7 +9,7 @@
       :total="total"
       :user="user"
       :user_id="user_id"
-      :is_admin="is_admin"
+      :scopes="scopes"
       :profile="profile"
       @addToCart="addToCart"
       @removeFromCart="removeFromCart"
@@ -458,11 +458,11 @@ export default {
       if (accessToken) {
         const user = jwtDecode(accessToken).sub
         const user_id = jwtDecode(accessToken).user_id
-        const is_admin = jwtDecode(accessToken).is_admin
         const hasProfile = jwtDecode(accessToken).hasProfile
+        const scopes = jwtDecode(accessToken).scopes
         this.$store.commit('UPDATE_USER', user)
         this.$store.commit('UPDATE_USER_ID', user_id)
-        this.$store.commit('UPDATE_IS_ADMIN', is_admin)
+        this.$store.commit('UPDATE_SCOPES', scopes)
         this.$store.commit('UPDATE_HAS_PROFILE', hasProfile)
       } else {
         this.errorMessage = 'Please Login'
@@ -645,8 +645,8 @@ export default {
     user() {
       return this.$store.state.user
     },
-    is_admin() {
-      return this.$store.state.is_admin
+    scopes() {
+      return this.$store.state.scopes
     },
     profile() {
       return this.$store.state.profile

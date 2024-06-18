@@ -72,6 +72,9 @@ export default {
     user_id() {
       return this.$store.getters.user_id
     },
+    scopes() {
+      return this.$store.state.scopes
+    },
     ratings() {
       return this.$store.getters.ratings
     },

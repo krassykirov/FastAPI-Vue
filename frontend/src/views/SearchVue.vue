@@ -154,6 +154,9 @@ export default {
     user() {
       return this.$store.getters.user
     },
+    scopes() {
+      return this.$store.state.scopes
+    },
     accessToken() {
       return this.$store.getters.accessToken
     },

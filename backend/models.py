@@ -27,6 +27,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Union[str, None] = None
     expires: Optional[datetime.datetime]
+    scopes: Optional[list[str]] = []
 class RefreshToken(BaseModel):
     username: Union[str, None] = None
     expires: Optional[datetime.datetime]
@@ -35,10 +36,10 @@ class User(SQLModel, table=True):
     id: int = Field(primary_key=True, default=None)
     username: Optional[EmailStr]= Field(sa_column=Column("username", VARCHAR, unique=True, index=True))
     password_hash: str = ""
-    is_admin: Optional[bool] = Field(sa_column=Column("is_admin", Boolean, unique=False, default=False))
     items: List['Item'] = Relationship(sa_relationship_kwargs={"cascade": "delete"}, back_populates="owner")
     reviews: List['Review'] = Relationship(sa_relationship_kwargs={"cascade": "delete"}, back_populates="user")
     profile: Optional['UserProfile'] = Relationship(sa_relationship_kwargs={"cascade": "delete"}, back_populates='user')
+    scopes: Optional[str] = Field(sa_column=Column("scopes", VARCHAR, unique=False, default=""))
     def set_password(self,password):
         self.password_hash = pwd_context.hash(password)
     def verify_password(self,password):

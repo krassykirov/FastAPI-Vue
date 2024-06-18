@@ -14,6 +14,7 @@
       :cart="cart"
       :total="total"
       :user="user"
+      :scopes="scopes"
       :profile="profile"
       :favorites="favorites"
     />
@@ -227,6 +228,9 @@ export default {
     },
     user_id() {
       return this.$store.state.user_id
+    },
+    scopes() {
+      return this.$store.state.scopes
     },
     accessToken() {
       return this.$store.state.accessToken
