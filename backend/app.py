@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel, Session, select
-from db import engine
+from db.database_factory import get_engine
 from routers.categories import category_router
 from routers.items import items_router
 from routers.reviews import reviews_router
@@ -23,9 +23,7 @@ from models import Category, Categories, User, Item, Review, UserProfile
 from my_logger import detailed_logger
 from datetime import datetime, timedelta
 from starlette_admin.contrib.sqla import Admin, ModelView
-from dotenv import load_dotenv
 
-load_dotenv()
 # from prometheus_fastapi_instrumentator import Instrumentator
 
 PROJECT_ROOT = Path(__file__).parent.parent # /
@@ -46,8 +44,10 @@ origins = [
     "http://localhost:3000"
 ]
 
+engine = get_engine()
+
 admin = Admin(
-    engine,
+    engine=engine,
     title="Auth",
 )
 
@@ -69,6 +69,13 @@ app.add_middleware(
 
 logger = detailed_logger()
 
+@app.on_event("startup")
+def on_startup():
+    SQLModel.metadata.create_all(engine)
+    create_categories(engine)
+    app.mount("/static", StaticFiles(directory=Path(BASE_DIR, 'static'),html=True),name="static")
+    # instrumentator.expose(app)
+
 @app.middleware("http")
 async def add_content_security_policy_header(request: Request, call_next):
     response = await call_next(request)
@@ -76,7 +83,7 @@ async def add_content_security_policy_header(request: Request, call_next):
     return response
 
 @app.middleware("http")
-async def admin_panel_middleware(request: Request, call_next):
+async def admin_panel(request: Request, call_next):
     response = JSONResponse(
                     status_code=401,
                     content={"message": "Token has expired!"},
@@ -115,13 +122,6 @@ async def admin_panel_middleware(request: Request, call_next):
     else:
         response = await call_next(request)
         return response
-
-@app.on_event("startup")
-def on_startup():
-    SQLModel.metadata.create_all(engine)
-    create_categories(engine)
-    app.mount("/static", StaticFiles(directory=Path(BASE_DIR, 'static'),html=True),name="static")
-    # instrumentator.expose(app)
 
 @app.get("/static/img/{image_path:path}", include_in_schema=False)
 async def get_image(image_path: str):

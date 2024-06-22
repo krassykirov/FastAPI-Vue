@@ -1,0 +1,12 @@
+{
+    "SQLIte": {
+        "db_name" : "backend.db"
+    },
+    "PostgreSQL": {
+        "username": "postgres",
+        "password": "",
+        "database": "mydb",
+        "host": "localhost",
+        "port": 5433
+    }
+}

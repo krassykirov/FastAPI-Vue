@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from fastapi import Request, Depends, HTTPException
-from db import get_session
+from db.database_factory import get_session
 from crud.crud import ProfileActions
 from sqlalchemy.orm import Session
 from models import UserProfile, User

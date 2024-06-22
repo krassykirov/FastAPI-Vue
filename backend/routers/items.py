@@ -2,11 +2,10 @@ from fastapi import APIRouter, Query, BackgroundTasks, UploadFile, Form
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi import Request, Depends, HTTPException, status
-from db import get_session
+from db.database_factory import get_session
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from models import Item, User
-from builders.abs_builder import LaptopBuilder
 from pydantic import Field
 import schemas
 from crud.crud import ItemActions, CategoryActions

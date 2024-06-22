@@ -14,7 +14,7 @@ engine = create_engine(
 # SET discount_price = ROUND((price - price * COALESCE(discount, 0)), 2);
 # for item in items_db:
 #    item.update_discount()
-# UPDATE item SET liked = '{}'; && UPDATE item SET in_cart = '{}';  As they are NULL in DB
+# UPDATE item SET liked = '{}'; && UPDATE item SET in_cart = '{}';
 if __name__ == "__main__":
     print("Creating tables (if necessary)")
     SQLModel.metadata.create_all(engine)

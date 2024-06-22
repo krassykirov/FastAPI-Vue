@@ -6,7 +6,7 @@ from starlette import status
 from fastapi import Depends, HTTPException, APIRouter, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-from db import get_session
+from db.database_factory import get_session
 import models
 from jose import JWTError, jwt, jws
 from datetime import datetime, timedelta
@@ -16,6 +16,9 @@ from my_logger import detailed_logger
 import datetime, uuid
 import urllib.parse, requests, json
 import adal, os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = detailed_logger()
 
@@ -33,6 +36,7 @@ API_VERSION = "beta"
 keys_url = "https://login.microsoftonline.com/common/discovery/keys"  # f'https://login.microsoftonline.com/{TENANT}/discovery/keys'
 keys_raw = requests.get(keys_url).text
 keys = json.loads(keys_raw)
+
 
 pwd_context = CryptContext(schemes="bcrypt")
 
@@ -82,10 +86,11 @@ async def azure_token(request: Request, db: Session = Depends(get_session)):
         body_form = await request.form()
         id_token = body_form.get("id_token")
         code = body_form.get("code")
-        print("code:", code)
+        logger.info(f"code: {code}")
         id_token_decoded = json.loads(
             jws.verify(id_token, keys, algorithms=["RS256"], verify=False)
         )
+        logger.info(f"id_token_decoded: {id_token_decoded}")
         username = id_token_decoded.get("preferred_username")
         email = id_token_decoded.get("email")
         issuer = id_token_decoded.get("iss")
