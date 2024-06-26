@@ -15,28 +15,12 @@ from passlib.context import CryptContext
 from my_logger import detailed_logger
 import datetime, uuid
 import urllib.parse, requests, json
-import adal, os
-from dotenv import load_dotenv
-
-load_dotenv()
+import adal
+from .config import Settings
 
 logger = detailed_logger()
 
-CLIENT_ID = os.environ.get("CLIENT_ID")
-CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
-TENANT = os.environ.get("TENANT")
-SCOPES = os.environ.get("SCOPES")
-FRONTEND = os.environ.get("FRONTEND")
-REDIRECT_URI = "http://localhost:8000/token"
-AUTHORITY_URL = "https://login.microsoftonline.com/common"  # f'https://login.microsoftonline.com/{TENANT}'
-AUTH_ENDPOINT = "/oauth2/v2.0/authorize"
-TOKEN_ENDPOINT = "/oauth2/v2.0/token"
-RESOURCE = "https://graph.microsoft.com/"
-API_VERSION = "beta"
-keys_url = "https://login.microsoftonline.com/common/discovery/keys"  # f'https://login.microsoftonline.com/{TENANT}/discovery/keys'
-keys_raw = requests.get(keys_url).text
-keys = json.loads(keys_raw)
-
+settings = Settings()
 
 pwd_context = CryptContext(schemes="bcrypt")
 
@@ -51,7 +35,7 @@ oauth2_scheme = OAuth2PasswordBearerCookie(
         "admin": "Full access",
     },
 )
-print("oauth2_scheme", oauth2_scheme.__dict__)
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 ALGORITHM = "HS256"
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -65,17 +49,17 @@ async def azure_login():
         params = urllib.parse.urlencode(
             {
                 "response_type": "code id_token",
-                "client_id": CLIENT_ID,
-                "redirect_uri": REDIRECT_URI,
+                "client_id": settings.CLIENT_ID,
+                "redirect_uri": settings.REDIRECT_URI,
                 "state": auth_state,
                 "nonce": str(uuid.uuid4()),
                 "prompt": prompt_behavior,
-                "scope": SCOPES,
+                "scope": settings.SCOPES,
                 "response_mode": "form_post",
             }
         )
 
-        return RedirectResponse(AUTHORITY_URL + "/oauth2/v2.0/authorize?" + params)
+        return RedirectResponse(settings.AUTHORITY_URL + "/oauth2/v2.0/authorize?" + params)
     except Exception as error:
         return str(error)
 
@@ -88,7 +72,7 @@ async def azure_token(request: Request, db: Session = Depends(get_session)):
         code = body_form.get("code")
         logger.info(f"code: {code}")
         id_token_decoded = json.loads(
-            jws.verify(id_token, keys, algorithms=["RS256"], verify=False)
+            jws.verify(id_token, settings.keys, algorithms=["RS256"], verify=False)
         )
         logger.info(f"id_token_decoded: {id_token_decoded}")
         username = id_token_decoded.get("preferred_username")
@@ -121,20 +105,20 @@ async def azure_token(request: Request, db: Session = Depends(get_session)):
             user.id, user.username, minutes=ACCESS_TOKEN_EXPIRE_MINUTES * 2
         )
         return RedirectResponse(
-            f"{FRONTEND}/?token={access_token}&refresh_token={refresh_token}",
+            f"{settings.FRONTEND}/?token={access_token}&refresh_token={refresh_token}",
             status_code=303,
         )
     except Exception as e:
         logger.error(f"Error processing id_token: {e}")
-        return RedirectResponse(f"{FRONTEND}/?token=false", status_code=303)
+        return RedirectResponse(f"{settings.FRONTEND}/?token=false", status_code=303)
 
 
 @oauth_router.post("/graph", include_in_schema=True)
 async def ms_graph_get_token(code: str, graph_endpoint=None):
     """Get Access Token for Micorosft Graph and call the API"""
-    auth_context = adal.AuthenticationContext(AUTHORITY_URL, api_version=None)
+    auth_context = adal.AuthenticationContext(settings.AUTHORITY_URL, api_version=None)
     token_response = auth_context.acquire_token_with_authorization_code(
-        code, REDIRECT_URI, RESOURCE, CLIENT_ID, CLIENT_SECRET
+        code, settings.REDIRECT_URI, settings.RESOURCE, settings.CLIENT_ID, settings.CLIENT_SECRET
     )
     access_token = token_response["accessToken"]
     graph_endpoint = "https://graph.microsoft.com/beta/me/profile"
